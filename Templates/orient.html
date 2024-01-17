@@ -1,0 +1,167 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>User Products</title>
+    <style>
+      .previously-viewed {
+          margin-top: 50px;
+        }
+
+        .previously-viewed h2 {
+          font-size: 24px;
+          font-weight: bold;
+          margin-bottom: 30px;
+        }
+
+        .previously-viewed ul {
+          list-style: none;
+          display: flex;
+          justify-content: space-between;
+          flex-wrap: wrap;
+        }
+
+        .product-card {
+          width: 50%;
+          background-color: #fff;
+          box-shadow: 0 4px 8px 0 rgba(0, 0, 0, 0.2);
+          padding: 20px;
+          margin-bottom: 30px;
+        }
+
+        .product-card img {
+          width: 100%;
+          margin-bottom: 20px;
+        }
+
+        .product-card h3 {
+          font-size: 18px;
+          font-weight: bold;
+          margin-bottom: 10px;
+        }
+
+        .product-card p {
+          font-size: 14px;
+          margin-bottom: 20px;
+        }
+
+        .rating {
+          display: flex;
+          align-items: center;
+          margin-bottom: 10px;
+        }
+
+        .rating span {
+          font-size: 14px;
+          color: #ffa500;
+          margin-left: 5px;
+        }
+
+        .price {
+          display: flex;
+          align-items: center;
+          margin-bottom: 20px;
+        }
+
+        .price .discount {
+          font-size: 14px;
+          color: #f00;
+          margin-right: 10px;
+        }
+
+        .price .regular {
+          font-size: 14px;
+          text-decoration: line-through;
+          color: #999;
+          margin-right: 10px;
+        }
+
+        .price .sale {
+          font-size: 16px;
+          font-weight: bold;
+          color: #f00;
+        }
+
+        .add-to-cart {
+          background-color: #f00;
+          color: #fff;
+          border: none;
+          padding: 10px 20px;
+          cursor: pointer;
+        }
+
+        @media (max-width: 768px) {
+          .product-card {
+            width: 45%;
+          }
+        }
+
+        @media (max-width: 480px) {
+          .product-card {
+            width: 100%;
+          }
+        }
+      .logo
+      {
+        width: 15%;
+      }
+    </style>
+</head>
+<body>
+    <div class="previously-viewed">
+      <img  class="logo" src="https://www.gartner.com/imagesrv/peer-insights/vendors/logos/orient-techonologies.png">
+
+<!--      <h1>Welcome to Orient</h1>-->
+      <ul>
+        <li>
+          <div class="product-card">
+            <img src="{{ url_for('static', filename='images/dell-laptop.jpg') }}" alt="Dell 15 Laptop">
+<!-- Repeat the process for other image sources -->
+            <h3>Dell 15 Laptop</h3>
+            <p>Intel Core i3-1115G4, 8GB/1TB + 256GB SSD</p>
+            <div class="price">
+              <span class="discount">-46%</span>
+              <span class="regular">₹ 76,634.90</span>
+              <span class="sale">₹ 35,990.00</span>
+            </div>
+            <form method="post" action="{{ url_for('add_to_cart') }}">
+                <input type="hidden" name="user_email" value="{{ user_email }}">
+                <input type="hidden" name="product_name" value="Dell 15 Laptop">
+                <input type="hidden" name="product_image" value="{{ url_for('static', filename='images/dell-laptop.jpg') }}">
+                <input type="hidden" name="product_description" value="Intel Core i3-1115G4, 8GB/1TB + 256GB SSD">
+                <input type="hidden" name="product_price" value="₹ 35,990.00">
+                <button type="submit" class="add-to-cart">Add to Cart</button>
+            </form>
+
+          </div>
+        </li>
+        <li>
+          <div class="product-card">
+            <img src="{{ url_for('static', filename='images/dell-latitude.jpg') }}" alt="Dell New 14 Latitude 3420">
+            <h3>Dell New 14" Latitude 3420</h3>
+            <p>11Th Gen || 16 Gb || 1Tb +</p>
+            <div class="price">
+              <span class="discount">-24%</span>
+              <span class="regular">₹ 1,00,000.00</span>
+              <span class="sale">₹ 75,775.00</span>
+            </div>
+            <form method="post" action="{{ url_for('add_to_cart') }}">
+                <input type="hidden" name="user_email" value="{{ user_email }}">
+                <input type="hidden" name="product_name" value="Dell New 14 Latitude 3420">
+                <input type="hidden" name="product_image" value="{{ url_for('static', filename='images/dell-latitude.jpg') }}">
+                <input type="hidden" name="product_description" value="11Th Gen || 16 Gb || 1Tb +">
+                <input type="hidden" name="product_price" value="₹ 75,775.00">
+                <button type="submit" class="add-to-cart">Add to Cart</button>
+            </form>
+
+
+          </div>
+        </li>
+      </ul>
+    </div>
+<button class="add-to-cart" onclick="window.location.href='{{ url_for('cart', user_email=user_email) }}'">Cart</button>
+<button class="add-to-cart" onclick="window.location.href='{{ url_for('login', user_email=user_email) }}'">log out</button>
+
+</body>
+</html>

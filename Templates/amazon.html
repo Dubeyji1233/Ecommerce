@@ -1,0 +1,166 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>User Products</title>
+    <style>
+        .previously-viewed {
+            margin-top: 50px;
+        }
+
+        .previously-viewed h2 {
+            font-size: 24px;
+            font-weight: bold;
+            margin-bottom: 30px;
+        }
+
+        .previously-viewed ul {
+            list-style: none;
+            display: flex;
+            justify-content: space-between;
+            flex-wrap: wrap;
+        }
+
+        .product-card {
+            width: 50%;
+            background-color: #fff;
+            box-shadow: 0 4px 8px 0 rgba(0, 0, 0, 0.2);
+            padding: 20px;
+            margin-bottom: 30px;
+        }
+
+        .product-card img {
+            width: 100%;
+            margin-bottom: 20px;
+        }
+
+        .product-card h3 {
+            font-size: 18px;
+            font-weight: bold;
+            margin-bottom: 10px;
+        }
+
+        .product-card p {
+            font-size: 14px;
+            margin-bottom: 20px;
+        }
+
+        .rating {
+            display: flex;
+            align-items: center;
+            margin-bottom: 10px;
+        }
+
+        .rating span {
+            font-size: 14px;
+            color: #ffa500;
+            margin-left: 5px;
+        }
+
+        .price {
+            display: flex;
+            align-items: center;
+            margin-bottom: 20px;
+        }
+
+        .price .discount {
+            font-size: 14px;
+            color: #f00;
+            margin-right: 10px;
+        }
+
+        .price .regular {
+            font-size: 14px;
+            text-decoration: line-through;
+            color: #999;
+            margin-right: 10px;
+        }
+
+        .price .sale {
+            font-size: 16px;
+            font-weight: bold;
+            color: #f00;
+        }
+
+        .add-to-cart {
+            background-color: #f00;
+            color: #fff;
+            border: none;
+            padding: 10px 20px;
+            cursor: pointer;
+        }
+
+        @media (max-width: 768px) {
+            .product-card {
+                width: 45%;
+            }
+        }
+
+        @media (max-width: 480px) {
+            .product-card {
+                width: 100%;
+            }
+        }
+        .logo
+          {
+            width: 15%;
+          }
+    </style>
+</head>
+
+<body>
+    <div class="previously-viewed">
+        <img  class="logo" src="https://www.gartner.com/imagesrv/peer-insights/vendors/logos/orient-techonologies.png">
+        <ul>
+            <li>
+                <div class="product-card">
+                    <img src="{{ url_for('static', filename='images/HP.jpg') }}" alt="Dell 15 Laptop">
+                    <h2>India's No.1 Brand V Special offers hp del CORE HP HP Laptop 15s</h2>
+                    <p>12th Gen Intel Core i3-1215U, 15.6 - inch ( 39.6 cm ), FHD, 8GB DDR4, 1TB SSD, Intel UHD Graphics - 1,767</p>
+
+                    <div class="price">
+                        <span class="discount">-46%</span>
+                        <span class="regular">₹ 76,634.90</span>
+                        <span class="sale">₹ 35,990.00</span>
+                    </div>
+                    <!-- ... (existing HTML code) ... -->
+                    <form method="post" action="{{ url_for('add_to_cart') }}">
+                        <input type="hidden" name="user_email" value="{{ user_email }}">
+                        <input type="hidden" name="product_image" value="{{ url_for('static', filename='images/HP.jpg') }}">
+                        <input type="hidden" name="product_name" value="India's No.1 Brand V Special offers hp del CORE HP HP Laptop 15s">
+                        <!-- Add other hidden input fields for product details -->
+                        <button type="submit" class="add-to-cart">Add to Cart</button>
+                    </form>
+
+                </div>
+            </li>
+            <li>
+                <div class="product-card">
+                    <img src="{{ url_for('static', filename='images/dell.jpg') }}" alt="Dell New 14 Latitude 3420">
+                    <h2>DELL Technologies # 1 INDIA'S MOST TRUSTED BRAND * Dell</h2>
+                    <p>Dell Inspiron 3530 Laptop, 13th Gen Intel Core i3-1305U Processor/ 8GB/1TB SSD/ 15.6 " ( 39.62cm ) F - 9</p>
+
+                    <div class="price">
+                        <span class="discount">-24%</span>
+                        <span class="regular">₹ 1,00,000.00</span>
+                        <span class="sale">₹ 75,775.00</span>
+                    </div>
+                    <!-- ... (existing HTML code) ... -->
+                    <form method="post" action="{{ url_for('add_to_cart') }}">
+                        <input type="hidden" name="user_email" value="{{ user_email }}">
+                        <input type="hidden" name="product_image" value="{{ url_for('static', filename='images/dell.jpg') }}">
+                        <input type="hidden" name="product_name" value="DELL Technologies # 1 INDIA'S MOST TRUSTED BRAND * Dell">
+                        <!-- Add other hidden input fields for product details -->
+                        <button type="submit" class="add-to-cart">Add to Cart</button>
+                    </form>
+
+                </div>
+            </li>
+        </ul>
+    </div>
+<button class="add-to-cart" onclick="window.location.href='{{ url_for('cart', user_email=user_email) }}'">Cart</button>
+<button class="add-to-cart" onclick="window.location.href='{{ url_for('login', user_email=user_email) }}'">log out</button>
+
+</body>
+</html>
