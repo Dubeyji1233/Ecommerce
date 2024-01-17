@@ -50,7 +50,8 @@
   <br>
   <br>
   <a style="text-decoration:none;" href="/my-order" class="btn btn-success btn-lg">View Orders/Track Orders</a>
-  <a style="text-decoration:none;" href="/customer-home">Continue Shopping</a>
+    <a style="text-decoration:none;" href="{{ url_for('index', user_email=user_email) }}">Continue Shopping</a>
+
 </div>
 <br><br><br><br>
 <br><br><br><br>

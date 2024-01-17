@@ -79,14 +79,20 @@ def remove_from_cart():
 
 @app.route('/payment_gateway')  # Add this line
 def payment_gateway():
-    # Add your payment gateway logic here
-    return render_template('payment_gateway.html')
+    user_email = request.args.get('user_email', '')
+    domain = user_email.split('@')[-1]
+
+    return render_template('payment_gateway.html', domain=domain)
 
 
-@app.route('/payment_success')  # Add this line
+@app.route('/payment-success')
 def payment_success():
-    # Add your payment gateway logic here
-    return render_template('payment-success.html')
+    user_email = request.args.get('user_email', '')
+    domain = user_email.split('@')[-1]
+
+    return render_template('payment-success.html', user_email=user_email, domain=domain)
+
+
 
 
 if __name__ == '__main__':
