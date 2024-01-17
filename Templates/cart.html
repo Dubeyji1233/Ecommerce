@@ -213,12 +213,33 @@
                     <input type="checkbox" id="acceptTerms"> I accept the terms and conditions
                 </div>
                 <br>
-                <label class="test" onclick="processOrder()">OK</label>
+                <label class="test" onclick="checkCartAndOpenModal()">OK</label>
             </div>
         </div>
 
     </div>
     <script>
+        // Function to check if the cart is empty and open modal accordingly
+        function checkCartAndOpenModal() {
+            // Assume user_cart is a JavaScript array representing the cart
+            var cartSize = {{ user_cart|length }};
+            if (cartSize === 0) {
+                alert('Your cart is empty. Please continue shopping.');
+            } else {
+                if (document.getElementById('acceptTerms').checked) {
+                    // Perform order processing here
+                    alert('Order processed successfully!');
+                    closeModal();
+
+                    // Redirect to shopping page
+                    window.location.href = "{{ url_for('index', user_email=user_email) }}";
+                } else {
+                    alert('Please accept the terms and conditions to proceed.');
+                    openModal();
+                }
+            }
+        }
+
         // Function to display the modal
         function openModal() {
             document.getElementById('myModal').style.display = 'block';
@@ -228,18 +249,9 @@
         function closeModal() {
             document.getElementById('myModal').style.display = 'none';
         }
-
-        // Function to process the order when the user accepts the terms
-        function processOrder() {
-            if (document.getElementById('acceptTerms').checked) {
-                // Perform order processing here
-                alert('Order processed successfully!');
-                closeModal();
-            } else {
-                alert('Please accept the terms and conditions to proceed.');
-            }
-        }
     </script>
+
+
 
 </body>
 </html>
