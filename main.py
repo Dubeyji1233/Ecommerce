@@ -83,6 +83,14 @@ def payment_gateway():
     domain = user_email.split('@')[-1]
 
     return render_template('payment_gateway.html', domain=domain)
+@app.route('/personal-details')  # Corrected route
+def personal_details():
+    user_email = request.args.get('user_email', '')
+    domain = user_email.split('@')[-1]
+
+    return render_template('personal-details.html', domain=domain,  user_email=user_email)
+
+
 
 
 @app.route('/payment-success')

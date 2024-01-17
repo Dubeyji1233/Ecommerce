@@ -1,0 +1,132 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Order Details</title>
+    <style>
+        body {
+            font-family: 'Arial', sans-serif;
+            background-color: #f4f4f4;
+            margin: 0;
+            padding: 0;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            height: 100vh;
+        }
+
+        .modal-content {
+            background-color: #fff;
+            border-radius: 8px;
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+            padding: 20px;
+            text-align: center;
+            max-width: 400px;
+            width: 100%;
+            box-sizing: border-box;
+        }
+
+        h2 {
+            color: #333;
+            margin-bottom: 20px;
+        }
+
+        .additional-fields {
+            margin-bottom: 20px;
+        }
+
+        label {
+            display: block;
+            margin-bottom: 5px;
+            color: #555;
+        }
+
+        input {
+            width: 100%;
+            padding: 8px;
+            box-sizing: border-box;
+            margin-bottom: 10px;
+            border: 1px solid #ccc;
+            border-radius: 4px;
+        }
+
+        button {
+            background-color: #f00;
+            color: #fff;
+            border: none;
+            padding: 10px 15px;
+            border-radius: 4px;
+            cursor: pointer;
+            font-size: 16px;
+        }
+
+        button:hover {
+            background-color: #d50000;
+        }
+
+        .error-message {
+            color: #d50000;
+            margin-top: 10px;
+        }
+    </style>
+</head>
+<body>
+    <div class="modal-content">
+        <h2>Order Details</h2>
+
+        <div class="additional-fields">
+            <label for="name">Full Name:</label>
+            <input type="text" id="name" name="name" required>
+
+            <label for="phone">Phone Number:</label>
+            <input type="text" id="phone" name="phone" required>
+
+            <label for="address">Delivery Address:</label>
+            <input type="text" id="address" name="address" required>
+
+            <label for="email">Email Address:</label>
+            <input type="email" id="email" name="email" required>
+        </div>
+
+        <button onclick="validateAndOrder()">Done</button>
+        <p class="error-message" id="errorMessage"></p>
+    </div>
+
+    <script>
+        function validateAndOrder() {
+            var name = document.getElementById('name').value.trim();
+            var phone = document.getElementById('phone').value.trim();
+            var address = document.getElementById('address').value.trim();
+            var email = document.getElementById('email').value.trim();
+
+            var errorMessage = "";
+
+            if (name === "") {
+                errorMessage += "Please enter your Full Name.\n";
+            }
+
+            if (phone === "") {
+                errorMessage += "Please enter your Phone Number.\n";
+            }
+
+            if (address === "") {
+                errorMessage += "Please enter your Delivery Address.\n";
+            }
+
+            if (email === "") {
+                errorMessage += "Please enter your Email Address.\n";
+            }
+
+            if (errorMessage === "") {
+                // All fields are filled, proceed with the order
+                alert('Ordered successfully!');
+                window.location.href = "{{ url_for('index', user_email=user_email) }}";
+            } else {
+                // Display error messages
+                document.getElementById('errorMessage').innerText = errorMessage;
+            }
+        }
+    </script>
+</body>
+</html>
