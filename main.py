@@ -77,6 +77,16 @@ def remove_from_cart():
     # Redirect back to the cart page
     return redirect(url_for('cart', user_email=user_email))
 
+@app.route('/payment_gateway')  # Add this line
+def payment_gateway():
+    # Add your payment gateway logic here
+    return render_template('payment_gateway.html')
+
+
+@app.route('/payment_success')  # Add this line
+def payment_success():
+    # Add your payment gateway logic here
+    return render_template('payment-success.html')
 
 
 if __name__ == '__main__':

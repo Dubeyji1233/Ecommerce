@@ -164,6 +164,21 @@
 
             padding: 8px 15px;
         }
+        .additional-fields {
+            margin-top: 20px;
+        }
+
+        .additional-fields label {
+            display: block;
+            margin-bottom: 5px;
+        }
+
+        .additional-fields input {
+            width: 100%;
+            padding: 8px;
+            box-sizing: border-box;
+            margin-bottom: 10px;
+        }
     </style>
 </head>
 <body>
@@ -202,7 +217,24 @@
         <div id="myModal">
             <div class="modal-content">
                 <span class="close" onclick="closeModal()">&times;</span>
-                <h2>Terms and Conditions</h2>
+
+                <h2>Order Details</h2>
+
+                <div class="additional-fields">
+                    <label for="address">Full Name :</label>
+                    <input type="text" id="name" name="name" required>
+
+                    <label for="phone">Phone Number:</label>
+                    <input type="text" id="phone" name="phone" required>
+
+                    <label for="address">DeliveryAddress:</label>
+                    <input type="text" id="address" name="address" required>
+
+                    <label for="email">Email Address:</label>
+                    <input type="email" id="email" name="email" required>
+                </div>
+                    <h2>Terms and Conditions</h2>
+
                 <p>By proceeding with the purchase, you agree to the following terms and conditions:</p>
                 <ol>
                     <li><strong>Product Description:</strong> Ensure that you have read and understood the product description.</li>
@@ -213,7 +245,7 @@
                     <input type="checkbox" id="acceptTerms"> I accept the terms and conditions
                 </div>
                 <br>
-                <label class="test" onclick="checkCartAndOpenModal()">OK</label>
+                <label class="test" onclick="checkCartAndOpenModal()">Pay Now</label>
             </div>
         </div>
 
@@ -226,18 +258,27 @@
             if (cartSize === 0) {
                 alert('Your cart is empty. Please continue shopping.');
             } else {
-                if (document.getElementById('acceptTerms').checked) {
-                    // Perform order processing here
-                    alert('Order processed successfully!');
-                    closeModal();
-
-                    // Redirect to shopping page
-                    window.location.href = "{{ url_for('index', user_email=user_email) }}";
+                if (validateOrderDetails()) {
+                    if (document.getElementById('acceptTerms').checked) {
+                        // Redirect to payment gateway page
+                        window.location.href = "{{ url_for('payment_gateway') }}";
+                    } else {
+                        alert('Please accept the terms and conditions to proceed.');
+                        openModal();
+                    }
                 } else {
-                    alert('Please accept the terms and conditions to proceed.');
+                    alert('Please fill in all order details.');
                     openModal();
                 }
             }
+        }
+
+        function validateOrderDetails() {
+            var phone = document.getElementById('phone').value.trim();
+            var address = document.getElementById('address').value.trim();
+            var email = document.getElementById('email').value.trim();
+
+            return phone !== '' && address !== '' && email !== '';
         }
 
         // Function to display the modal
