@@ -4,6 +4,7 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>User Products</title>
+    <script src="https://code.jquery.com/jquery-3.6.4.min.js"></script>
     <style>
         .previously-viewed {
             margin-top: 50px;
@@ -106,6 +107,19 @@
           {
             width: 15%;
           }
+        #myform {
+            text-align: center;
+            padding: 5px;
+            border: 1px dotted #ccc;
+            margin: 2%;
+        }
+        .qty {
+            width: 40px;
+            height: 25px;
+            text-align: center;
+        }
+        input.qtyplus { width:25px; height:25px;}
+        input.qtyminus { width:25px; height:25px;}
     </style>
 </head>
 
@@ -129,8 +143,13 @@
                         <input type="hidden" name="user_email" value="{{ user_email }}">
                         <input type="hidden" name="product_image" value="{{ url_for('static', filename='images/HP.jpg') }}">
                         <input type="hidden" name="product_name" value="India's No.1 Brand V Special offers hp del CORE HP HP Laptop 15s">
-                        <!-- Add other hidden input fields for product details -->
-                        <button type="submit" class="add-to-cart">Add to Cart</button>
+                        <input type="hidden" name="product_price" value="₹ 35,990.00">
+                        <div class="quantity">
+                            <button type="submit" class="add-to-cart">Add to Cart</button>
+                            <input type='button' value='-' class='qtyminus minus' field='quantity' />
+                            <input type='text' name='quantity' value='1' class='qty' />
+                            <input type='button' value='+' class='qtyplus plus' field='quantity' />
+                        </div>
                     </form>
 
                 </div>
@@ -144,15 +163,19 @@
                     <div class="price">
                         <span class="discount">-24%</span>
                         <span class="regular">₹ 1,00,000.00</span>
-                        <span class="sale">₹ 75,775.00</span>
+                        <span class="sale">₹ 70,775.00</span>
                     </div>
-                    <!-- ... (existing HTML code) ... -->
                     <form method="post" action="{{ url_for('add_to_cart') }}">
                         <input type="hidden" name="user_email" value="{{ user_email }}">
                         <input type="hidden" name="product_image" value="{{ url_for('static', filename='images/dell.jpg') }}">
                         <input type="hidden" name="product_name" value="DELL Technologies # 1 INDIA'S MOST TRUSTED BRAND * Dell">
-                        <!-- Add other hidden input fields for product details -->
-                        <button type="submit" class="add-to-cart">Add to Cart</button>
+                        <input type="hidden" name="product_price" value="₹ 70,775.00">
+                        <div class="quantity">
+                            <button type="submit" class="add-to-cart">Add to Cart</button>
+                            <input type='button' value='-' class='qtyminus minus' field='quantity' />
+                            <input type='text' name='quantity' value='1' class='qty' />
+                            <input type='button' value='+' class='qtyplus plus' field='quantity' />
+                        </div>
                     </form>
 
                 </div>
@@ -161,6 +184,23 @@
     </div>
 <button class="add-to-cart" onclick="window.location.href='{{ url_for('cart', user_email=user_email) }}'">Cart</button>
 <button class="add-to-cart" onclick="window.location.href='{{ url_for('login', user_email=user_email) }}'">log out</button>
+<script>
+    jQuery(document).ready(($) => {
+        $('.quantity').on('click', '.plus', function(e) {
+            let $input = $(this).prev('input.qty');
+            let val = parseInt($input.val());
+            $input.val( val+1 ).change();
+        });
 
+        $('.quantity').on('click', '.minus',
+            function(e) {
+            let $input = $(this).next('input.qty');
+            var val = parseInt($input.val());
+            if (val > 0) {
+                $input.val( val-1 ).change();
+            }
+        });
+    });
+</script>
 </body>
 </html>

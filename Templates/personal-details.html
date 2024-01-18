@@ -218,22 +218,26 @@
         }
 
 
-         function closeModalAndProceed() {
-            // Check if the terms are accepted
-            var termsAccepted = document.getElementById('acceptTerms').checked;
+     function closeModalAndProceed() {
+        // Check if the terms are accepted
+        var termsAccepted = document.getElementById('acceptTerms').checked;
 
-            if (termsAccepted) {
-                // Close the modal
-                document.getElementById('myModal').style.display = 'none';
-                // Proceed with the order
-                alert('Ordered successfully!');
-                // Redirect to the shopping page
-                window.location.href = "{{ url_for('index', user_email=user_email) }}";
-            } else {
-                // If terms are not accepted, show an error
-                document.getElementById('errorMessage').innerText = "Please accept the terms and conditions.";
-            }
+        if (termsAccepted) {
+            // Close the modal
+            document.getElementById('myModal').style.display = 'none';
+            // Proceed with the order
+            alert('Ordered successfully!');
+            // Redirect to the shopping page
+            window.location.href = "{{ url_for('index', user_email=user_email) }}";
+        } else {
+            // If terms are not accepted, show an error
+            alert('Please accept the terms and conditions to proceed.');
+            // Optionally, you can clear the error message after a certain time
+            setTimeout(function () {
+                document.getElementById('errorMessage').innerText = "";
+            }, 5000); // 5000 milliseconds (5 seconds)
         }
+    }
     </script>
 </body>
 </html>

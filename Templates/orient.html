@@ -4,6 +4,7 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>User Products</title>
+    <script src="https://code.jquery.com/jquery-3.6.4.min.js"></script>
     <style>
       .previously-viewed {
           margin-top: 50px;
@@ -106,6 +107,19 @@
       {
         width: 15%;
       }
+      #myform {
+            text-align: center;
+            padding: 5px;
+            border: 1px dotted #ccc;
+            margin: 2%;
+        }
+        .qty {
+            width: 40px;
+            height: 25px;
+            text-align: center;
+        }
+        input.qtyplus { width:25px; height:25px;}
+        input.qtyminus { width:25px; height:25px;}
     </style>
 </head>
 <body>
@@ -131,7 +145,13 @@
                 <input type="hidden" name="product_image" value="{{ url_for('static', filename='images/dell-laptop.jpg') }}">
                 <input type="hidden" name="product_description" value="Intel Core i3-1115G4, 8GB/1TB + 256GB SSD">
                 <input type="hidden" name="product_price" value="₹ 35,990.00">
-                <button type="submit" class="add-to-cart">Add to Cart</button>
+                <div class="quantity">
+                    <button type="submit" class="add-to-cart">Add to Cart</button>
+                    <input type='button' value='-' class='qtyminus minus' field='quantity' />
+                    <input type='text' name='quantity' value='1' class='qty' />
+                    <input type='button' value='+' class='qtyplus plus' field='quantity' />
+                </div>
+
             </form>
 
           </div>
@@ -152,7 +172,14 @@
                 <input type="hidden" name="product_image" value="{{ url_for('static', filename='images/dell-latitude.jpg') }}">
                 <input type="hidden" name="product_description" value="11Th Gen || 16 Gb || 1Tb +">
                 <input type="hidden" name="product_price" value="₹ 75,775.00">
-                <button type="submit" class="add-to-cart">Add to Cart</button>
+
+
+                <div class="quantity">
+                    <button type="submit" class="add-to-cart">Add to Cart</button>
+                    <input type='button' value='-' class='qtyminus minus' field='quantity' />
+                    <input type='text' name='quantity' value='1' class='qty' />
+                    <input type='button' value='+' class='qtyplus plus' field='quantity' />
+                </div>
             </form>
 
 
@@ -164,4 +191,41 @@
 <button class="add-to-cart" onclick="window.location.href='{{ url_for('login', user_email=user_email) }}'">log out</button>
 
 </body>
+<script>
+    jQuery(document).ready(($) => {
+        $('.quantity').on('click', '.plus', function(e) {
+            let $input = $(this).prev('input.qty');
+            let val = parseInt($input.val());
+            $input.val(val + 1).change();
+        });
+
+        $('.quantity').on('click', '.minus', function(e) {
+            let $input = $(this).next('input.qty');
+            var val = parseInt($input.val());
+            if (val > 0) {
+                $input.val(val - 1).change();
+            }
+        });
+
+        // Change event handler for the quantity input
+        $('.quantity').on('change', '.qty', function() {
+            updateCartTotal();
+        });
+
+        // Initial update of cart total on page load
+        updateCartTotal();
+
+        function updateCartTotal() {
+            let totalQuantity = 0;
+
+            // Iterate through all quantity inputs and sum up the values
+            $('.quantity .qty').each(function() {
+                totalQuantity += parseInt($(this).val());
+            });
+
+            // Display the total quantity in your cart
+            $('#cartTotalQuantity').text(totalQuantity);
+        }
+    });
+</script>
 </html>

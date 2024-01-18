@@ -305,6 +305,7 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Shopping Cart</title>
+    <script src="https://code.jquery.com/jquery-3.6.4.min.js"></script>
     <style>
         body {
             font-family: 'Arial', sans-serif;
@@ -480,6 +481,19 @@
             box-sizing: border-box;
             margin-bottom: 10px;
         }
+        #myform {
+            text-align: center;
+            padding: 5px;
+            border: 1px dotted #ccc;
+            margin: 2%;
+        }
+        .qty {
+            width: 40px;
+            height: 25px;
+            text-align: center;
+        }
+        input.qtyplus { width:25px; height:25px;}
+        input.qtyminus { width:25px; height:25px;}
     </style>
 </head>
 <body>
@@ -487,49 +501,94 @@
         <h1>Shopping Cart</h1>
         <h2>User: {{ user_email }}</h2>
 
-        <ul>
-            {% for product in user_cart %}
-                <li>
-                    <img src="{{ product['image'] }}" alt="{{ product['name'] }}">
-                    <p><strong>{{ product['name'] }}</strong></p>
-                    <p>{{ product['description'] }}</p>
-                    <p id="pricePlaceholder{{ loop.index }}">Price: ₹{{ "{:,.2f}".format(product['price']|replace('₹', '')|replace(',', '')|float) }}</p>
-                    <form method="post" action="{{ url_for('remove_from_cart') }}">
-                        <input type="hidden" name="user_email" value="{{ user_email }}">
-                        <input type="hidden" name="product_name" value="{{ product['name'] }}">
-                        <button type="submit">Remove</button>
-                    </form>
-                </li>
-                <br>
-                {% set total_price = 0 %}
-                {% for product in user_cart %}
-                    {% set product_price = product['price']|replace('₹', '')|replace(',', '')|float %}
-                    {% set total_price = total_price + product_price %}
-                {% endfor %}
-            {% endfor %}
-        </ul>
+        {% for product in user_cart %}
 
-        <p>Total Price: {{ total_price }}</p>
+        <ul>
+            <li>
+                <img src="{{ product['image'] }}" alt="{{ product['name'] }}">
+                <p><strong>{{ product['name'] }}</strong></p>
+                <p>{{ product['description'] }}</p>
+                <p>{{ product['price'] }}</p>
+                <form method="post" action="{{ url_for('remove_from_cart') }}">
+                    <input type="hidden" name="user_email" value="{{ user_email }}">
+                    <input type="hidden" name="product_name" value="{{ product['name'] }}">
+
+                    <ul>
+                        <div class="quantity">
+                            <input type='button' value='-' class='qtyminus minus' field='quantity' />
+                            <input type='text' name='quantity' value="{{ product['quantity'] }}" class='qty' />
+                            <input type='button' value='+' class='qtyplus plus' field='quantity' />
+                        </div>
+                    </ul>
+
+
+                    <button type="submit">Remove</button>
+                </form>
+            </li>
+            <br>
+
+        </ul>
+        {% endfor %}
+
+        <p><strong>Grand Total:</strong> ₹ {{ final_total }}</p>
+        <!-- Add this element where you want to display the total quantity -->
+        <p><strong>Total Quantity in Cart:</strong> <span id="cartTotalQuantity">{{ total_quantity }}</span></p>
+
 
         <a id="buyNowButton" onclick="checkCartAndRedirect()">Buy Now</a>
 
         <a href="{{ url_for('index', user_email=user_email) }}">Continue Shopping</a>
 
     </div>
- <script>
-    function checkCartAndRedirect() {
-        var cartSize = {{ user_cart|length }};
-        if (cartSize > 0) {
-            // Redirect to personal-details.html when the cart is not empty
-            window.location.href = "{{ url_for('personal_details', user_email=user_email) }}";
-        } else {
-            alert('Your cart is empty. Please continue shopping.');
+
+    <script>
+        function checkCartAndRedirect() {
+            var cartSize = {{ user_cart|length }};
+            if (cartSize > 0) {
+                // Redirect to personal-details.html when the cart is not empty
+                window.location.href = "{{ url_for('personal_details', user_email=user_email) }}";
+            } else {
+                alert('Your cart is empty. Please continue shopping.');
+            }
         }
-    }
-</script>
+        jQuery(document).ready(($) => {
+        $('.quantity').on('click', '.plus', function(e) {
+            let $input = $(this).prev('input.qty');
+            let val = parseInt($input.val());
+            $input.val(val + 1).change();
+        });
 
+        $('.quantity').on('click', '.minus', function(e) {
+            let $input = $(this).next('input.qty');
+            var val = parseInt($input.val());
+            if (val > 0) {
+                $input.val(val - 1).change();
+            }
+        });
 
+        // Change event handler for the quantity input
+        $('.quantity').on('change', '.qty', function() {
+            updateCartTotal();
+        });
 
+        // Initial update of cart total on page load
+        updateCartTotal();
+
+        function updateCartTotal() {
+            let totalQuantity = 0;
+
+            // Iterate through all quantity inputs and sum up the values
+            $('.quantity .qty').each(function() {
+                totalQuantity += parseInt($(this).val());
+            });
+
+            // Display the total quantity in your cart
+            $('#cartTotalQuantity').text(totalQuantity);
+        }
+    });
+    </script>
 </body>
+
 </html>
+
 
