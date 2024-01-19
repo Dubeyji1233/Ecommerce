@@ -24,7 +24,7 @@
         }
 
         .product-card {
-          width: 50%;
+          width: 60%;
           background-color: #fff;
           box-shadow: 0 4px 8px 0 rgba(0, 0, 0, 0.2);
           padding: 20px;
@@ -123,8 +123,8 @@
     </style>
 </head>
 <body>
+    {% include 'header.html' %}
     <div class="previously-viewed">
-      <img  class="logo" src="https://www.gartner.com/imagesrv/peer-insights/vendors/logos/orient-techonologies.png">
 
 <!--      <h1>Welcome to Orient</h1>-->
       <ul>
@@ -187,8 +187,9 @@
         </li>
       </ul>
     </div>
-<button class="add-to-cart" onclick="window.location.href='{{ url_for('cart', user_email=user_email) }}'">Cart</button>
-<button class="add-to-cart" onclick="window.location.href='{{ url_for('login', user_email=user_email) }}'">log out</button>
+    {% include 'footer.html' %}
+<!--<button class="add-to-cart" onclick="window.location.href='{{ url_for('cart', user_email=user_email) }}'">Cart</button>-->
+<!--<button class="add-to-cart" onclick="window.location.href='{{ url_for('login', user_email=user_email) }}'">log out</button>-->
 
 </body>
 <script>

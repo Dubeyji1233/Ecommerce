@@ -6,25 +6,26 @@
     <title>User Products</title>
     <script src="https://code.jquery.com/jquery-3.6.4.min.js"></script>
     <style>
+
         .previously-viewed {
-            margin-top: 50px;
+          margin-top: 50px;
         }
 
         .previously-viewed h2 {
-            font-size: 24px;
-            font-weight: bold;
-            margin-bottom: 30px;
+          font-size: 24px;
+          font-weight: bold;
+          margin-bottom: 30px;
         }
 
         .previously-viewed ul {
-            list-style: none;
-            display: flex;
-            justify-content: space-between;
-            flex-wrap: wrap;
+          list-style: none;
+          display: flex;
+          justify-content: space-between;
+          flex-wrap: wrap;
         }
 
         .product-card {
-            width: 50%;
+            width: 60%;
             background-color: #fff;
             box-shadow: 0 4px 8px 0 rgba(0, 0, 0, 0.2);
             padding: 20px;
@@ -124,6 +125,7 @@
 </head>
 
 <body>
+    {% include 'header.html' %}
     <div class="previously-viewed">
         <img  class="logo" src="https://www.gartner.com/imagesrv/peer-insights/vendors/logos/orient-techonologies.png">
         <ul>
@@ -182,8 +184,7 @@
             </li>
         </ul>
     </div>
-<button class="add-to-cart" onclick="window.location.href='{{ url_for('cart', user_email=user_email) }}'">Cart</button>
-<button class="add-to-cart" onclick="window.location.href='{{ url_for('login', user_email=user_email) }}'">log out</button>
+    {% include 'footer.html' %}
 <script>
     jQuery(document).ready(($) => {
         $('.quantity').on('click', '.plus', function(e) {
