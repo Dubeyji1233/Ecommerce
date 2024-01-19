@@ -12,7 +12,7 @@
 
     .header {
       overflow: hidden;
-      background-color: #f1f1f1;
+      background-color: white;
       padding: 20px 10px;
     }
 
@@ -45,6 +45,9 @@
     .header-right {
       float: right;
     }
+    a+a {
+      margin-left: 10px;
+    }
 
     @media screen and (max-width: 500px) {
       .header a {
@@ -56,6 +59,10 @@
       .header-right {
         float: none;
       }
+      #buyNowButton:hover {
+            background-color: #1565c0;
+        }
+
 
     }
 </style>
@@ -63,7 +70,7 @@
 <body>
 
 <div class="header">
-  <img class="logo" src="https://www.gartner.com/imagesrv/peer-insights/vendors/logos/orient-techonologies.png" height="50px">
+  <img onclick="window.location.href='{{ url_for('index', user_email=user_email) }}'" class="logo" src="https://www.gartner.com/imagesrv/peer-insights/vendors/logos/orient-techonologies.png" height="50px">
 
   <div class="header-right">
 

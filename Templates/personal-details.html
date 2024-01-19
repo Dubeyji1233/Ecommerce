@@ -5,64 +5,227 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Order Details</title>
     <style>
+       /* Overall Page Structure */
+        body {
+          font-family: sans-serif;
+          margin: 0;
+          background-color: #f2f2f2;
+        }
+
+        .modal-content {
+          background-color: #fff;
+          border-radius: 5px;
+          padding: 20px;
+          max-width: 1500px;
+          margin: 20px;
+          margin-top=50px
+        }
+
+        /* Header and Footer (Assuming they're included) */
+        header, footer {
+          /* Adjust styles as needed to match your design */
+        }
+
+        /* Input Fields and Labels */
+        .additional-fields label {
+          display: block;
+          margin-bottom: 5px;
+        }
+
+        .additional-fields input[type="text"],
+        .additional-fields input[type="email"] {
+          width: 100%;
+          padding: 10px;
+          border: 1px solid #ccc;
+          border-radius: 5px;
+          margin-bottom: 10px;
+        }
+
+        /* Error Message */
+        .error-message {
+          color: red;
+          font-weight: bold;
+          margin-top: 10px;
+        }
+
+        /* Modal Container */
+        .modal-container {
+          display: none; /* Initially hidden */
+          position: fixed;
+          top: 50%;
+          left: 50%;
+          transform: translate(-50%, -50%);
+          background-color: rgba(0, 0, 0, 0.5);
+          padding: 20px;
+        }
+
+        .modal-content-terms {
+          background-color: #fff;
+          border-radius: 5px;
+          padding: 20px;
+        }
+
+        /* Terms and Conditions */
+        .modal-content-terms ol {
+          list-style-type: decimal;
+          margin-left: 20px;
+        }
+
+        /* Accept Terms Checkbox */
+        .accept-terms input[type="checkbox"] {
+          margin-right: 10px;
+        }
+
+        /* Center the button */
+        .accept-terms button {
+            display: block;
+            margin: 0 auto;
+        }
+
+        /* Optionally, adjust button styles */
+        .accept-terms button {
+            background-color: #4CAF50;
+            color: white;
+            padding: 10px 20px;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+        }
+
+        /* Button Styles */
+        button {
+           background-color: #4CAF50;
+            color: white;
+            padding: 10px 20px;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+            margin: 0 auto;
+        }
+        .pages {
+            text-align: center;
+            background-color: #f2f2f2;
+        }
+
+        .pages a {
+
+            margin: 0 10px;
+            text-decoration: none;
+            padding: 10px;
+            color: #333;
+            border-radius: 4px;
+            transition: background-color 0.3s;
+            display: inline-block;
+        }
+
+        .pages a:hover {
+            background-color: dodgerblue;
+            color: white;
+        }
+        .name{
+
+        }
 
     </style>
 </head>
 <body>
-<div>
-{% include 'header.html' %}
-    <div class="modal-content">
-        <h2>Order Details</h2>
+    {% include 'header.html' %}
+        <div class="modal-content">
+            <div class="pages">
+                <a href="{{ url_for('cart', user_email=user_email) }}">Shopping Cart</a>
+                <a href="{{ url_for('personal_details', user_email=user_email) }}">Checkout</a>
+                <a href="{{ url_for('cart', user_email=user_email) }}">Order Status</a>
+            </div>
+            <h2>Order Details</h2>
 
-        <div class="additional-fields">
-            <label for="name">Full Name:</label>
-            <input type="text" id="name" name="name" required>
+            <div class="additional-fields">
+                <div class="name" >
+                    <label for="First">First Name *</label>
+                    <input type="text" id="First" name="First" required>
 
-            <label for="phone">Phone Number:</label>
-            <input type="text" id="phone" name="phone" required>
+                    <label for="Last">Last Name *</label>
+                    <input type="text" id="Last" name="Last" required>
 
-            <label for="address">Delivery Address:</label>
-            <input type="text" id="address" name="address" required>
+                    <label for="phone">Phone Number *</label>
+                    <input type="text" id="phone" name="phone" required>
+                </div>
 
-            <label for="email">Email Address:</label>
-            <input type="email" id="email" name="email" required>
+                <label for="country">Country *</label>
+                <input type="text" id="country" name="country" required>
+
+                <label for="state">State *</label>
+                <input type="text" id="state" name="state" required>
+
+                <label for="city">City *</label>
+                <input type="text" id="city" name="city" required>
+
+                <label for="pincode">Pin Code *</label>
+                <input type="text" id="pincode" name="pincode" required>
+
+                <label for="address">Delivery Address *</label>
+                <input type="text" id="address" name="address" required>
+
+                <label for="email">Email Address *</label>
+                <input type="email" id="email" name="email" required>
+            </div>
+
+            <button onclick="validateAndOrder()">Done</button>
+            <p class="error-message" id="errorMessage"></p>
         </div>
 
-        <button onclick="validateAndOrder()">Done</button>
-        <p class="error-message" id="errorMessage"></p>
-    </div>
-    <div id="myModal" class="modal-container">
-        <div class="modal-content-terms">
-            <h2>Terms and Conditions</h2>
-            <ol>
-                <li><strong>Product Description:</strong> Ensure that you have read and understood the product description.</li>
-                <li><strong>Privacy Policy:</strong> We respect your privacy. Read our privacy policy to understand how we handle your data.</li>
-            </ol>
-            <div class="accept-terms">
-                <input type="checkbox" id="acceptTerms" required>
-                <label for="acceptTerms">I agree to the terms and conditions</label>
-                <button onclick="closeModalAndProceed()">OK</button>
+        <div id="myModal" class="modal-container">
+            <div class="modal-content-terms">
+                <h2>Terms and Conditions</h2>
+                <ol>
+                    <li><strong>Product Description:</strong> Ensure that you have read and understood the product description.</li>
+                    <li><strong>Privacy Policy:</strong> We respect your privacy. Read our privacy policy to understand how we handle your data.</li>
+                </ol>
+                <div class="accept-terms">
+                    <input type="checkbox" id="acceptTerms" required>
+                    <label for="acceptTerms">I agree to the terms and conditions</label>
+                    <br>
+                    <button onclick="closeModalAndProceed()">OK</button>
+                </div>
             </div>
         </div>
-    </div>
-
     {% include 'footer.html' %}
-</div>
     <script>
         function validateAndOrder() {
-            var name = document.getElementById('name').value.trim();
+            var First = document.getElementById('First').value.trim();
+            var Last = document.getElementById('Last').value.trim();
             var phone = document.getElementById('phone').value.trim();
             var address = document.getElementById('address').value.trim();
+            var country = document.getElementById('country').value.trim();
+            var state = document.getElementById('state').value.trim();
+            var city = document.getElementById('city').value.trim();
+            var pincode = document.getElementById('pincode').value.trim();
             var email = document.getElementById('email').value.trim();
 
             var errorMessage = "";
 
-                        if (name === "") {
-                errorMessage += "Please enter your Full Name.\n";
+            if (First === "") {
+                errorMessage += "Please enter your First Name.\n";
             }
-
+            if (Last === "") {
+                errorMessage += "Please enter your Last Name.\n";
+            }
             if (phone === "") {
                 errorMessage += "Please enter your Phone Number.\n";
+            }
+            if (address === "") {
+                errorMessage += "Please enter your Delivery Address.\n";
+            }
+            if (country === "") {
+                errorMessage += "Please enter your Country.\n";
+            }
+            if (state === "") {
+                errorMessage += "Please enter your State.\n";
+            }
+            if (city === "") {
+                errorMessage += "Please enter your City.\n";
+            }
+            if (pincode === "") {
+                errorMessage += "Please enter your Pincode.\n";
             }
 
             if (address === "") {

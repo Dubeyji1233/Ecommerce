@@ -306,54 +306,160 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Shopping Cart</title>
     <script src="https://code.jquery.com/jquery-3.6.4.min.js"></script>
-    <style>
+   <style>
+        body {
+            margin: 0;
+            font-family: Arial, sans-serif;
+            background-color: #f2f2f2;
+        }
 
+        #container {
+            margin: 20px;
+            padding: 20px;
+            background-color: #fff;
+            border-radius: 8px;
+            box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+        }
+
+        .pages {
+            text-align: center;
+            background-color: #f2f2f2;
+        }
+
+        .pages a {
+
+            margin: 0 10px;
+            text-decoration: none;
+            padding: 10px;
+            color: #333;
+            border-radius: 4px;
+            transition: background-color 0.3s;
+            display: inline-block;
+        }
+
+        .pages a:hover {
+            background-color: dodgerblue;
+            color: white;
+        }
+
+        h2 {
+            margin-top: 20px;
+            color: #333;
+        }
+
+        ul {
+            list-style: none;
+            padding: 0;
+        }
+
+        .lii {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            border-bottom: 1px solid #ddd;
+            padding: 10px 0;
+            margin: 10px 0;
+        }
+
+        .images {
+            max-width: 100px;
+            margin-right: 20px;
+        }
+
+        p {
+            margin: 0;
+        }
+
+        form {
+            display: flex;
+            align-items: center;
+        }
+
+        .quantity {
+            display: flex;
+            align-items: center;
+        }
+
+        .quantity input {
+            width: 30px;
+            text-align: center;
+            margin: 0 5px;
+        }
+
+        button {
+            background-color: #f44336;
+            color: white;
+            padding: 8px;
+            border: none;
+            border-radius: 4px;
+            cursor: pointer;
+        }
+
+        button:hover {
+            background-color: #d32f2f;
+        }
+
+        #buyNowButton {
+            background-color: dodgerblue;
+            color: white;
+            padding: 10px;
+            text-decoration: none;
+            border-radius: 4px;
+            display: inline-block;
+            margin-top: 20px;
+        }
+
+        a {
+            text-decoration: none;
+            color: #333;
+        }
+
+        #cartTotalQuantity {
+            font-weight: bold;
+            margin-left: 5px;
+        }
     </style>
 </head>
 <body>
     {% include 'header.html' %}
     <div id="container">
-        <h1>Shopping Cart</h1>
+        <div class="pages">
+            <a href="{{ url_for('cart', user_email=user_email) }}">Shopping Cart</a>
+            <a href="{{ url_for('personal_details', user_email=user_email) }}">Checkout</a>
+            <a href="{{ url_for('cart', user_email=user_email) }}">Order Status</a>
+        </div>
         <h2>User: {{ user_email }}</h2>
 
         {% for product in user_cart %}
-
-        <ul>
-            <li>
-                <img src="{{ product['image'] }}" alt="{{ product['name'] }}">
-                <p><strong>{{ product['name'] }}</strong></p>
-                <p>{{ product['description'] }}</p>
-                <p>{{ product['price'] }}</p>
-                <form method="post" action="{{ url_for('remove_from_cart') }}">
-                    <input type="hidden" name="user_email" value="{{ user_email }}">
-                    <input type="hidden" name="product_name" value="{{ product['name'] }}">
-
-                    <ul>
+            <ul>
+                <li class="lii">
+                    <img class="images" src="{{ product['image'] }}" alt="{{ product['name'] }}">
+                    <div>
+                        <p><strong>{{ product['name'] }}</strong></p>
+                        <p>{{ product['description'] }}</p>
+                        <p>{{ product['price'] }}</p>
+                    </div>
+                    <form method="post" action="{{ url_for('remove_from_cart') }}">
+                        <input type="hidden" name="user_email" value="{{ user_email }}">
+                        <input type="hidden" name="product_name" value="{{ product['name'] }}">
                         <div class="quantity">
                             <input type='button' value='-' class='qtyminus minus' field='quantity' />
                             <input type='text' name='quantity' value="{{ product['quantity'] }}" class='qty' />
                             <input type='button' value='+' class='qtyplus plus' field='quantity' />
                         </div>
-                    </ul>
-
-
-                    <button type="submit">Remove</button>
-                </form>
-            </li>
-            <br>
-
-        </ul>
+                        <button type="submit">Remove</button>
+                    </form>
+                </li>
+            </ul>
         {% endfor %}
 
         <p><strong>Grand Total:</strong> ₹ {{ final_total }}</p>
         <!-- Add this element where you want to display the total quantity -->
         <p><strong>Total Quantity in Cart:</strong> <span id="cartTotalQuantity">{{ total_quantity }}</span></p>
 
-
         <a id="buyNowButton" onclick="checkCartAndRedirect()">Buy Now</a>
 
         <a href="{{ url_for('index', user_email=user_email) }}">Continue Shopping</a>
-
     </div>
     {% include 'footer.html' %}
     <script>
@@ -366,41 +472,43 @@
                 alert('Your cart is empty. Please continue shopping.');
             }
         }
-        jQuery(document).ready(($) => {
-        $('.quantity').on('click', '.plus', function(e) {
-            let $input = $(this).prev('input.qty');
-            let val = parseInt($input.val());
-            $input.val(val + 1).change();
-        });
 
-        $('.quantity').on('click', '.minus', function(e) {
-            let $input = $(this).next('input.qty');
-            var val = parseInt($input.val());
-            if (val > 0) {
-                $input.val(val - 1).change();
+        jQuery(document).ready(($) => {
+            $('.quantity').on('click', '.plus', function(e) {
+                let $input = $(this).prev('input.qty');
+                let val = parseInt($input.val());
+                $input.val(val + 1).change();
+            });
+
+            $('.quantity').on('click', '.minus', function(e) {
+                let $input = $(this).next('input.qty');
+                var val = parseInt($input.val());
+                if (val > 0) {
+                    $input.val(val - 1).change();
+                }
+            });
+
+            // Change event handler for the quantity input
+            $('.quantity').on('change', '.qty', function() {
+                updateCartTotal();
+            });
+
+            // Initial update of cart total on page load
+            updateCartTotal();
+
+            function updateCartTotal() {
+                let totalQuantity = 0;
+
+                // Iterate through all quantity inputs and sum up the values
+                $('.quantity .qty').each(function() {
+                    totalQuantity += parseInt($(this).val());
+                });
+
+                // Display the total quantity in your cart
+                $('#cartTotalQuantity').text(totalQuantity);
             }
         });
 
-        // Change event handler for the quantity input
-        $('.quantity').on('change', '.qty', function() {
-            updateCartTotal();
-        });
-
-        // Initial update of cart total on page load
-        updateCartTotal();
-
-        function updateCartTotal() {
-            let totalQuantity = 0;
-
-            // Iterate through all quantity inputs and sum up the values
-            $('.quantity .qty').each(function() {
-                totalQuantity += parseInt($(this).val());
-            });
-
-            // Display the total quantity in your cart
-            $('#cartTotalQuantity').text(totalQuantity);
-        }
-    });
     </script>
 </body>
 
