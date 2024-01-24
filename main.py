@@ -3,7 +3,8 @@ from jinja2 import Environment
 app = Flask(__name__)
 
 # Mock product data for different domains
-products = {'orientindia.net': 'Orient India Products', 'amazon.in': 'Amazon India Products'}
+products = {'orientindia.net': 'Orient India Products', 'amazon.in': 'Amazon India Products',
+            'apple.in': 'Apple India Products', 'apple.com': 'Apple Products'}
 app.jinja_env.globals.update({'float': float})  # Make float available in templates
 # Initialize an empty cart for each user
 carts = {}
@@ -19,7 +20,7 @@ def login():
             carts[user_email] = []
             return redirect(url_for('index', user_email=user_email))
         else:
-            return render_template('login.html', error='Access Denied: Unauthorized domain please Connect to Customer Care')
+            return render_template('login.html', error='Access Denied: Unauthorized domain please connect to customer care')
 
     return render_template('login.html', error=None)
 
@@ -34,8 +35,21 @@ def index():
             return render_template('orient.html', user_products=user_products, user_email=user_email)
         elif domain == 'amazon.in':
             return render_template('amazon.html', user_products=user_products, user_email=user_email)
+        elif domain == 'apple.in':
+            return render_template('apple.html', user_products=user_products, user_email=user_email)
+        elif domain == 'apple.com':
+            return render_template('apple.html', user_products=user_products, user_email=user_email)
+
     else:
         return "Access Denied: Unauthorized domain"
+
+@app.route('/mac')
+def mac():
+    return render_template('mac.html')
+
+@app.route('/iphone')
+def iphone():
+    return render_template('iphone.html')
 
 
 @app.route('/cart')

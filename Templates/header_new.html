@@ -1,0 +1,125 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta name="viewport" content="width=device-width, initial-scale=1">
+
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" integrity="sha512-2d4SdYYCBiqJCt4ZBc8e+5SN9TtkssdS5Ow5HvFlG7OorxC6Md5bAa8eaI2F2j6pPeCvFdqv4ubfUzWlPtpwZg==" crossorigin="anonymous" referrerpolicy="no-referrer" />
+<style>
+    * {
+        box-sizing: border-box;
+    }
+
+    body {
+        margin: 0;
+        font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+        background-color: #f8f8f8;
+    }
+
+    .header {
+        overflow: hidden;
+        background-color: #a0a0a0; /* Greyish background color */
+        padding: 20px 10px;
+        box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+        position: fixed;
+        width: 100%;
+        z-index: 1000;
+    }
+
+    .logo {
+        cursor: pointer;
+        transition: transform 0.3s ease-in-out;
+    }
+
+    .logo:hover {
+        transform: scale(1.1);
+    }
+
+    .header a {
+        float: left;
+        color: #fff; /* White text color */
+        text-align: center;
+        padding: 12px;
+        text-decoration: none;
+        font-size: 18px;
+        line-height: 25px;
+        border-radius: 4px;
+        transition: background-color 0.3s, color 0.3s;
+    }
+
+    .header a.logo {
+        font-size: 25px;
+        font-weight: bold;
+        color: #fff; /* White text color */
+    }
+
+    .header a:hover {
+        background-color: #808080; /* Darker grey on hover */
+        color: #fff; /* White text color on hover */
+    }
+
+    .header a.active {
+        background-color: #606060; /* Darker grey for active link */
+        color: #fff; /* White text color for active link */
+    }
+
+    .header-right {
+        float: right;
+    }
+
+    a+a {
+        margin-left: 10px;
+    }
+
+    @media screen and (max-width: 500px) {
+        .header a {
+            float: none;
+            display: block;
+            text-align: left;
+        }
+
+        .header-right {
+            float: none;
+        }
+
+        .logo {
+            margin-left: 100%;
+            transform: translateX(-50%);
+            height: 80px; /* Increase the height to your desired value for the logo */
+            width: 100px; /* Adjust the width as needed */
+        }
+
+        .header a.cart::before {
+            content: '\f07a'; /* Font Awesome cart icon */
+            font-family: 'Font Awesome 6 Free';
+            position: absolute;
+            left: 10px;
+            font-size: 20px;
+        }
+
+        .header a.logout::before {
+            content: '\f2f5'; /* Font Awesome logout icon */
+            font-family: 'Font Awesome 6 Free';
+            position: absolute;
+            left: 10px;
+            font-size: 20px;
+        }
+    }
+
+</style>
+</head>
+<body>
+
+<div class="header">
+    <img onclick="window.location.href='{{ url_for('index', user_email=user_email) }}'" class="logo" src="{{ url_for('static', filename='images/Company Logo.png') }}" height="40px">
+
+    <div class="header-right">
+        <a href="tel:+912242928888">Contact</a>
+        <a href="https://orientindia.in/">About Us</a>
+        <a class="active cart" onclick="window.location.href='{{ url_for('cart', user_email=user_email) }}'">Cart</a>
+        <a class="active logout" onclick="window.location.href='{{ url_for('login', user_email=user_email) }}'">Log out</a>
+    </div>
+</div>
+
+
+</body>
+</html>

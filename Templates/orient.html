@@ -34,6 +34,7 @@
         .product-card img {
           width: 100%;
           margin-bottom: 20px;
+          box-shadow: 0 4px 8px 0 rgba(0, 0, 0, 0.2);
         }
 
         .product-card h3 {
@@ -92,6 +93,20 @@
           cursor: pointer;
         }
 
+        .buy-now-button {
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            background-color: #4CAF50;
+            color: white;
+            padding: 10px 20px;
+            font-size: 18px;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+        }
+
         @media (max-width: 768px) {
           .product-card {
             width: 45%;
@@ -128,6 +143,8 @@
 
 <!--      <h1>Welcome to Orient</h1>-->
       <ul>
+
+
         <li>
           <div class="product-card">
             <img src="{{ url_for('static', filename='images/dell-laptop.jpg') }}" alt="Dell 15 Laptop">
