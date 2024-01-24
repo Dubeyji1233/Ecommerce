@@ -86,12 +86,6 @@
             height: auto%;
             border-bottom: 1px solid #ddd;
         }
-        footer {
-            background-color: #1565c0; /* Dark blue footer background */
-            color: #fff;
-            padding: 20px;
-            text-align: center;
-
         #videoContainer {
             position: relative;
             width: 100%;
@@ -109,7 +103,7 @@
     </style>
 </head>
 <body>
-{% include 'header_new.html' %}
+{% include 'header.html' %}
 <section>
     <section>
         <div class="iphone-content">
@@ -134,7 +128,7 @@
 
      <!-- Product Category: Mac -->
     <div class="product-card">
-        <a href="{{ url_for('mac') }}">
+        <a href="{{ url_for('mac', user_email=user_email) }}">
             <img src="https://blog.academyart.edu/wp-content/uploads/2022/01/adv-jason-sperling-apple-macbook-laptop-shadow-hero.jpg" alt="Mac Image">
             <h3>Mac</h3>
         </a>
@@ -142,7 +136,8 @@
 
     <!-- Product Category: iPhone -->
     <div class="product-card">
-        <a href="{{ url_for('iphone') }}">
+        <a href="{{ url_for('iphone', user_email=user_email) }}">
+
         <img src="https://images.macrumors.com/article-new/2023/09/iPhone-15-General-Feature-Black.jpg" alt="iPhone Image">
         <h3>iPhone</h3>
         </a>

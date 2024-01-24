@@ -2,6 +2,8 @@
 <html>
 <head>
 <meta name="viewport" content="width=device-width, initial-scale=1">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" integrity="sha512-2d4SdYYCBiqJCt4ZBc8e+5SN9TtkssdS5Ow5HvFlG7OorxC6Md5bAa8eaI2F2j6pPeCvFdqv4ubfUzWlPtpwZg==" crossorigin="anonymous" referrerpolicy="no-referrer" />
+
 <style>
     * {box-sizing: border-box;}
 
@@ -48,6 +50,15 @@
     a+a {
       margin-left: 10px;
     }
+    .logo-image {
+        height: 50px;
+        transition: transform 0.3s ease-in-out;
+    }
+
+    /* Add a scale transformation on hover */
+    .logo-image:hover {
+        transform: scale(1.1);
+    }
 
     @media screen and (max-width: 500px) {
       .header a {
@@ -62,20 +73,18 @@
       #buyNowButton:hover {
             background-color: #1565c0;
         }
-
-
     }
 </style>
 </head>
 <body>
 
 <div class="header">
-  <img onclick="window.location.href='{{ url_for('index', user_email=user_email) }}'" class="logo" src="https://www.gartner.com/imagesrv/peer-insights/vendors/logos/orient-techonologies.png" height="50px">
+  <img onclick="window.location.href='{{ url_for('index', user_email=user_email) }}'" src="{{ url_for('static', filename='images/Company Logo.png')}}" class="logo-image">
 
   <div class="header-right">
 
     <a href="tel:+912242928888">Contact</a>
-    <a href="https://orientindia.in/" >About Us</a>
+    <a href="https://orientindia.in/">About Us</a>
     <a class="active" onclick="window.location.href='{{ url_for('cart', user_email=user_email) }}'">Cart</a>
     <a class="active" onclick="window.location.href='{{ url_for('login', user_email=user_email) }}'">Log out</a>
   </div>

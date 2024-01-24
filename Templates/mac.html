@@ -30,12 +30,14 @@
 </head>
 <body>
 
-{% include 'header_new.html' %}
+{% include 'header.html' %}
 
         <div id="videoContainer">
-            <video autoplay muted loop id="backgroundVideo">
-                <source src="{{ url_for('static', filename='images/mac.mp4') }}" type="video/mp4">
-            </video>
+             <form method="post" action="{{ url_for('index') }}">
+                <video autoplay muted loop id="backgroundVideo">
+                    <source src="{{ url_for('static', filename='images/mac.mp4') }}" type="video/mp4">
+                </video>
+             </form>
         </div>
 
 <section>

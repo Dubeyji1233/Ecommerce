@@ -4,25 +4,108 @@
     <meta charset="UTF-8">
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <script src="https://code.jquery.com/jquery-3.6.4.min.js"></script>
     <title>iphone</title>
     <style>
-        section {
+        .product {
             display: flex;
             flex-wrap: wrap;
-
-            padding: 100px ; /* Adjusted padding for content */
+            justify-content: space-around; /* Adjusted justify-content for spacing */
+            padding: 100px; /* Adjusted padding for content */
             position: relative;
         }
+
         #videoContainer {
             width: 100%;
-            height: 100vh; /* Full viewport height */
+<!--            height: 100vh; /* Full viewport height */-->
             overflow: hidden;
         }
 
         video {
             width: 100%;
             height: 100%;
+        }
 
+        .product-card {
+            width: 30%; /* Adjusted width for responsiveness */
+            background-color: #fff;
+            box-shadow: 0 4px 8px 0 rgba(0, 0, 0, 0.2);
+            padding: 20px;
+            margin-bottom: 30px;
+            display: flex;
+            flex-wrap: wrap;
+            justify-content: space-around;
+            box-sizing: border-box; /* Added box-sizing property */
+
+        }
+
+        .product-card img {
+            width: 100%;
+            margin-bottom: 20px;
+            box-shadow: 0 4px 8px 0 rgba(0, 0, 0, 0.2);
+        }
+
+        .product-card h3 {
+            font-size: 18px;
+            font-weight: bold;
+            margin-bottom: 10px;
+        }
+
+        .product-card p {
+            font-size: 14px;
+            margin-bottom: 20px;
+        }
+
+        .rating {
+            display: flex;
+            align-items: center;
+            margin-bottom: 10px;
+        }
+
+        .rating span {
+            font-size: 14px;
+            color: #ffa500;
+            margin-left: 5px;
+        }
+
+        .price {
+            display: flex;
+            align-items: center;
+            margin-bottom: 20px;
+        }
+
+        .price .discount {
+            font-size: 14px;
+            color: #f00;
+            margin-right: 10px;
+        }
+
+        .price .regular {
+            font-size: 14px;
+            text-decoration: line-through;
+            color: #999;
+            margin-right: 10px;
+        }
+
+        .price .sale {
+            font-size: 16px;
+            font-weight: bold;
+            color: #f00;
+        }
+
+        .add-to-cart {
+            background-color: #f00;
+            color: #fff;
+            border: none;
+            padding: 10px 20px;
+            cursor: pointer;
+        }
+        .product-card img {
+            width: 100%;
+            height: 200px; /* Set a fixed height for the product images */
+            object-fit: cover; /* Maintain aspect ratio and cover the entire space */
+            margin-bottom: 20px;
+            box-shadow: 0 4px 8px 0 rgba(0, 0, 0, 0.2);
         }
 
     </style>
@@ -30,17 +113,130 @@
 </head>
 <body>
 
-{% include 'header_new.html' %}
+{% include 'header.html' %}
         <div id="videoContainer">
-            <video autoplay muted loop id="backgroundVideo">
-                <source src="{{ url_for('static', filename='images/iphone15pro.mp4') }}" type="video/mp4">
-            </video>
+            <form method="post" action="{{ url_for('login') }}">
+                <video autoplay muted loop id="backgroundVideo">
+                    <source src="{{ url_for('static', filename='images/iphone15pro.mp4') }}" type="video/mp4">
+                </video>
+            </form>
         </div>
+        <div class="product">
+            <div class="product-card">
+                <img src="https://www.apple.com/newsroom/images/2023/09/apple-unveils-iphone-15-pro-and-iphone-15-pro-max/article/Apple-iPhone-15-Pro-lineup-hero-230912_Full-Bleed-Image.jpg.large.jpg" alt="iPhone 15">
+                <h3>iPhone 15</h3>
+                <p>Amazing features of iPhone 15</p>
+                <div class="price">
+                    <span class="discount">-10%</span>
+                    <span class="regular">₹ 89,999.00</span>
+                    <span class="sale">₹ 80,999.00</span>
+                </div>
+                <form method="post" action="{{ url_for('add_to_cart') }}">
+                    <input type="hidden" name="user_email" value="{{ user_email }}">
+                    <input type="hidden" name="product_name" value="iPhone 15">
+                    <input type="hidden" name="product_image" value="{{ url_for('static', filename='images/iphone15.jpg') }}">
+                    <input type="hidden" name="product_description" value="Amazing features of iPhone 15">
+                    <input type="hidden" name="product_price" value="₹ 80,999.00">
+                    <div class="quantity">
+                        <button type="submit" class="add-to-cart">Add to Cart</button>
+                        <input type='button' value='-' class='qtyminus minus' field='quantity' />
+                        <input type='text' name='quantity' value='1' class='qty' />
+                        <input type='button' value='+' class='qtyplus plus' field='quantity' />
+                    </div>
+                </form>
+            </div>
+
+            <div class="product-card">
+                <img src="https://assets.thehansindia.com/h-upload/2022/06/24/1299390-iphone-14.webp" alt="iPhone 14">
+                <h3>iPhone 14</h3>
+                <p>Exciting features of iPhone 14</p>
+                <div class="price">
+                    <span class="discount">-8%</span>
+                    <span class="regular">₹ 74,999.00</span>
+                    <span class="sale">₹ 68,999.00</span>
+                </div>
+                <form method="post" action="{{ url_for('add_to_cart') }}">
+                    <input type="hidden" name="user_email" value="{{ user_email }}">
+                    <input type="hidden" name="product_name" value="iPhone 14">
+                    <input type="hidden" name="product_image" value="{{ url_for('static', filename='images/iphone14.jpg') }}">
+                    <input type="hidden" name="product_description" value="Exciting features of iPhone 14">
+                    <input type="hidden" name="product_price" value="₹ 68,999.00">
+                    <div class="quantity">
+                        <button type="submit" class="add-to-cart">Add to Cart</button>
+                        <input type='button' value='-' class='qtyminus minus' field='quantity' />
+                        <input type='text' name='quantity' value='1' class='qty' />
+                        <input type='button' value='+' class='qtyplus plus' field='quantity' />
+                    </div>
+                </form>
+            </div>
+
+            <div class="product-card">
+                <img src="https://images.indianexpress.com/2021/08/iPhone-12-series1.jpg?w=640" alt="iPhone 13">
+                <h3>iPhone 13</h3>
+                <p>Great features of iPhone 13</p>
+                <div class="price">
+                    <span class="discount">-12%</span>
+                    <span class="regular">₹ 69,999.00</span>
+                    <span class="sale">₹ 61,599.00</span>
+                </div>
+                <form method="post" action="{{ url_for('add_to_cart') }}">
+                    <input type="hidden" name="user_email" value="{{ user_email }}">
+                    <input type="hidden" name="product_name" value="iPhone 13">
+                    <input type="hidden" name="product_image" value="{{ url_for('static', filename='images/iphone13.jpg') }}">
+                    <input type="hidden" name="product_description" value="Great features of iPhone 13">
+                    <input type="hidden" name="product_price" value="₹ 61,599.00">
+                    <div class="quantity">
+                        <button type="submit" class="add-to-cart">Add to Cart</button>
+                        <input type='button' value='-' class='qtyminus minus' field='quantity' />
+                        <input type='text' name='quantity' value='1' class='qty' />
+                        <input type='button' value='+' class='qtyplus plus' field='quantity' />
+                    </div>
+                </form>
+            </div>
+        </div>
+
 
 <section>
 
 
 </section>
+<script>
+    jQuery(document).ready(($) => {
+        $('.quantity').on('click', '.plus', function(e) {
+            let $input = $(this).prev('input.qty');
+            let val = parseInt($input.val());
+            $input.val(val + 1).change();
+        });
+
+        $('.quantity').on('click', '.minus', function(e) {
+            let $input = $(this).next('input.qty');
+            var val = parseInt($input.val());
+            if (val > 0) {
+                $input.val(val - 1).change();
+            }
+        });
+
+        // Change event handler for the quantity input
+        $('.quantity').on('change', '.qty', function() {
+            updateCartTotal();
+        });
+
+        // Initial update of cart total on page load
+        updateCartTotal();
+
+        function updateCartTotal() {
+            let totalQuantity = 0;
+
+            // Iterate through all quantity inputs and sum up the values
+            $('.quantity .qty').each(function() {
+                totalQuantity += parseInt($(this).val());
+            });
+
+            // Display the total quantity in your cart
+            $('#cartTotalQuantity').text(totalQuantity);
+        }
+    });
+</script>
 
 {% include 'footer.html' %}
 </body>

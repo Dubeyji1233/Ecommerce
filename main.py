@@ -45,11 +45,20 @@ def index():
 
 @app.route('/mac')
 def mac():
-    return render_template('mac.html')
+    user_email = request.args.get('user_email', '')
+    domain = user_email.split('@')[-1]
+
+    return render_template('mac.html', domain=domain, user_email=user_email)
+
+
+
 
 @app.route('/iphone')
 def iphone():
-    return render_template('iphone.html')
+    user_email = request.args.get('user_email', '')
+    domain = user_email.split('@')[-1]
+
+    return render_template('iphone.html', domain=domain,  user_email=user_email)
 
 
 @app.route('/cart')
