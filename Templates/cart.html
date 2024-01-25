@@ -474,31 +474,41 @@
         }
 
         jQuery(document).ready(($) => {
-            function updateCartTotal() {
-                let totalQuantity = 0;
-                let grandTotal = 0;
+            $('.quantity').on('click', '.plus', function(e) {
+                let $input = $(this).prev('input.qty');
+                let val = parseInt($input.val());
+                $input.val(val + 1).change();
+            });
 
-                // Iterate through all quantity inputs and sum up the values
-                $('.quantity .qty').each(function () {
-                    let quantity = parseInt($(this).val());
-                    let price = parseFloat($(this).closest('.lii').find('.price').text().replace("₹ ", "").replace(",", ""));
-                    totalQuantity += quantity;
-                    grandTotal += quantity * price;
-                });
-
-                // Display the total quantity and grand total in your cart
-                $('#cartTotalQuantity').text(totalQuantity);
-                $('#grandTotal').text('₹ ' + grandTotal.toFixed(2));
-            }
+            $('.quantity').on('click', '.minus', function(e) {
+                let $input = $(this).next('input.qty');
+                var val = parseInt($input.val());
+                if (val > 0) {
+                    $input.val(val - 1).change();
+                }
+            });
 
             // Change event handler for the quantity input
-            $('.quantity').on('change', '.qty', function () {
+            $('.quantity').on('change', '.qty', function() {
                 updateCartTotal();
             });
 
             // Initial update of cart total on page load
             updateCartTotal();
+
+            function updateCartTotal() {
+                let totalQuantity = 0;
+
+                // Iterate through all quantity inputs and sum up the values
+                $('.quantity .qty').each(function() {
+                    totalQuantity += parseInt($(this).val());
+                });
+
+                // Display the total quantity in your cart
+                $('#cartTotalQuantity').text(totalQuantity);
+            }
         });
+
     </script>
 </body>
 
