@@ -132,8 +132,8 @@
     {% include 'header.html' %}
         <div class="modal-content">
             <div class="pages">
-                <a href="{{ url_for('cart', user_email=user_email) }}">Shopping Cart</a>
-                <a href="{{ url_for('personal_details', user_email=user_email) }}">Checkout</a>
+<!--                <a href="{{ url_for('cart', user_email=user_email) }}">Shopping Cart</a>-->
+<!--                <a href="{{ url_for('personal_details', user_email=user_email) }}">Checkout</a>-->
 <!--                <a href="{{ url_for('cart', user_email=user_email) }}">Order Status</a>-->
             </div>
             <h2>Order Details</h2>
@@ -185,6 +185,7 @@
                     <label for="acceptTerms">I agree to the terms and conditions</label>
                     <br>
                     <button onclick="closeModalAndProceed()">OK</button>
+                    <button onclick="closeModalAndProceed()">Cancel</button>
                 </div>
             </div>
         </div>

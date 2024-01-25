@@ -145,7 +145,7 @@
                     <span class="regular">₹ 89,999.00</span>
                     <span class="sale">₹ 80,999.00</span>
                 </div>
-                <form method="post" action="{{ url_for('add_to_cart2') }}" onsubmit="refreshPage()">
+                <form method="post" action="{{ url_for('add_to_cart2') }}">
 
                     <input type="hidden" name="user_email" value="{{ user_email }}">
                     <input type="hidden" name="product_name" value="iPhone 15">
@@ -223,32 +223,7 @@
             let $input = $(this).prev('input.qty');
             let val = parseInt($input.val());
             $input.val(val + 1).change();
-        });
-<!--        $(document).ready(function () {-->
-<!--            $('.add-to-cart').click(function (e) {-->
-<!--                e.preventDefault(); // Prevent the default form submission-->
-
-<!--                // Serialize the form data-->
-<!--                var formData = $('form').serialize();-->
-
-<!--                // Send an AJAX request to add the product to the cart-->
-<!--                $.ajax({-->
-<!--                    type: 'POST',-->
-<!--                    url: '{{ url_for('add_to_cart') }}',-->
-<!--                    data: formData,-->
-<!--                    success: function (data) {-->
-<!--                        // Update the cart section with the updated cart information-->
-<!--                        $('.product').html(data);-->
-<!--                    },-->
-<!--                    error: function () {-->
-<!--                        alert('Error adding to cart');-->
-<!--                    }-->
-<!--                });-->
-<!--            });-->
-<!--        });-->
-
-
-
+        })
         $('.quantity').on('click', '.minus', function(e) {
             let $input = $(this).next('input.qty');
             var val = parseInt($input.val());

@@ -5,6 +5,7 @@
     <meta charset="UTF-8">
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <script src="https://code.jquery.com/jquery-3.6.4.min.js"></script>
     <title>Mac</title>
     <style>
         section {
@@ -14,16 +15,126 @@
             position: relative;
         }
 
+        .product {
+            display: flex;
+            flex-wrap: wrap;
+            justify-content: space-around; /* Adjusted justify-content for spacing */
+            padding: 100px; /* Adjusted padding for content */
+            position: relative;
+        }
+
         #videoContainer {
             width: 100%;
-            margin: 0 auto; /* Center the video container */
-            overflow: hidden; /* Prevent video overflow */
+<!--            height: 100vh; /* Full viewport height */-->
+            overflow: hidden;
         }
 
         video {
             width: 100%;
-            height: auto;
-            display: block; /* Remove extra space below video */
+            height: 100%;
+        }
+
+        .product-card {
+            width: 25%; /* Adjusted width for responsiveness */
+            background-color: #fff;
+            box-shadow: 0 4px 8px 0 rgba(0, 0, 0, 0.2);
+            padding: 20px;
+            margin-bottom: 30px;
+            display: flex;
+            flex-wrap: wrap;
+            justify-content: space-around;
+            box-sizing: border-box; /* Added box-sizing property */
+
+        }
+
+        .product-card img {
+            width: 100%;
+            margin-bottom: 20px;
+            box-shadow: 0 4px 8px 0 rgba(0, 0, 0, 0.2);
+        }
+
+        .product-card h3 {
+            font-size: 18px;
+            font-weight: bold;
+            margin-bottom: 10px;
+        }
+
+        .product-card p {
+            font-size: 14px;
+            margin-bottom: 20px;
+        }
+
+        .rating {
+            display: flex;
+            align-items: center;
+            margin-bottom: 10px;
+        }
+
+        .rating span {
+            font-size: 14px;
+            color: #ffa500;
+            margin-left: 5px;
+        }
+
+        .price {
+            display: flex;
+            align-items: center;
+            margin-bottom: 20px;
+        }
+
+        .price .discount {
+            font-size: 14px;
+            color: #f00;
+            margin-right: 10px;
+        }
+
+        .price .regular {
+            font-size: 14px;
+            text-decoration: line-through;
+            color: #999;
+            margin-right: 10px;
+        }
+
+        .price .sale {
+            font-size: 16px;
+            font-weight: bold;
+            color: #f00;
+        }
+
+        .add-to-cart {
+            background-color: dodgerblue;
+            color: #fff;
+            border: none;
+            padding: 10px 20px;
+            cursor: pointer;
+        }
+        .product-card img {
+            width: 100%;
+            height: 200px; /* Set a fixed height for the product images */
+            object-fit: cover; /* Maintain aspect ratio and cover the entire space */
+            margin-bottom: 20px;
+            box-shadow: 0 4px 8px 0 rgba(0, 0, 0, 0.2);
+        }
+        .qty{
+            width:50px;
+            text-align: center;
+        }
+        @media screen and (min-width: 600px) {
+            .product-card {
+                width: 50%; /* Adjusted width for responsiveness on larger screens */
+            }
+        }
+
+        @media screen and (min-width: 768px) {
+            .product-card {
+                width: 25%; /* Further adjusted width for larger screens */
+            }
+        .image{
+            height: 10%;
+            width:10%;
+        }
+        .p{
+            display: flex;
         }
     </style>
 </head>
@@ -38,10 +149,76 @@
                 <source src="{{ url_for('static', filename='images/mac.mp4') }}" type="video/mp4">
             </video>
         </form>
+
+        {% for product in user_products %}
+        <div class="p">
+            <div class="product-container">
+                    <h2>{{ product['Brand'] }} - {{ product['Part No'] }}</h2>
+                    <img src="{{ product['image']}}" class="image">
+                    <p>Description: {{ product['Description'] if product['Description'] else 'N/A' }}</p>
+                    <p>Total Without Tax: {{ product['Total W/O Tax'] if product['Total W/O Tax'] else 'N/A' }}</p>
+                    <p>GST: {{ product['GST'] if product['GST'] else 'N/A' }}</p>
+                    <p>Total with Tax: {{ product['Total with Tax'] if product['Total with Tax'] else 'N/A' }}</p>
+                    <p>MRP: {{ product['MRP'] if product['MRP'] else 'N/A' }}</p>
+                    <form method="post" action="{{ url_for('add_to_cart4') }}">
+                        <input type="hidden" name="user_email" value="{{ user_email }}">
+                        <input type="hidden" name="product_name" value="{{ product['Brand'] }} - {{ product['Part No'] }}">
+                        <input type="hidden" name="product_image" value="{{ product['image'] }}">
+                        <input type="hidden" name="product_description" value="{{ product['Description'] }}">
+                        <input type="hidden" name="product_rating" value="{{ product['Rating'] }}">
+                        <input type="hidden" name="product_price" value="{{ product['Total with Tax'] }}">
+                        <div class="quantity">
+                            <button type="submit" class="add-to-cart">Add to Cart</button>
+                            <input type='button' value='-' class='qtyminus minus' field='quantity' />
+                            <input type='text' name='quantity' value='1' class='qty' />
+                            <input type='button' value='+' class='qtyplus plus' field='quantity' />
+                        </div>
+                </form>
+            </div>
+        </div>
+        {% endfor %}
+
     </div>
 
     {% include 'footer.html' %}
 
+    <script>
+        $(document).ready(function() {
+            $('.quantity').on('click', '.qtyplus', function(e) {
+                let $input = $(this).prev('input.qty');
+                let val = parseInt($input.val());
+                $input.val(val + 1).change();
+            });
+
+            $('.quantity').on('click', '.qtyminus', function(e) {
+                let $input = $(this).next('input.qty');
+                var val = parseInt($input.val());
+                if (val > 0) {
+                    $input.val(val - 1).change();
+                }
+            });
+
+            // Change event handler for the quantity input
+            $('.quantity').on('change', '.qty', function() {
+                updateCartTotal();
+            });
+
+            // Initial update of cart total on page load
+            updateCartTotal();
+
+            function updateCartTotal() {
+                let totalQuantity = 0;
+
+                // Iterate through all quantity inputs and sum up the values
+                $('.quantity .qty').each(function() {
+                    totalQuantity += parseInt($(this).val());
+                });
+
+                // Display the total quantity in your cart
+                $('#cartTotalQuantity').text(totalQuantity);
+            }
+        });
+    </script>
 </body>
 
 </html>
