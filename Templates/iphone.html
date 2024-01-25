@@ -27,7 +27,7 @@
         }
 
         .product-card {
-            width: 30%; /* Adjusted width for responsiveness */
+            width: 25%; /* Adjusted width for responsiveness */
             background-color: #fff;
             box-shadow: 0 4px 8px 0 rgba(0, 0, 0, 0.2);
             padding: 20px;
@@ -107,6 +107,10 @@
             margin-bottom: 20px;
             box-shadow: 0 4px 8px 0 rgba(0, 0, 0, 0.2);
         }
+        .qty{
+            width:50px;
+            text-align: center;
+        }
 
     </style>
 
@@ -131,7 +135,8 @@
                     <span class="regular">₹ 89,999.00</span>
                     <span class="sale">₹ 80,999.00</span>
                 </div>
-                <form method="post" action="{{ url_for('add_to_cart') }}">
+                <form method="post" action="{{ url_for('add_to_cart2') }}" onsubmit="refreshPage()">
+
                     <input type="hidden" name="user_email" value="{{ user_email }}">
                     <input type="hidden" name="product_name" value="iPhone 15">
                     <input type="hidden" name="product_image" value="https://www.apple.com/newsroom/images/2023/09/apple-unveils-iphone-15-pro-and-iphone-15-pro-max/article/Apple-iPhone-15-Pro-lineup-hero-230912_Full-Bleed-Image.jpg.large.jpg">
@@ -155,7 +160,8 @@
                     <span class="regular">₹ 74,999.00</span>
                     <span class="sale">₹ 68,999.00</span>
                 </div>
-                <form method="post" action="{{ url_for('add_to_cart') }}">
+                <form method="post" action="{{ url_for('add_to_cart2') }}" onclick="refreshPage()">
+
                     <input type="hidden" name="user_email" value="{{ user_email }}">
                     <input type="hidden" name="product_name" value="iPhone 14">
                     <input type="hidden" name="product_image" value="https://assets.thehansindia.com/h-upload/2022/06/24/1299390-iphone-14.webp">
@@ -179,7 +185,8 @@
                     <span class="regular">₹ 69,999.00</span>
                     <span class="sale">₹ 61,599.00</span>
                 </div>
-                <form method="post" action="{{ url_for('add_to_cart') }}">
+                <form method="post" action="{{ url_for('add_to_cart2') }}" onsubmit="refreshPage()">
+
                     <input type="hidden" name="user_email" value="{{ user_email }}">
                     <input type="hidden" name="product_name" value="iPhone 13">
                     <input type="hidden" name="product_image" value="https://images.indianexpress.com/2021/08/iPhone-12-series1.jpg?w=640">
@@ -207,6 +214,30 @@
             let val = parseInt($input.val());
             $input.val(val + 1).change();
         });
+<!--        $(document).ready(function () {-->
+<!--            $('.add-to-cart').click(function (e) {-->
+<!--                e.preventDefault(); // Prevent the default form submission-->
+
+<!--                // Serialize the form data-->
+<!--                var formData = $('form').serialize();-->
+
+<!--                // Send an AJAX request to add the product to the cart-->
+<!--                $.ajax({-->
+<!--                    type: 'POST',-->
+<!--                    url: '{{ url_for('add_to_cart') }}',-->
+<!--                    data: formData,-->
+<!--                    success: function (data) {-->
+<!--                        // Update the cart section with the updated cart information-->
+<!--                        $('.product').html(data);-->
+<!--                    },-->
+<!--                    error: function () {-->
+<!--                        alert('Error adding to cart');-->
+<!--                    }-->
+<!--                });-->
+<!--            });-->
+<!--        });-->
+
+
 
         $('.quantity').on('click', '.minus', function(e) {
             let $input = $(this).next('input.qty');

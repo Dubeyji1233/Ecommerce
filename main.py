@@ -104,7 +104,67 @@ def add_to_cart():
         # Add the product details to the user's cart
         cart.append(product_details)
 
-    return redirect(url_for('index', user_email=user_email))
+    # Render the current template with updated cart information
+    return render_template('orient.html', user_email=user_email, user_cart=cart)
+
+@app.route('/add_to_cart1', methods=['POST'])
+def add_to_cart1():
+    user_email = request.form.get('user_email', '')
+    product_name = request.form.get('product_name', '')
+
+    # Retrieve the product details
+    product_details = {
+        'name': request.form.get('product_name', ''),
+        'image': request.form.get('product_image', ''),
+        'description': request.form.get('product_description', ''),
+        'rating': request.form.get('product_rating', ''),
+        'price': request.form.get('product_price', ''),
+        'quantity': int(request.form.get('quantity', 0)),  # Add quantity information
+    }
+
+    # Check if the product is already in the user's cart
+    cart = carts.setdefault(user_email, [])
+    existing_product = next((p for p in cart if p['name'] == product_name), None)
+
+    if existing_product:
+        # Update the quantity if the product is already in the cart
+        existing_product['quantity'] += product_details['quantity']
+    else:
+        # Add the product details to the user's cart
+        cart.append(product_details)
+
+    # Render the current template with updated cart information
+    return render_template('amazon.html', user_email=user_email, user_cart=cart)
+
+@app.route('/add_to_cart2', methods=['POST'])
+def add_to_cart2():
+    user_email = request.form.get('user_email', '')
+    product_name = request.form.get('product_name', '')
+
+    # Retrieve the product details
+    product_details = {
+        'name': request.form.get('product_name', ''),
+        'image': request.form.get('product_image', ''),
+        'description': request.form.get('product_description', ''),
+        'rating': request.form.get('product_rating', ''),
+        'price': request.form.get('product_price', ''),
+        'quantity': int(request.form.get('quantity', 0)),  # Add quantity information
+    }
+
+    # Check if the product is already in the user's cart
+    cart = carts.setdefault(user_email, [])
+    existing_product = next((p for p in cart if p['name'] == product_name), None)
+
+    if existing_product:
+        # Update the quantity if the product is already in the cart
+        existing_product['quantity'] += product_details['quantity']
+    else:
+        # Add the product details to the user's cart
+        cart.append(product_details)
+
+    # Render the current template with updated cart information
+    return render_template('iphone.html', user_email=user_email, user_cart=cart)
+
 
 
 @app.route('/remove_from_cart', methods=['POST'])

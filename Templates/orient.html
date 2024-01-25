@@ -24,73 +24,89 @@
         }
 
         .product-card {
-          width: 60%;
-          background-color: #fff;
-          box-shadow: 0 4px 8px 0 rgba(0, 0, 0, 0.2);
-          padding: 20px;
-          margin-bottom: 30px;
+            width: 25%; /* Adjusted width for responsiveness */
+            background-color: #fff;
+            box-shadow: 0 4px 8px 0 rgba(0, 0, 0, 0.2);
+            padding: 20px;
+            margin-bottom: 30px;
+            display: flex;
+            flex-wrap: wrap;
+            justify-content: space-around;
+            box-sizing: border-box; /* Added box-sizing property */
+
         }
 
         .product-card img {
-          width: 100%;
-          margin-bottom: 20px;
-          box-shadow: 0 4px 8px 0 rgba(0, 0, 0, 0.2);
+            width: 100%;
+            margin-bottom: 20px;
+            box-shadow: 0 4px 8px 0 rgba(0, 0, 0, 0.2);
         }
 
         .product-card h3 {
-          font-size: 18px;
-          font-weight: bold;
-          margin-bottom: 10px;
+            font-size: 18px;
+            font-weight: bold;
+            margin-bottom: 10px;
         }
 
         .product-card p {
-          font-size: 14px;
-          margin-bottom: 20px;
+            font-size: 14px;
+            margin-bottom: 20px;
         }
 
         .rating {
-          display: flex;
-          align-items: center;
-          margin-bottom: 10px;
+            display: flex;
+            align-items: center;
+            margin-bottom: 10px;
         }
 
         .rating span {
-          font-size: 14px;
-          color: #ffa500;
-          margin-left: 5px;
+            font-size: 14px;
+            color: #ffa500;
+            margin-left: 5px;
         }
 
         .price {
-          display: flex;
-          align-items: center;
-          margin-bottom: 20px;
+            display: flex;
+            align-items: center;
+            margin-bottom: 20px;
         }
 
         .price .discount {
-          font-size: 14px;
-          color: #f00;
-          margin-right: 10px;
+            font-size: 14px;
+            color: #f00;
+            margin-right: 10px;
         }
 
         .price .regular {
-          font-size: 14px;
-          text-decoration: line-through;
-          color: #999;
-          margin-right: 10px;
+            font-size: 14px;
+            text-decoration: line-through;
+            color: #999;
+            margin-right: 10px;
         }
 
         .price .sale {
-          font-size: 16px;
-          font-weight: bold;
-          color: #f00;
+            font-size: 16px;
+            font-weight: bold;
+            color: #f00;
         }
 
         .add-to-cart {
-          background-color: #f00;
-          color: #fff;
-          border: none;
-          padding: 10px 20px;
-          cursor: pointer;
+            background-color: #f00;
+            color: #fff;
+            border: none;
+            padding: 10px 20px;
+            cursor: pointer;
+        }
+        .product-card img {
+            width: 100%;
+            height: 200px; /* Set a fixed height for the product images */
+            object-fit: cover; /* Maintain aspect ratio and cover the entire space */
+            margin-bottom: 20px;
+            box-shadow: 0 4px 8px 0 rgba(0, 0, 0, 0.2);
+        }
+        .qty{
+            width:50px;
+            text-align: center;
         }
 
         .buy-now-button {
@@ -144,8 +160,6 @@
 <!--      <h1>Welcome to Orient</h1>-->
       <ul>
 
-
-        <li>
           <div class="product-card">
             <img src="{{ url_for('static', filename='images/dell-laptop.jpg') }}" alt="Dell 15 Laptop">
 <!-- Repeat the process for other image sources -->
@@ -172,8 +186,6 @@
             </form>
 
           </div>
-        </li>
-        <li>
           <div class="product-card">
             <img src="{{ url_for('static', filename='images/dell-latitude.jpg') }}" alt="Dell New 14 Latitude 3420">
             <h3>Dell New 14" Latitude 3420</h3>
@@ -201,7 +213,6 @@
 
 
           </div>
-        </li>
       </ul>
     </div>
     {% include 'footer.html' %}
