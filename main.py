@@ -1,6 +1,8 @@
 import pandas as pd
-from flask import Flask, render_template, request, redirect, url_for
+from flask import Flask, render_template, request, redirect, url_for, jsonify,json
+
 import csv
+import jsonify
 
 app = Flask(__name__)
 
@@ -15,7 +17,8 @@ products = {
 # Initialize an empty cart for each user
 carts = {}
 
-
+def jsonify(data):
+    return json.dumps(data, indent=4)
 def read_csv(file_path):
     data = []
     with open(file_path, 'r') as file:
@@ -86,19 +89,50 @@ def iphone():
 @app.route('/cart')
 def cart():
     user_email = request.args.get('user_email', '')
+    price = request.args.get('product_price', '')
     # Get the user's cart
     user_cart = carts.get(user_email, [])
+    product = carts.get(price, [])
 
     # Calculate grand_total in the Python code (corrected logic)
-    grand_total = sum(float(product['price'].replace("₹ ", "").replace(",", "")) for product in user_cart if product['price'])
-
+    grand_total = sum(float(product['price'].replace("₹ ", "").replace(",", "")) * product['quantity']
+                      for product in user_cart)
 
     # Calculate total quantity in the cart
     total_quantity = sum(product['quantity'] for product in user_cart)
-    final_total= "{:,}".format(grand_total*total_quantity)
+
+    # Format grand_total with comma separator
+    formatted_grand_total = "{:,.2f}".format(grand_total)
+
+    return render_template('cart.html', user_cart=user_cart, user_email=user_email,
+                           grand_total=formatted_grand_total, total_quantity=total_quantity,product=product)
 
 
-    return render_template('cart.html', user_cart=user_cart, user_email=user_email, grand_total=grand_total, total_quantity=total_quantity, final_total=final_total)
+def calculate_totals(user_cart):
+    grand_total = sum(product['price'] * product['quantity'] for product in user_cart)
+    total_quantity = sum(product['quantity'] for product in user_cart)
+
+    for product in user_cart:
+        product['total'] = product['price'] * product['quantity']
+
+    overall_total = sum(product['total'] for product in user_cart)
+
+    return grand_total, total_quantity, overall_total
+
+@app.route('/your_route')
+def your_route():
+    # Retrieve user cart data
+    user_email = request.form.get('user_email', '')
+    user_cart = carts.setdefault(user_email, [])
+
+    # Calculate totals
+    grand_total, total_quantity, overall_total = calculate_totals(user_cart)
+
+    return render_template('cart.html',
+                           user_cart=user_cart,
+                           grand_total=grand_total,
+                           total_quantity=total_quantity,
+                           overall_total=overall_total)
 
 @app.route('/add_to_cart', methods=['POST'])
 def add_to_cart():
@@ -220,6 +254,8 @@ def add_to_cart2():
 def remove_from_cart():
     user_email = request.form.get('user_email', '')
     product_name = request.form.get('product_name', '')
+    product_price = request.form.get('product_price', '')
+    product_quantity = request.form.get('product_quantity', '')
 
     # Remove the product from the user's cart
     if user_email in carts:
@@ -227,7 +263,32 @@ def remove_from_cart():
         carts[user_email] = updated_cart
 
     # Redirect back to the cart page
-    return redirect(url_for('cart', user_email=user_email))
+    return redirect(url_for('cart', user_email=user_email,product_price=product_price,product_quantity=product_quantity))
+
+@app.route('/calculate_cart', methods=['POST'])
+def calculate_cart():
+    user_email = request.form.get('user_email')
+
+    cart = []
+    total_quantity = 0
+    grand_total = 0
+
+    for i in range(1, 11):  # assuming a maximum of 10 products in the cart
+        product_name = request.form.get(f'product_name{i}')
+        product_price = float(request.form.get(f'product_price{i}', 0))
+        quantity = int(request.form.get(f'quantity{i}', 0))
+
+        if product_name and quantity > 0:
+            total_quantity += quantity
+            grand_total += product_price * quantity
+
+            cart.append({
+                'name': product_name,
+                'price': product_price,
+                'quantity': quantity
+            })
+
+    return render_template('cart.html', user_email=user_email, cart=cart, total_quantity=total_quantity, grand_total=grand_total)
 
 @app.route('/payment_gateway')  # Add this line
 def payment_gateway():
