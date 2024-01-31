@@ -123,44 +123,41 @@
     {% include 'header.html' %}
     <div id="container">
         <div class="pages">
-            <!--
-            <a href="{{ url_for('cart', user_email=user_email) }}">Shopping Cart</a>
-            <a href="{{ url_for('personal_details', user_email=user_email) }}">Checkout</a>
-            <a href="{{ url_for('cart', user_email=user_email) }}">Order Status</a>
-            -->
+<!--            <a href="{{ url_for('cart', user_email=user_email) }}">Shopping Cart</a>-->
+<!--            <a href="{{ url_for('personal_details', user_email=user_email) }}">Checkout</a>-->
+<!--            <a href="{{ url_for('cart', user_email=user_email) }}">Order Status</a>-->
         </div>
         <h2>User: {{ user_email }}</h2>
 
         {% for product in user_cart %}
-        <ul>
-            <li class="lii" data-product-index="{{ loop.index }}">
-                <img class="images" src="{{ product['image'] }}" alt="{{ product['name'] }}">
-                <div>
-                    <p><strong>{{ product['name'] }}</strong></p>
-                    <p>{{ product['description'] }}</p>
-                    <p>{{ product['price'] }}</p>
-                </div>
-                <form method="post" action="{{ url_for('remove_from_cart') }}">
-                    <input type="hidden" name="user_email" value="{{ user_email }}">
-                    <input type="hidden" name="product_name" value="{{ product['name'] }}">
-                    <input type="hidden" name="product_price" value="{{ product['price'] }}">
-                    <input type='hidden' name='quantity' value="{{ product['quantity'] }}">
-                    <div class="quantity">
-                        <input type='button' value='-' class='qtyminus minus' field='quantity' />
-                        <input type='text' name='quantity' value="{{ product['quantity'] }}" class='qty' data-product-index="{{ loop.index }}">
-                        <input type='button' value='+' class='qtyplus plus' field='quantity' />
+            <ul>
+                <li class="lii">
+                    <img class="images" src="{{ product['image'] }}" alt="{{ product['name'] }}">
+                    <div>
+                        <p><strong>{{ product['name'] }}</strong></p>
+                        <p>{{ product['description'] }}</p>
+                        <p>{{ product['price'] }}</p>
                     </div>
-
+                    <form method="post" action="{{ url_for('remove_from_cart') }}">
+                        <input type="hidden" name="user_email" value="{{ user_email }}">
+                        <input type="hidden" name="product_name" value="{{ product['name'] }}">
+                        <input type="hidden" name="product_price" value="{{ product['price'] }}">
+                        <input type="hidden" name="product_quantity" value="{{ product['quantity'] }}">
+                        <div class="quantity">
+                            <input type='button' value='-' class='qtyminus minus' field='quantity' />
+                            <input type='text' name='quantity' value="{{ product['quantity'] }}" class='qty' />
+                            <input type='button' value='+' class='qtyplus plus' field='quantity' />
+                        </div>
                         <div class="total" data-product-index="{{ loop.index }}">
                             Total: ₹ {{ (product['price'] | replace("₹ ", "") | replace(",", "") | float * product['quantity']) | round(2) }}
                         </div>
-                    <button type="submit">Remove</button>
-                </form>
-            </li>
-        </ul>
+                        <button type="submit">Remove</button>
+                    </form>
+                </li>
+            </ul>
         {% endfor %}
 
-        <p class="grand-total"><strong>Grand Total:</strong> ₹ {{ grand_total }}</p>
+        <p><strong>Grand Total:</strong> ₹ {{ grand_total }}</p>
         <!-- Add this element where you want to display the total quantity -->
         <p><strong>Total Quantity in Cart:</strong> <span id="cartTotalQuantity">{{ total_quantity }}</span></p>
 
@@ -168,52 +165,8 @@
 
         <a href="{{ url_for('index', user_email=user_email) }}">Continue Shopping</a>
     </div>
-
     {% include 'footer.html' %}
-
-    <script src="https://code.jquery.com/jquery-3.6.4.min.js"></script>
-
     <script>
-        $(document).ready(function() {
-            function updateTotal(productIndex) {
-                var quantity = parseInt($(`input[name='quantity${productIndex}']`).val());
-                var price = {{ product['price'] }}; // Replace with the actual price for the product
-                var total = quantity * price;
-
-                $(`.total[data-product-index='${productIndex}']`).text(`Total: ₹ ${total.toFixed(2)}`);
-            }
-
-            $('.qtyplus').click(function(e) {
-                e.preventDefault();
-                var fieldName = $(this).attr('field');
-                var currentVal = parseInt($(`input[name='${fieldName}']`).val());
-
-                if (!isNaN(currentVal)) {
-                    $(`input[name='${fieldName}']`).val(currentVal + 1);
-                    updateTotal($(this).siblings('.qty').data('product-index'));
-                } else {
-                    $(`input[name='${fieldName}']`).val(0);
-                }
-            });
-
-            $('.qtyminus').click(function(e) {
-                e.preventDefault();
-                var fieldName = $(this).attr('field');
-                var currentVal = parseInt($(`input[name='${fieldName}']`).val());
-
-                if (!isNaN(currentVal) && currentVal > 0) {
-                    $(`input[name='${fieldName}']`).val(currentVal - 1);
-                    updateTotal($(this).siblings('.qty').data('product-index'));
-                } else {
-                    $(`input[name='${fieldName}']`).val(0);
-                }
-            });
-
-            $('.qty').change(function() {
-                updateTotal($(this).data('product-index'));
-            });
-        });
-
         function checkCartAndRedirect() {
             var cartSize = {{ user_cart|length }};
             if (cartSize > 0) {
@@ -224,65 +177,55 @@
             }
         }
 
-        $('.update-quantity').on('click', function() {
-            // Find the product index associated with the clicked button
-            let productIndex = $(this).closest('.lii').data('product-index');
-            // Find the quantity input value for the corresponding product
-            let quantity = $('input[name="quantity"][data-product-index="' + productIndex + '"]').val();
+        jQuery(document).ready(($) => {
+            $('.quantity').on('click', '.plus', function(e) {
+                let $input = $(this).prev('input.qty');
+                let val = parseInt($input.val());
+                $input.val(val + 1).change();
+            });
 
-            // Make an AJAX request to the server to update the quantity
-            $.ajax({
-                type: 'POST',
-                url: '{{ url_for("calculate_cart") }}',
-                data: {
-                    user_email: '{{ user_email }}',
-                    product_index: productIndex,
-                    quantity: quantity
-                },
-                success: function(response) {
-                    // Update the grand total and any other relevant UI elements based on the response
-                    $('.grand-total').html(response.grand_total);
-                    // Add other UI updates as needed
+            $('.quantity').on('click', '.minus', function(e) {
+                let $input = $(this).next('input.qty');
+                var val = parseInt($input.val());
+                if (val > 0) {
+                    $input.val(val - 1).change();
                 }
             });
-        });
-    </script>
-<script>
-    jQuery(document).ready(($) => {
-        $('.quantity').on('click', '.plus', function(e) {
-            let $input = $(this).prev('input.qty');
-            let val = parseInt($input.val());
-            $input.val(val + 1).change();
-        })
-        $('.quantity').on('click', '.minus', function(e) {
-            let $input = $(this).next('input.qty');
-            var val = parseInt($input.val());
-            if (val > 0) {
-                $input.val(val - 1).change();
+
+            // Change event handler for the quantity input
+            $('.quantity').on('change', '.qty', function() {
+                updateCartTotal();
+            });
+
+            // Initial update of cart total on page load
+            updateCartTotal();
+
+            function updateCartTotal() {
+                let totalQuantity = 0;
+
+                // Iterate through all quantity inputs and sum up the values
+                $('.quantity .qty').each(function() {
+                    totalQuantity += parseInt($(this).val());
+                });
+
+                // Display the total quantity in your cart
+                $('#cartTotalQuantity').text(totalQuantity);
+
+                // Calculate and display the grand total
+                let grandTotal = 0;
+                $('.lii').each(function() {
+                    let price = parseFloat($(this).find('p:eq(2)').text().replace('₹ ', '').replace(',', ''));
+                    let quantity = parseInt($(this).find('.qty').val());
+                    grandTotal += price * quantity;
+                });
+
+                // Format grand total with comma separator
+                $('#grandTotal').text("₹ " + grandTotal.toFixed(2).replace(/\d(?=(\d{3})+\.)/g, '$&,'));
             }
         });
 
-        // Change event handler for the quantity input
-        $('.quantity').on('change', '.qty', function() {
-            updateCartTotal();
-        });
 
-        // Initial update of cart total on page load
-        updateCartTotal();
-
-        function updateCartTotal() {
-            let totalQuantity = 0;
-
-            // Iterate through all quantity inputs and sum up the values
-            $('.quantity .qty').each(function() {
-                totalQuantity += parseInt($(this).val());
-            });
-
-            // Display the total quantity in your cart
-            $('#cartTotalQuantity').text(totalQuantity);
-        }
-    });
-</script>
+    </script>
 </body>
 
 </html>

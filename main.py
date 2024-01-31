@@ -16,9 +16,6 @@ products = {
 
 # Initialize an empty cart for each user
 carts = {}
-
-def jsonify(data):
-    return json.dumps(data, indent=4)
 def read_csv(file_path):
     data = []
     with open(file_path, 'r') as file:
@@ -107,32 +104,6 @@ def cart():
     return render_template('cart.html', user_cart=user_cart, user_email=user_email,
                            grand_total=formatted_grand_total, total_quantity=total_quantity,product=product)
 
-
-def calculate_totals(user_cart):
-    grand_total = sum(product['price'] * product['quantity'] for product in user_cart)
-    total_quantity = sum(product['quantity'] for product in user_cart)
-
-    for product in user_cart:
-        product['total'] = product['price'] * product['quantity']
-
-    overall_total = sum(product['total'] for product in user_cart)
-
-    return grand_total, total_quantity, overall_total
-
-@app.route('/your_route')
-def your_route():
-    # Retrieve user cart data
-    user_email = request.form.get('user_email', '')
-    user_cart = carts.setdefault(user_email, [])
-
-    # Calculate totals
-    grand_total, total_quantity, overall_total = calculate_totals(user_cart)
-
-    return render_template('cart.html',
-                           user_cart=user_cart,
-                           grand_total=grand_total,
-                           total_quantity=total_quantity,
-                           overall_total=overall_total)
 
 @app.route('/add_to_cart', methods=['POST'])
 def add_to_cart():

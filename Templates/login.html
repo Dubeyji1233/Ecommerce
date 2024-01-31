@@ -1,75 +1,374 @@
+<!--<!DOCTYPE html>-->
+<!--<html lang="en">-->
+
+<!--<head>-->
+<!--    <meta charset="UTF-8">-->
+<!--    <meta http-equiv="X-UA-Compatible" content="IE=edge">-->
+<!--    <meta name="viewport" content="width=device-width, initial-scale=1.0">-->
+<!--    <title>Login Page</title>-->
+<!--    <style>-->
+<!--        body {-->
+<!--            font-family: Arial, sans-serif;-->
+<!--            background-color: #f4f4f4;-->
+<!--            text-align: center;-->
+<!--            margin: 0;-->
+<!--            padding: 0;-->
+<!--        }-->
+
+<!--        .background-video-2 {-->
+<!--            position: relative;-->
+<!--            height: 100vh;-->
+<!--            overflow: hidden;-->
+<!--        }-->
+
+<!--        .background-video-2 video {-->
+<!--            position: absolute;-->
+<!--            top: 50%;-->
+<!--            left: 50%;-->
+<!--            min-width: 100%;-->
+<!--            min-height: 100%;-->
+<!--            width: auto;-->
+<!--            height: auto;-->
+<!--            transform: translate(-50%, -50%);-->
+<!--            object-fit: cover;-->
+<!--            z-index: 0;-->
+<!--        }-->
+
+<!--        .fl {-->
+<!--            display: flex;-->
+<!--            align-items: center;-->
+<!--            justify-content: space-between; /* Adjusted for spacing between the logo and login container */-->
+<!--            height: 100%;-->
+<!--            padding: 20px; /* Added padding for better spacing */-->
+<!--        }-->
+
+<!--        .fl>div {-->
+<!--            flex: 2;-->
+<!--            position: relative;-->
+<!--        }-->
+
+<!--        .overlay-image {-->
+<!--            width: 100%;-->
+<!--            height: auto;-->
+<!--            max-width: 500px;-->
+<!--            position: absolute;-->
+<!--            top: 50%;-->
+<!--            left: 50%;-->
+<!--            transform: translate(-50%, -50%);-->
+<!--            z-index: 1;-->
+<!--        }-->
+
+<!--        .login-container {-->
+<!--            padding: 20px;-->
+<!--            z-index: 3;-->
+<!--            border-radius: 8px;-->
+<!--            box-shadow: 0 0 10px rgba(255, 255, 255, 0.3); /* Transparent shadow for better visibility */-->
+<!--            background-color: rgba(255, 255, 255, 0.1); /* Transparent background */-->
+<!--            width: 20%;-->
+<!--        }-->
+
+<!--        .logo-image {-->
+<!--            max-width: 100px;-->
+<!--            margin-left: 20px;-->
+<!--        }-->
+
+
+<!--        label {-->
+<!--            display: block;-->
+<!--            margin-bottom: 8px;-->
+<!--            color: rgba(255, 255, 255, 0.8); /* Set text color with alpha for transparency */-->
+<!--        }-->
+
+<!--        input {-->
+<!--            width: 100%;-->
+<!--            padding: 10px;-->
+<!--            margin-bottom: 16px;-->
+<!--            border: 1px solid #ccc;-->
+<!--            border-radius: 4px;-->
+<!--            box-sizing: border-box;-->
+<!--            background-color: rgba(255, 255, 255, 0.1); /* Set background color with alpha for transparency */-->
+<!--            color: white; /* Set text color */-->
+<!--        }-->
+
+<!--        input[type="submit"] {-->
+<!--            background-color: rgb(20, 133, 133); /* Set button background color */-->
+<!--            color: white;-->
+<!--            cursor: pointer;-->
+<!--        }-->
+
+<!--        input[type="submit"]:hover {-->
+<!--            background-color: rgb(4, 20, 18, 0.8); /* Adjust alpha for hover effect */-->
+<!--        }-->
+<!--    </style>-->
+<!--</head>-->
+
+<!--<body>-->
+<!--    <div class="background-video-2">-->
+<!--        <video id="d1c981f8-b6d9-d0ee-aa3f-4d29f5db289a-video" autoplay loop muted playsinline-->
+<!--            data-object-fit="cover">-->
+<!--            <source-->
+<!--                src="https://assets-global.website-files.com/6436acda0d5bc8518eca551a/6436b2b76faf8773a7c24cc7_Hero%20Section-transcode.mp4"-->
+<!--                type="video/mp4">-->
+<!--        </video>-->
+<!--        <div class="fl">-->
+<!--            <img class="logo-image" src="/static/images/OT_logo.png" alt="Logo Image">-->
+
+<!--            <div class="login-container">-->
+<!--                <form method="post" action="/">-->
+<!--                    <h1 style="color: white">Login</h1>-->
+<!--                    <label for="user_email">Email:</label>-->
+<!--                    <input type="email" id="user_email" name="user_email" required>-->
+<!--                    <br>-->
+<!--                    <input type="submit" value="Submit">-->
+<!--                </form>-->
+<!--                {% if error %}-->
+<!--                <p class="error">{{ error }}</p>-->
+<!--                {% endif %}-->
+<!--            </div>-->
+<!--            <div>-->
+<!--                <img class="logo-image" src="/static/images/OT_logo.png" alt="Logo Image">-->
+
+<!--                <img class="overlay-image"-->
+
+<!--                    src="https://assets-global.website-files.com/6436acda0d5bc8518eca551a/6437f622f67041f847f4e407_Untitled_Artwork%20536eb4c3010541c522d2ca1181fb4d855f2513f30be1cf928dbfa59e8e850ccc8-p-800.png"-->
+<!--                    alt="Overlay Image">-->
+<!--            </div>-->
+<!--        </div>-->
+<!--    </div>-->
+<!--</body>-->
+
+<!--</html>-->
+
+
 <!DOCTYPE html>
 <html lang="en">
+
 <head>
-    <meta charset="UTF-8">
-    <meta http-equiv="X-UA-Compatible" content="IE=edge">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Login Page</title>
-    <style>
-        body {
-            font-family: Arial, sans-serif;
-            background-color: #f4f4f4;
-            text-align: center;
-            margin: 0;
-            padding: 0;
+<meta charset="UTF-8">
+<meta http-equiv="X-UA-Compatible" content="IE=edge">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Login Page</title>
+<style>
+    body {
+        font-family: Arial, sans-serif;
+        background-color: #f4f4f4;
+        text-align: center;
+        margin: 0;
+        padding: 0;
+    }
+
+    .logo-image {
+        max-width: 200px;
+        position: absolute;
+        top: 20px;
+        left: 20px;
+    }
+
+    .background-video-2 {
+        position: relative;
+        height: 100vh;
+        overflow: hidden;
+    }
+
+    .background-video-2 video {
+        position: absolute;
+        top: 50%;
+        left: 50%;
+        min-width: 100%;
+        min-height: 100%;
+        width: auto;
+        height: auto;
+        transform: translate(-50%, -50%);
+        object-fit: cover;
+        z-index: 0;
+    }
+
+    .fl {
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+        height: 100%;
+        padding: 20px;
+    }
+
+    .fl > div {
+        flex: 1; /* Change from flex: 2 to flex: 1 */
+        position: relative;
+    }
+
+    .login-container {
+        width: 100%;
+        height: auto;
+        max-width: 500px;
+        /* position: absolute; */
+        top: 10%;
+         box-shadow: 0 0 10px rgba(255, 255, 255, 0.3);
+          background-color: rgba(255, 255, 255, 0.1);
+        left: 15%;
+        transform: translate(-30%, -50%);
+        z-index: 1;
+        height:250px;
+    }
+
+    label {
+        display: block;
+        margin-bottom: 8px;
+        color: rgba(255, 255, 255, 0.8);
+    }
+
+    input {
+        width: 50%;
+        padding: 10px;
+        margin-bottom: 16px;
+        border: 1px solid #ccc;
+        border-radius: 4px;
+        box-sizing: border-box;
+        background-color: rgba(255, 255, 255, 0.1);
+        color: white;
+    }
+
+    input[type="submit"] {
+        background-color: var(--brand);
+        color: white;
+        cursor: pointer;
+    }
+
+    input[type="submit"]:hover {
+        background-color: rgb(4, 20, 18, 0.8);
+    }
+    .overlay-image {
+        width: 100%;
+        height: auto;
+        max-width: 500px;
+        position: absolute;
+        top: 50%;
+        left: 50%;
+        transform: translate(-20%, -65%);
+        z-index: 1;
+    }
+    ._30-yrs {
+        max-width: 1600px;
+        clear: both;
+        flex-flow: wrap;
+        flex: 0 auto;
+        align-content: flex-end;
+        justify-content: space-between;
+        align-self: auto;
+        align-items: flex-end;
+        margin-top: 0;
+        margin-bottom: 32px;
+        padding-left: 20px;
+        padding-right: 20px;
+        display: flex;
+        position: absolute;
+        top: auto;
+        bottom: 0%;
+        left: 0%;
+        right: 0%;
+        overflow: visible;
+    }
+    .text-block-4 {
+        color: #fbfbfb;
+        margin-right: 8px;
+        font-family: Arial, sans-serif;
+        font-size: 16px;
+        line-height: 32px;
+    }
+    .div-block-2 {
+        width: 100%;
+        height: 0.6px;
+        max-width: none;
+        background-color: #fbfbfb;
+        flex: 1;
+        order: 0;
+        align-self: flex-end;
+        margin-bottom: 10px;
+        margin-left: 0;
+        display: inline-block;
+    }
+    .image-6 {
+        width: 96px;
+        max-width: none;
+        margin-bottom: 8px;
+        margin-left: 8px;
+        padding-bottom: 0;
+    }
+    h1{
+        color:black;
+    }
+    ::placeholder {
+      color: White;
+      opacity: 1; /* Firefox */
+    }
+
+    /* Media Query for Small Screens */
+    @media only screen and (max-width: 600px) {
+        .fl > div {
+            flex: 1 0 100%; /* Full width on smaller screens */
         }
 
-        h1 {
-            color: #333;
-        }
-
-        form {
-            max-width: 300px;
-            margin: 20px auto;
-            padding: 20px;
-            background-color: #fff;
-            border-radius: 8px;
-            box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
-        }
-
-        label {
-            display: block;
-            text-align: left;
-            margin-bottom: 8px;
+        .login-container {
+            width: 100%;
+            max-width: none;
         }
 
         input {
             width: 100%;
-            padding: 10px;
-            margin-bottom: 16px;
-            border: 1px solid #ccc;
-            border-radius: 4px;
-            box-sizing: border-box;
         }
 
-        input[type="submit"] {
-            background-color: #4caf50;
-            color: white;
-            cursor: pointer;
+        .overlay-image {
+            max-width: 100%;
+            transform: translate(-50%, -50%);
         }
 
-        input[type="submit"]:hover {
-            background-color: #45a049;
+        ._30-yrs {
+            max-width: 100%;
         }
+    }
 
-        p.error {
-            color: red;
-            margin-top: 10px;
-        }
-    </style>
+</style>
 </head>
+
 <body>
-    <h1>Login Page</h1>
+    <div class="background-video-2">
+    <video id="d1c981f8-b6d9-d0ee-aa3f-4d29f5db289a-video" autoplay loop muted playsinline
+        data-object-fit="cover">
+        <source
+            src="https://assets-global.website-files.com/6436acda0d5bc8518eca551a/6436b2b76faf8773a7c24cc7_Hero%20Section-transcode.mp4"
+            type="video/mp4">
+    </video>
+    <img class="logo-image" src="/static/images/OT_logo.png" alt="Logo Image">
+    <div class="div-block-2"></div>
 
-    {% if error %}
-        <p class="error">{{ error }}</p>
-    {% endif %}
+    <div class="fl">
 
-    <form method="post" action="/">
-        <label for="user_email">Email:</label>
-        <input type="email" id="user_email" name="user_email" required>
-        <br>
-        <input type="submit" value="Login">
-    </form>
+        <div class="login-container">
+
+            <form method="post" action="/">
+                <h1 style="color: white">Login</h1>
+<!--                <label for="user_email">Email:</label>-->
+                <input type="email" id="user_email" name="user_email" placeholder="Email" style="color:White" required>
+                <br>
+                <input type="submit" value="Submit">
+            </form>
+            {% if error %}
+            <p class="error">{{ error }}</p>
+            {% endif %}
+        </div>
+        <div>
+            <img class="overlay-image"
+                src="https://assets-global.website-files.com/6436acda0d5bc8518eca551a/6437f622f67041f847f4e407_Untitled_Artwork%20536eb4c3010541c522d2ca1181fb4d855f2513f30be1cf928dbfa59e8e850ccc8-p-800.png"
+                alt="Overlay Image">
+        </div>
+    </div>
+    <div class="_30-yrs w-container">
+        <div class="text-block-4">IT Transformation Catalysts</div>
+        <div class="div-block-2"></div>
+        <img src="https://assets-global.website-files.com/6436acda0d5bc8518eca551a/6436b2b76faf87bccec24cc6_30years.svg" loading="lazy" alt="" width="59" class="image-6">
+    </div>
+</div>
 </body>
+
 </html>
+
+
