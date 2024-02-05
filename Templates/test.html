@@ -1,377 +1,107 @@
-<!DOCTYPE html>
-<html lang="en">
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Shopping Cart</title>
-    <style>
-        /* Add your CSS styling here */
-    </style>
-</head>
-<body>
-    <h1>Shopping Cart</h1>
-
-    <div id="cart">
-        <h2>Cart</h2>
-        <ul>
-            {% for product in products %}
-                <li>
-                    {{ product.name }} - ${{ product.price }}
-                    <input type="number" id="quantity_{{ product.id }}" value="{{ cart.get(product.id, 0) }}" min="0">
-                    Subtotal: $<span id="subtotal_{{ product.id }}">0.00</span>
-                </li>
-            {% endfor %}
-        </ul>
-    </div>
-
-    <script src="https://code.jquery.com/jquery-3.6.4.min.js"></script>
-    <script>
-        $(document).ready(function() {
-            $('input[type="number"]').on('input', function() {
-                var product_id = $(this).attr('id').split('_')[1];
-                var quantity = $(this).val();
-
-                // Update the cart via AJAX
-                $.ajax({
-                    type: 'POST',
-                    url: '/update_cart',
-                    data: { product_id: product_id, quantity: quantity },
-                    success: function(response) {
-                        // Update the subtotal on the page
-                        $('#subtotal_' + product_id).text(response.subtotal.toFixed(2));
-                    }
-                });
-            });
-        });
-    </script>
-</body>
-</html>
-
-
 <!--<!DOCTYPE html>-->
 <!--<html lang="en">-->
 <!--<head>-->
 <!--    <meta charset="UTF-8">-->
 <!--    <meta name="viewport" content="width=device-width, initial-scale=1.0">-->
-<!--    <title>Shopping Cart</title>-->
+<!--    <title>Order Details</title>-->
 <!--    <style>-->
+<!--       /* Overall Page Structure */-->
 <!--        body {-->
-<!--            font-family: 'Arial', sans-serif;-->
-<!--            background-color: #f4f4f4;-->
-<!--            margin: 0;-->
-<!--            padding: 0;-->
-<!--            display: flex;-->
-<!--            flex-direction: column;-->
-<!--            align-items: center;-->
-<!--            justify-content: center;-->
-<!--        }-->
-
-<!--        #container {-->
-<!--            width: 80%;-->
-<!--            max-width: 600px;-->
-<!--            background-color: #fff;-->
-<!--            padding: 20px;-->
-<!--            border-radius: 8px;-->
-<!--            box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);-->
-<!--            margin-top: 50px;-->
-<!--            margin-bottom: 50px;-->
-<!--        }-->
-
-<!--        h1 {-->
-<!--            text-align: center;-->
-<!--            color: #333;-->
-<!--        }-->
-
-<!--        h2 {-->
-<!--            margin-top: 10px;-->
-<!--            text-align: center;-->
-<!--            color: #555;-->
-<!--        }-->
-
-<!--        ul {-->
-<!--            list-style: none;-->
-<!--            padding: 0;-->
-<!--            margin: 20px 0;-->
-<!--        }-->
-
-<!--        li {-->
-<!--            background-color: #fff;-->
-<!--            box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);-->
-<!--            margin-bottom: 20px;-->
-<!--            padding: 15px;-->
-<!--            border-radius: 8px;-->
-<!--            position: relative;-->
-<!--        }-->
-
-<!--        img {-->
-<!--            max-width: 100%;-->
-<!--            height: auto;-->
-<!--            border-radius: 4px;-->
-<!--            margin-bottom: 10px;-->
-<!--        }-->
-
-<!--        p {-->
-<!--            margin: 5px 0;-->
-<!--            color: #555;-->
-<!--        }-->
-
-<!--        strong {-->
-<!--            color: #333;-->
-<!--        }-->
-
-<!--        button {-->
-<!--            background-color: #f00;-->
-<!--            color: #fff;-->
-<!--            border: none;-->
-<!--            padding: 8px 15px;-->
-<!--            border-radius: 4px;-->
-<!--            cursor: pointer;-->
-<!--            text-align: center;-->
-<!--        }-->
-
-<!--        button:hover {-->
-<!--            background-color: #d50000;-->
-<!--        }-->
-
-<!--        p.total {-->
-<!--            text-align: center;-->
-<!--            font-size: 18px;-->
-<!--            font-weight: bold;-->
-<!--            color: #333;-->
-<!--        }-->
-
-<!--        a {-->
-<!--            display: block;-->
-<!--            text-align: center;-->
-<!--            color: #fff;-->
-<!--            background-color: #f00;-->
-<!--            padding: 10px 15px;-->
-<!--            border-radius: 4px;-->
-<!--            text-decoration: none;-->
-<!--            margin-top: 20px;-->
-<!--        }-->
-
-<!--        a:hover {-->
-<!--            background-color: #d50000;-->
-<!--        }-->
-<!--        #myModal {-->
-<!--            display: none;-->
-<!--            position: fixed;-->
-<!--            z-index: 1;-->
-<!--            left: 0;-->
-<!--            top: 0;-->
-<!--            width: 100%;-->
-<!--            height: 100%;-->
-<!--            overflow: auto;-->
-<!--            background-color: rgba(0, 0, 0, 0.5);-->
+<!--          font-family: sans-serif;-->
+<!--          margin: 0;-->
+<!--          background-color: #f2f2f2;-->
 <!--        }-->
 
 <!--        .modal-content {-->
-<!--            background-color: #fefefe;-->
-<!--            margin: 10% auto;-->
-<!--            padding: 50px;-->
-<!--            border: 1px solid #888;-->
-<!--            width: 50%;-->
-<!--            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);-->
+<!--          background-color: #fff;-->
+<!--          border-radius: 5px;-->
+<!--          padding: 20px;-->
+<!--          max-width: 1500px;-->
+<!--          margin: 20px;-->
+<!--          margin-top=50px-->
 <!--        }-->
 
-<!--        .close {-->
-<!--            color: #aaa;-->
-<!--            float: right;-->
-<!--            font-size: 28px;-->
-<!--            font-weight: bold;-->
+<!--        /* Header and Footer (Assuming they're included) */-->
+<!--        header, footer {-->
+<!--          /* Adjust styles as needed to match your design */-->
 <!--        }-->
 
-<!--        .close:hover,-->
-<!--        .close:focus {-->
-<!--            color: black;-->
-<!--            text-decoration: none;-->
+<!--        /* Input Fields and Labels */-->
+<!--        .additional-fields label {-->
+<!--          display: block;-->
+<!--          margin-bottom: 5px;-->
+<!--        }-->
+
+<!--        .additional-fields input[type="text"],-->
+<!--        .additional-fields input[type="email"] {-->
+<!--          width: 100%;-->
+<!--          padding: 10px;-->
+<!--          border: 1px solid #ccc;-->
+<!--          border-radius: 5px;-->
+<!--          margin-bottom: 10px;-->
+<!--        }-->
+
+<!--        /* Error Message */-->
+<!--        .error-message {-->
+<!--          color: red;-->
+<!--          font-weight: bold;-->
+<!--          margin-top: 10px;-->
+<!--        }-->
+
+<!--        /* Modal Container */-->
+<!--        .modal-container {-->
+<!--          display: none; /* Initially hidden */-->
+<!--          position: fixed;-->
+<!--          top: 50%;-->
+<!--          left: 50%;-->
+<!--          transform: translate(-50%, -50%);-->
+<!--          background-color: rgba(0, 0, 0, 0.5);-->
+<!--          padding: 20px;-->
+<!--        }-->
+
+<!--        .modal-content-terms {-->
+<!--          background-color: #fff;-->
+<!--          border-radius: 5px;-->
+<!--          padding: 20px;-->
+<!--        }-->
+
+<!--        /* Terms and Conditions */-->
+<!--        .modal-content-terms ol {-->
+<!--          list-style-type: decimal;-->
+<!--          margin-left: 20px;-->
+<!--        }-->
+
+<!--        /* Accept Terms Checkbox */-->
+<!--        .accept-terms input[type="checkbox"] {-->
+<!--          margin-right: 10px;-->
+<!--        }-->
+
+<!--        /* Center the button */-->
+<!--        .accept-terms button {-->
+<!--            display: block;-->
+<!--            margin: 0 auto;-->
+<!--        }-->
+
+<!--        /* Optionally, adjust button styles */-->
+<!--        .accept-terms button {-->
+<!--            background-color: #4CAF50;-->
+<!--            color: white;-->
+<!--            padding: 10px 20px;-->
+<!--            border: none;-->
+<!--            border-radius: 5px;-->
 <!--            cursor: pointer;-->
 <!--        }-->
-<!--        .accept-terms {-->
-<!--            margin-top: 15px;-->
-<!--            text-align: center;-->
-<!--        }-->
 
-<!--        #acceptTerms {-->
-<!--            margin-right: 5px;-->
-<!--        }-->
-
-<!--        .accept-terms button {-->
-<!--            background-color: #f00;-->
-<!--            color: #fff;-->
-
-<!--        }-->
-
-<!--        .accept-terms button:hover {-->
-<!--            background-color: #d50000;-->
-<!--        }-->
-<!--        .test{-->
-<!--            background-color: #f00;-->
-<!--            color: #fff;-->
+<!--        /* Button Styles */-->
+<!--        button {-->
+<!--           background-color: #4CAF50;-->
+<!--            color: white;-->
+<!--            padding: 10px 20px;-->
+<!--            border: none;-->
 <!--            border-radius: 5px;-->
-<!--            position: absolute;-->
-
-<!--            padding: 8px 15px;-->
+<!--            cursor: pointer;-->
+<!--            margin: 0 auto;-->
 <!--        }-->
-<!--        .additional-fields {-->
-<!--            margin-top: 20px;-->
-<!--        }-->
-
-<!--        .additional-fields label {-->
-<!--            display: block;-->
-<!--            margin-bottom: 5px;-->
-<!--        }-->
-
-<!--        .additional-fields input {-->
-<!--            width: 100%;-->
-<!--            padding: 8px;-->
-<!--            box-sizing: border-box;-->
-<!--            margin-bottom: 10px;-->
-<!--        }-->
-<!--    </style>-->
-<!--</head>-->
-<!--<body>-->
-<!--    <div id="container">-->
-<!--        <h1>Shopping Cart</h1>-->
-<!--        <h2>User: {{ user_email }}</h2>-->
-
-<!--        <ul>-->
-<!--            {% for product in user_cart %}-->
-<!--                <li>-->
-<!--                    <img src="{{ product['image'] }}" alt="{{ product['name'] }}">-->
-<!--                    <p><strong>{{ product['name'] }}</strong></p>-->
-<!--                    <p>{{ product['description'] }}</p>-->
-<!--                    <p id="pricePlaceholder{{ loop.index }}">Price: ₹{{ "{:,.2f}".format(product['price']|replace('₹', '')|replace(',', '')|float) }}</p>-->
-<!--                    <form method="post" action="{{ url_for('remove_from_cart') }}">-->
-<!--                        <input type="hidden" name="user_email" value="{{ user_email }}">-->
-<!--                        <input type="hidden" name="product_name" value="{{ product['name'] }}">-->
-<!--                        <button type="submit">Remove</button>-->
-<!--                    </form>-->
-<!--                </li>-->
-<!--                <br>-->
-<!--                {% set total_price = 0 %}-->
-<!--                {% for product in user_cart %}-->
-<!--                    {% set product_price = product['price']|replace('₹', '')|replace(',', '')|float %}-->
-<!--                    {% set total_price = total_price + product_price %}-->
-<!--                {% endfor %}-->
-<!--            {% endfor %}-->
-<!--        </ul>-->
-
-<!--        <p>Total Price: {{ total_price }}</p>-->
-
-<!--        <a onclick="openModal()">Buy Now</a>-->
-
-<!--        <a href="{{ url_for('index', user_email=user_email) }}">Continue Shopping</a>-->
-
-<!--        <div id="myModal">-->
-<!--            <div class="modal-content">-->
-<!--                <span class="close" onclick="closeModal()">&times;</span>-->
-
-<!--                <h2>Order Details</h2>-->
-
-<!--                <div class="additional-fields">-->
-<!--                    <label for="address">Full Name :</label>-->
-<!--                    <input type="text" id="name" name="name" required>-->
-
-<!--                    <label for="phone">Phone Number:</label>-->
-<!--                    <input type="text" id="phone" name="phone" required>-->
-
-<!--                    <label for="address">Delivery Address:</label>-->
-<!--                    <input type="text" id="address" name="address" required>-->
-
-<!--                    <label for="email">Email Address:</label>-->
-<!--                    <input type="email" id="email" name="email" required>-->
-<!--                </div>-->
-<!--                    <h2>Terms and Conditions</h2>-->
-
-<!--                <p>By proceeding with the purchase, you agree to the following terms and conditions:</p>-->
-<!--                <ol>-->
-<!--                    <li><strong>Product Description:</strong> Ensure that you have read and understood the product description.</li>-->
-<!--                    <li><strong>Privacy Policy:</strong> We respect your privacy. Read our privacy policy to understand how we handle your data.</li>-->
-<!--                </ol>-->
-
-<!--                <div>-->
-<!--                    <input type="checkbox" id="acceptTerms"> I accept the terms and conditions-->
-<!--                </div>-->
-<!--                <br>-->
-<!--                <label class="test" onclick="checkCartAndOpenModal()">Pay Now</label>-->
-<!--            </div>-->
-<!--        </div>-->
-
-<!--    </div>-->
-<!--    <script>-->
-<!--        // Function to check if the cart is empty and open modal accordingly-->
-<!--        function checkCartAndOpenModal() {-->
-<!--            // Assume user_cart is a JavaScript array representing the cart-->
-<!--            var cartSize = {{ user_cart|length }};-->
-<!--            if (cartSize === 0) {-->
-<!--                alert('Your cart is empty. Please continue shopping.');-->
-<!--            } else {-->
-<!--                if (validateOrderDetails()) {-->
-<!--                    if (document.getElementById('acceptTerms').checked) {-->
-<!--                        // Redirect to payment gateway page-->
-<!--                        window.location.href = "{{ url_for('payment_gateway') }}";-->
-<!--                    } else {-->
-<!--                        alert('Please accept the terms and conditions to proceed.');-->
-<!--                        openModal();-->
-<!--                    }-->
-<!--                } else {-->
-<!--                    alert('Please fill in all order details.');-->
-<!--                    openModal();-->
-<!--                }-->
-<!--            }-->
-<!--        }-->
-
-<!--        function validateOrderDetails() {-->
-<!--            var phone = document.getElementById('phone').value.trim();-->
-<!--            var address = document.getElementById('address').value.trim();-->
-<!--            var email = document.getElementById('email').value.trim();-->
-
-<!--            return phone !== '' && address !== '' && email !== '';-->
-<!--        }-->
-
-<!--        // Function to display the modal-->
-<!--        function openModal() {-->
-<!--            document.getElementById('myModal').style.display = 'block';-->
-<!--        }-->
-
-<!--        // Function to close the modal-->
-<!--        function closeModal() {-->
-<!--            document.getElementById('myModal').style.display = 'none';-->
-<!--        }-->
-<!--    </script>-->
-
-
-
-<!--</body>-->
-<!--</html>-->
-
-
-
-
-<!--<!DOCTYPE html>-->
-<!--<html lang="en">-->
-<!--<head>-->
-<!--    <meta charset="UTF-8">-->
-<!--    <meta name="viewport" content="width=device-width, initial-scale=1.0">-->
-<!--    <title>Shopping Cart</title>-->
-<!--    <script src="https://code.jquery.com/jquery-3.6.4.min.js"></script>-->
-<!--   <style>-->
-<!--        body {-->
-<!--            margin: 0;-->
-<!--            font-family: Arial, sans-serif;-->
-<!--            background-color: #f2f2f2;-->
-<!--        }-->
-
-<!--        #container {-->
-<!--            margin: 20px;-->
-<!--            padding: 20px;-->
-<!--            background-color: #fff;-->
-<!--            border-radius: 8px;-->
-<!--            box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);-->
-<!--        }-->
-
 <!--        .pages {-->
 <!--            text-align: center;-->
 <!--            background-color: #f2f2f2;-->
@@ -392,212 +122,419 @@
 <!--            background-color: dodgerblue;-->
 <!--            color: white;-->
 <!--        }-->
+<!--        .name{-->
 
-<!--        h2 {-->
-<!--            margin-top: 20px;-->
-<!--            color: #333;-->
 <!--        }-->
 
-<!--        ul {-->
-<!--            list-style: none;-->
-<!--            padding: 0;-->
-<!--        }-->
-
-<!--        .lii {-->
-<!--            display: flex;-->
-<!--            align-items: center;-->
-<!--            justify-content: space-between;-->
-<!--            border-bottom: 1px solid #ddd;-->
-<!--            padding: 10px 0;-->
-<!--            margin: 10px 0;-->
-<!--        }-->
-
-<!--        .images {-->
-<!--            max-width: 200px;-->
-<!--            margin-right: 20px;-->
-<!--        }-->
-
-<!--        p {-->
-<!--            margin: 0;-->
-<!--        }-->
-
-<!--        form {-->
-<!--            display: flex;-->
-<!--            align-items: center;-->
-<!--        }-->
-
-<!--        .quantity {-->
-<!--            display: flex;-->
-<!--            align-items: center;-->
-<!--        }-->
-
-<!--        .quantity input {-->
-<!--            width: 30px;-->
-<!--            text-align: center;-->
-<!--            margin: 0 5px;-->
-<!--        }-->
-
-<!--        button {-->
-<!--            background-color: #f44336;-->
-<!--            color: white;-->
-<!--            padding: 8px;-->
-<!--            border: none;-->
-<!--            border-radius: 4px;-->
-<!--            cursor: pointer;-->
-<!--        }-->
-
-<!--        button:hover {-->
-<!--            background-color: #d32f2f;-->
-<!--        }-->
-
-<!--        #buyNowButton {-->
-<!--            background-color: dodgerblue;-->
-<!--            color: white;-->
-<!--            padding: 10px;-->
-<!--            text-decoration: none;-->
-<!--            border-radius: 4px;-->
-<!--            display: inline-block;-->
-<!--            margin-top: 20px;-->
-<!--        }-->
-
-<!--        a {-->
-<!--            text-decoration: none;-->
-<!--            color: #333;-->
-<!--        }-->
-
-<!--        #cartTotalQuantity {-->
-<!--            font-weight: bold;-->
-<!--            margin-left: 5px;-->
-<!--        }-->
 <!--    </style>-->
 <!--</head>-->
 <!--<body>-->
 <!--    {% include 'header.html' %}-->
-<!--    <div id="container">-->
-<!--&lt;!&ndash;        <div class="pages">&ndash;&gt;-->
-<!--&lt;!&ndash;            <a href="{{ url_for('cart', user_email=user_email) }}">Shopping Cart</a>&ndash;&gt;-->
-<!--&lt;!&ndash;            <a href="{{ url_for('personal_details', user_email=user_email) }}">Checkout</a>&ndash;&gt;-->
-<!--&lt;!&ndash;            <a href="{{ url_for('cart', user_email=user_email) }}">Order Status</a>&ndash;&gt;-->
-<!--&lt;!&ndash;        </div>&ndash;&gt;-->
-<!--        <h2>User: {{ user_email }}</h2>-->
+<!--        <div class="modal-content">-->
+<!--            <div class="pages">-->
+<!--&lt;!&ndash;                <a href="{{ url_for('cart', user_email=user_email) }}">Shopping Cart</a>&ndash;&gt;-->
+<!--&lt;!&ndash;                <a href="{{ url_for('personal_details', user_email=user_email) }}">Checkout</a>&ndash;&gt;-->
+<!--&lt;!&ndash;                <a href="{{ url_for('cart', user_email=user_email) }}">Order Status</a>&ndash;&gt;-->
+<!--            </div>-->
+<!--            <h2>Order Details</h2>-->
 
-<!--        {% for product in user_cart %}-->
-<!--            <ul>-->
-<!--                <li class="lii">-->
-<!--                    <img class="images" src="{{ product['image'] }}" alt="{{ product['name'] }}">-->
-<!--                    <div>-->
-<!--                        <p><strong>{{ product['name'] }}</strong></p>-->
-<!--                        <p>{{ product['description'] }}</p>-->
-<!--                        <p>{{ product['price'] }}</p>-->
-<!--                    </div>-->
-<!--                    <form method="post" action="{{ url_for('remove_from_cart') }}">-->
-<!--                        <input type="hidden" name="user_email" value="{{ user_email }}">-->
-<!--                        <input type="hidden" name="product_name" value="{{ product['name'] }}">-->
-<!--                        <input type="hidden" name="product_price" value="{{ product['price'] }}">-->
-<!--                        <input type="hidden" name="product_quantity" value="{{ product['quantity'] }}">-->
-<!--                         <div class="quantity">-->
-<!--                            <button type="button" onclick="updateQuantity('{{ product['name'] }}', -1)">-</button>-->
-<!--                            <input type='text' name='quantity' value="{{ product['quantity'] }}" class='qty' />-->
-<!--                            <button type="button" onclick="updateQuantity('{{ product['name'] }}', 1)">+</button>-->
-<!--                        </div>-->
-<!--                        <div class="total" data-product-index="{{ loop.index }}">-->
-<!--                            Total: ₹ {{ (product['price'] | replace("₹ ", "") | replace(",", "") | float * product['quantity']) | round(2) }}-->
-<!--                        </div>-->
-<!--                        <button type="submit">Remove</button>-->
-<!--                    </form>-->
+<!--            <div class="additional-fields">-->
+<!--                <div class="name" >-->
+<!--                    <label for="First">First Name *</label>-->
+<!--                    <input type="text" id="First" name="First" required>-->
+
+<!--                    <label for="Last">Last Name *</label>-->
+<!--                    <input type="text" id="Last" name="Last" required>-->
+
+<!--                    <label for="phone">Phone Number *</label>-->
+<!--                    <input type="text" id="phone" name="phone" required>-->
+<!--                </div>-->
+
+<!--                <label for="country">Country *</label>-->
+<!--                <input type="text" id="country" name="country" required>-->
+
+<!--                <label for="state">State *</label>-->
+<!--                <input type="text" id="state" name="state" required>-->
+
+<!--                <label for="city">City *</label>-->
+<!--                <input type="text" id="city" name="city" required>-->
+
+<!--                <label for="pincode">Pin Code *</label>-->
+<!--                <input type="text" id="pincode" name="pincode" required>-->
+
+<!--                <label for="address">Delivery Address *</label>-->
+<!--                <input type="text" id="address" name="address" required>-->
+
+<!--                <label for="email">Email Address *</label>-->
+<!--                <input type="email" id="email" name="email" required>-->
+<!--            </div>-->
+
+<!--            <button onclick="validateAndOrder()">Done</button>-->
+<!--            <p class="error-message" id="errorMessage"></p>-->
+<!--        </div>-->
+
+<!--        <div id="myModal" class="modal-container">-->
+<!--            <div class="modal-content-terms">-->
+<!--                <h2>Terms and Conditions</h2>-->
+<!--                <ol>-->
+<!--                    <li><strong>Product Description:</strong> Ensure that you have read and understood the product description.</li>-->
+<!--                    <li><strong>Privacy Policy:</strong> We respect your privacy. Read our privacy policy to understand how we handle your data.</li>-->
+<!--                </ol>-->
+<!--                <div class="accept-terms">-->
+<!--                    <input type="checkbox" id="acceptTerms" required>-->
+<!--                    <label for="acceptTerms">I agree to the terms and conditions</label>-->
+<!--                    <br>-->
+<!--                    <button onclick="closeModalAndProceed()">OK</button>-->
+<!--                    <button onclick="redirectToPersonalDetails()">Cancel</button>-->
+<!--                </div>-->
+<!--            </div>-->
+<!--        </div>-->
+<!--    {% include 'footer.html' %}-->
+<!--    <script>-->
+<!--        function validateAndOrder() {-->
+<!--            var First = document.getElementById('First').value.trim();-->
+<!--            var Last = document.getElementById('Last').value.trim();-->
+<!--            var phone = document.getElementById('phone').value.trim();-->
+<!--            var address = document.getElementById('address').value.trim();-->
+<!--            var country = document.getElementById('country').value.trim();-->
+<!--            var state = document.getElementById('state').value.trim();-->
+<!--            var city = document.getElementById('city').value.trim();-->
+<!--            var pincode = document.getElementById('pincode').value.trim();-->
+<!--            var email = document.getElementById('email').value.trim();-->
+
+<!--            var errorMessage = "";-->
+
+<!--            if (First === "") {-->
+<!--                errorMessage += "Please enter your First Name.\n";-->
+<!--            }-->
+<!--            if (Last === "") {-->
+<!--                errorMessage += "Please enter your Last Name.\n";-->
+<!--            }-->
+<!--            if (phone === "") {-->
+<!--                errorMessage += "Please enter your Phone Number.\n";-->
+<!--            }-->
+<!--            if (address === "") {-->
+<!--                errorMessage += "Please enter your Delivery Address.\n";-->
+<!--            }-->
+<!--            if (country === "") {-->
+<!--                errorMessage += "Please enter your Country.\n";-->
+<!--            }-->
+<!--            if (state === "") {-->
+<!--                errorMessage += "Please enter your State.\n";-->
+<!--            }-->
+<!--            if (city === "") {-->
+<!--                errorMessage += "Please enter your City.\n";-->
+<!--            }-->
+<!--            if (pincode === "") {-->
+<!--                errorMessage += "Please enter your Pincode.\n";-->
+<!--            }-->
+
+<!--            if (address === "") {-->
+<!--                errorMessage += "Please enter your Delivery Address.\n";-->
+<!--            }-->
+
+<!--            if (email === "") {-->
+<!--                errorMessage += "Please enter your Email Address.\n";-->
+<!--            }-->
+
+<!--            if (errorMessage === "") {-->
+<!--                // Show the terms and conditions modal-->
+<!--                document.getElementById('myModal').style.display = 'block';-->
+<!--            } else {-->
+<!--                // Display error messages-->
+<!--                document.getElementById('errorMessage').innerText = errorMessage;-->
+<!--            }-->
+<!--        }-->
+
+<!--        function redirectToPersonalDetails() {-->
+<!--            // Redirect to personal-details.html-->
+<!--            window.location.href = "{{ url_for('personal_details', user_email=user_email) }}"-->
+<!--        }-->
 
 
-<!--                </li>-->
-<!--            </ul>-->
-<!--        {% endfor %}-->
+<!--     function closeModalAndProceed() {-->
+<!--        // Check if the terms are accepted-->
+<!--        var termsAccepted = document.getElementById('acceptTerms').checked;-->
 
-<!--        <p><strong>Grand Total:</strong> ₹ <span id="grandTotal">{{ grand_total }}</span></p>-->
-<!--        &lt;!&ndash; Add this element where you want to display the total quantity &ndash;&gt;-->
-<!--        <p><strong>Total Quantity in Cart:</strong> <span id="cartTotalQuantity">{{ total_quantity }}</span></p>-->
-
-<!--        <a id="buyNowButton" onclick="checkCartAndRedirect()">Buy Now</a>-->
-
-<!--        <a href="{{ url_for('index', user_email=user_email) }}">Continue Shopping</a>-->
-<!--    </div>-->
-
-<!--      {% include 'footer.html' %}-->
-
-<!--    &lt;!&ndash; Your existing JavaScript code &ndash;&gt;-->
-
-<!--   <script>-->
-<!--    function updateQuantity(productName, change) {-->
-<!--        var quantityInput = document.querySelector(`[name='quantity'][value='${productName}']`);-->
-<!--        var totalElement = document.querySelector(`.total[data-product-index='${productName}']`);-->
-
-<!--        var currentQuantity = parseInt(quantityInput.value);-->
-<!--        var productPrice = parseFloat(totalElement.innerText.replace("Total: ₹ ", "")) / currentQuantity;-->
-
-<!--        // Update quantity-->
-<!--        var newQuantity = Math.max(currentQuantity + change, 0);-->
-<!--        quantityInput.value = newQuantity;-->
-
-<!--        // Update total-->
-<!--        totalElement.innerText = 'Total: ₹ ' + (newQuantity * productPrice).toFixed(2);-->
-
-<!--        // Update cart total-->
-<!--        updateCartTotal();-->
-<!--    }-->
-
-<!--    function updateCartTotal() {-->
-<!--        let totalQuantity = 0;-->
-<!--        let grandTotal = 0;-->
-
-<!--        // Iterate through all quantity inputs and sum up the values-->
-<!--        document.querySelectorAll('.quantity .qty').forEach(function (quantityInput) {-->
-<!--            let productName = quantityInput.getAttribute('value');-->
-<!--            let totalElement = document.querySelector(`.total[data-product-index='${productName}']`);-->
-
-<!--            let price = parseFloat(totalElement.innerText.replace('Total: ₹ ', ''));-->
-<!--            let quantity = parseInt(quantityInput.value);-->
-
-<!--            totalQuantity += quantity;-->
-<!--            grandTotal += price;-->
-<!--        });-->
-
-<!--        // Display the total quantity in your cart-->
-<!--        document.getElementById('cartTotalQuantity').innerText = totalQuantity;-->
-
-<!--        // Format and display the grand total-->
-<!--        document.getElementById('grandTotal').innerText = '₹ ' + grandTotal.toFixed(2).replace(/\d(?=(\d{3})+\.)/g, '$&,');-->
-<!--    }-->
-
-<!--    function checkCartAndRedirect() {-->
-<!--        var cartSize = {{ user_cart|length }};-->
-<!--        if (cartSize > 0) {-->
-<!--            // Redirect to personal-details.html when the cart is not empty-->
-<!--            window.location.href = "{{ url_for('personal_details', user_email=user_email) }}";-->
+<!--        if (termsAccepted) {-->
+<!--            // Close the modal-->
+<!--            document.getElementById('myModal').style.display = 'none';-->
+<!--            // Proceed with the order-->
+<!--            alert('Ordered successfully!');-->
+<!--            // Redirect to the shopping page-->
+<!--            window.location.href = "{{ url_for('index', user_email=user_email) }}";-->
 <!--        } else {-->
-<!--            alert('Your cart is empty. Please continue shopping.');-->
+<!--            // If terms are not accepted, show an error-->
+<!--            alert('Please accept the terms and conditions to proceed.');-->
+<!--            // Optionally, you can clear the error message after a certain time-->
+<!--            setTimeout(function () {-->
+<!--                document.getElementById('errorMessage').innerText = "";-->
+<!--            }, 5000); // 5000 milliseconds (5 seconds)-->
 <!--        }-->
 <!--    }-->
+<!--        function closeModalAndProceed() {-->
+<!--        // Check if the terms are accepted-->
+<!--        var termsAccepted = document.getElementById('acceptTerms').checked;-->
 
-<!--    jQuery(document).ready(($) => {-->
-<!--        $('.quantity').on('click', 'button', function (e) {-->
-<!--            let $input = $(this).siblings('input.qty');-->
-<!--            let val = parseInt($input.val());-->
-
-<!--            if ($(this).hasClass('plus')) {-->
-<!--                $input.val(val + 1).change();-->
-<!--            } else if ($(this).hasClass('minus') && val > 0) {-->
-<!--                $input.val(val - 1).change();-->
-<!--            }-->
-<!--        });-->
-
-<!--        // Change event handler for the quantity input-->
-<!--        $('.quantity').on('change', '.qty', function () {-->
-<!--            updateCartTotal();-->
-<!--        });-->
-
-<!--        // Initial update of cart total on page load-->
-<!--        updateCartTotal();-->
-<!--    });-->
-<!--</script>-->
+<!--        if (termsAccepted) {-->
+<!--            // Close the modal-->
+<!--            document.getElementById('myModal').style.display = 'none';-->
+<!--            // Proceed with the order-->
+<!--            alert('Ordered successfully!');-->
+<!--            // Redirect to the shopping page-->
+<!--            window.location.href = "{{ url_for('index', user_email=user_email) }}";-->
+<!--        } else {-->
+<!--            // If terms are not accepted, show an error-->
+<!--            alert('Please accept the terms and conditions to proceed.');-->
+<!--            // Optionally, you can clear the error message after a certain time-->
+<!--            setTimeout(function () {-->
+<!--                document.getElementById('errorMessage').innerText = "";-->
+<!--            }, 5000); // 5000 milliseconds (5 seconds)-->
+<!--        }-->
+<!--    }-->
+<!--    </script>-->
 <!--</body>-->
-
 <!--</html>-->
 
+        <option value="AIA">Anguilla</option>
+        <option value="ATA">Antarctica</option>
+        <option value="ATG">Antigua and Barbuda</option>
+        <option value="ARG">Argentina</option>
+        <option value="ARM">Armenia</option>
+        <option value="ABW">Aruba</option>
+        <option value="AUS">Australia</option>
+        <option value="AUT">Austria</option>
+        <option value="AZE">Azerbaijan</option>
+        <option value="BHS">Bahamas</option>
+        <option value="BHR">Bahrain</option>
+        <option value="BGD">Bangladesh</option>
+        <option value="BRB">Barbados</option>
+        <option value="BLR">Belarus</option>
+        <option value="BEL">Belgium</option>
+        <option value="BLZ">Belize</option>
+        <option value="BEN">Benin</option>
+        <option value="BMU">Bermuda</option>
+        <option value="BTN">Bhutan</option>
+        <option value="BOL">Bolivia, Plurinational State of</option>
+        <option value="BES">Bonaire, Sint Eustatius and Saba</option>
+        <option value="BIH">Bosnia and Herzegovina</option>
+        <option value="BWA">Botswana</option>
+        <option value="BVT">Bouvet Island</option>
+        <option value="BRA">Brazil</option>
+        <option value="IOT">British Indian Ocean Territory</option>
+        <option value="BRN">Brunei Darussalam</option>
+        <option value="BGR">Bulgaria</option>
+        <option value="BFA">Burkina Faso</option>
+        <option value="BDI">Burundi</option>
+        <option value="KHM">Cambodia</option>
+        <option value="CMR">Cameroon</option>
+        <option value="CAN">Canada</option>
+        <option value="CPV">Cape Verde</option>
+        <option value="CYM">Cayman Islands</option>
+        <option value="CAF">Central African Republic</option>
+        <option value="TCD">Chad</option>
+        <option value="CHL">Chile</option>
+        <option value="CHN">China</option>
+        <option value="CXR">Christmas Island</option>
+        <option value="CCK">Cocos (Keeling) Islands</option>
+        <option value="COL">Colombia</option>
+        <option value="COM">Comoros</option>
+        <option value="COG">Congo</option>
+        <option value="COD">Congo, the Democratic Republic of the</option>
+        <option value="COK">Cook Islands</option>
+        <option value="CRI">Costa Rica</option>
+        <option value="CIV">Côte d'Ivoire</option>
+        <option value="HRV">Croatia</option>
+        <option value="CUB">Cuba</option>
+        <option value="CUW">Curaçao</option>
+        <option value="CYP">Cyprus</option>
+        <option value="CZE">Czech Republic</option>
+        <option value="DNK">Denmark</option>
+        <option value="DJI">Djibouti</option>
+        <option value="DMA">Dominica</option>
+        <option value="DOM">Dominican Republic</option>
+        <option value="ECU">Ecuador</option>
+        <option value="EGY">Egypt</option>
+        <option value="SLV">El Salvador</option>
+        <option value="GNQ">Equatorial Guinea</option>
+        <option value="ERI">Eritrea</option>
+        <option value="EST">Estonia</option>
+        <option value="ETH">Ethiopia</option>
+        <option value="FLK">Falkland Islands (Malvinas)</option>
+        <option value="FRO">Faroe Islands</option>
+        <option value="FJI">Fiji</option>
+        <option value="FIN">Finland</option>
+        <option value="FRA">France</option>
+        <option value="GUF">French Guiana</option>
+        <option value="PYF">French Polynesia</option>
+        <option value="ATF">French Southern Territories</option>
+        <option value="GAB">Gabon</option>
+        <option value="GMB">Gambia</option>
+        <option value="GEO">Georgia</option>
+        <option value="DEU">Germany</option>
+        <option value="GHA">Ghana</option>
+        <option value="GIB">Gibraltar</option>
+        <option value="GRC">Greece</option>
+        <option value="GRL">Greenland</option>
+        <option value="GRD">Grenada</option>
+        <option value="GLP">Guadeloupe</option>
+        <option value="GUM">Guam</option>
+        <option value="GTM">Guatemala</option>
+        <option value="GGY">Guernsey</option>
+        <option value="GIN">Guinea</option>
+        <option value="GNB">Guinea-Bissau</option>
+        <option value="GUY">Guyana</option>
+        <option value="HTI">Haiti</option>
+        <option value="HMD">Heard Island and McDonald Islands</option>
+        <option value="VAT">Holy See (Vatican City State)</option>
+        <option value="HND">Honduras</option>
+        <option value="HKG">Hong Kong</option>
+        <option value="HUN">Hungary</option>
+        <option value="ISL">Iceland</option>
+        <option value="IND">India</option>
+        <option value="IDN">Indonesia</option>
+        <option value="IRN">Iran, Islamic Republic of</option>
+        <option value="IRQ">Iraq</option>
+        <option value="IRL">Ireland</option>
+        <option value="IMN">Isle of Man</option>
+        <option value="ISR">Israel</option>
+        <option value="ITA">Italy</option>
+        <option value="JAM">Jamaica</option>
+        <option value="JPN">Japan</option>
+        <option value="JEY">Jersey</option>
+        <option value="JOR">Jordan</option>
+        <option value="KAZ">Kazakhstan</option>
+        <option value="KEN">Kenya</option>
+        <option value="KIR">Kiribati</option>
+        <option value="PRK">Korea, Democratic People's Republic of</option>
+        <option value="KOR">Korea, Republic of</option>
+        <option value="KWT">Kuwait</option>
+        <option value="KGZ">Kyrgyzstan</option>
+        <option value="LAO">Lao People's Democratic Republic</option>
+        <option value="LVA">Latvia</option>
+        <option value="LBN">Lebanon</option>
+        <option value="LSO">Lesotho</option>
+        <option value="LBR">Liberia</option>
+        <option value="LBY">Libya</option>
+        <option value="LIE">Liechtenstein</option>
+        <option value="LTU">Lithuania</option>
+        <option value="LUX">Luxembourg</option>
+        <option value="MAC">Macao</option>
+        <option value="MKD">Macedonia, the former Yugoslav Republic of</option>
+        <option value="MDG">Madagascar</option>
+        <option value="MWI">Malawi</option>
+        <option value="MYS">Malaysia</option>
+        <option value="MDV">Maldives</option>
+        <option value="MLI">Mali</option>
+        <option value="MLT">Malta</option>
+        <option value="MHL">Marshall Islands</option>
+        <option value="MTQ">Martinique</option>
+        <option value="MRT">Mauritania</option>
+        <option value="MUS">Mauritius</option>
+        <option value="MYT">Mayotte</option>
+        <option value="MEX">Mexico</option>
+        <option value="FSM">Micronesia, Federated States of</option>
+        <option value="MDA">Moldova, Republic of</option>
+        <option value="MCO">Monaco</option>
+        <option value="MNG">Mongolia</option>
+        <option value="MNE">Montenegro</option>
+        <option value="MSR">Montserrat</option>
+        <option value="MAR">Morocco</option>
+        <option value="MOZ">Mozambique</option>
+        <option value="MMR">Myanmar</option>
+        <option value="NAM">Namibia</option>
+        <option value="NRU">Nauru</option>
+        <option value="NPL">Nepal</option>
+        <option value="NLD">Netherlands</option>
+        <option value="NCL">New Caledonia</option>
+        <option value="NZL">New Zealand</option>
+        <option value="NIC">Nicaragua</option>
+        <option value="NER">Niger</option>
+        <option value="NGA">Nigeria</option>
+        <option value="NIU">Niue</option>
+        <option value="NFK">Norfolk Island</option>
+        <option value="MNP">Northern Mariana Islands</option>
+        <option value="NOR">Norway</option>
+        <option value="OMN">Oman</option>
+        <option value="PAK">Pakistan</option>
+        <option value="PLW">Palau</option>
+        <option value="PSE">Palestinian Territory, Occupied</option>
+        <option value="PAN">Panama</option>
+        <option value="PNG">Papua New Guinea</option>
+        <option value="PRY">Paraguay</option>
+        <option value="PER">Peru</option>
+        <option value="PHL">Philippines</option>
+        <option value="PCN">Pitcairn</option>
+        <option value="POL">Poland</option>
+        <option value="PRT">Portugal</option>
+        <option value="PRI">Puerto Rico</option>
+        <option value="QAT">Qatar</option>
+        <option value="REU">Réunion</option>
+        <option value="ROU">Romania</option>
+        <option value="RUS">Russian Federation</option>
+        <option value="RWA">Rwanda</option>
+        <option value="BLM">Saint Barthélemy</option>
+        <option value="SHN">Saint Helena, Ascension and Tristan da Cunha</option>
+        <option value="KNA">Saint Kitts and Nevis</option>
+        <option value="LCA">Saint Lucia</option>
+        <option value="MAF">Saint Martin (French part)</option>
+        <option value="SPM">Saint Pierre and Miquelon</option>
+        <option value="VCT">Saint Vincent and the Grenadines</option>
+        <option value="WSM">Samoa</option>
+        <option value="SMR">San Marino</option>
+        <option value="STP">Sao Tome and Principe</option>
+        <option value="SAU">Saudi Arabia</option>
+        <option value="SEN">Senegal</option>
+        <option value="SRB">Serbia</option>
+        <option value="SYC">Seychelles</option>
+        <option value="SLE">Sierra Leone</option>
+        <option value="SGP">Singapore</option>
+        <option value="SXM">Sint Maarten (Dutch part)</option>
+        <option value="SVK">Slovakia</option>
+        <option value="SVN">Slovenia</option>
+        <option value="SLB">Solomon Islands</option>
+        <option value="SOM">Somalia</option>
+        <option value="ZAF">South Africa</option>
+        <option value="SGS">South Georgia and the South Sandwich Islands</option>
+        <option value="SSD">South Sudan</option>
+        <option value="ESP">Spain</option>
+        <option value="LKA">Sri Lanka</option>
+        <option value="SDN">Sudan</option>
+        <option value="SUR">Suriname</option>
+        <option value="SJM">Svalbard and Jan Mayen</option>
+        <option value="SWZ">Swaziland</option>
+        <option value="SWE">Sweden</option>
+        <option value="CHE">Switzerland</option>
+        <option value="SYR">Syrian Arab Republic</option>
+        <option value="TWN">Taiwan, Province of China</option>
+        <option value="TJK">Tajikistan</option>
+        <option value="TZA">Tanzania, United Republic of</option>
+        <option value="THA">Thailand</option>
+        <option value="TLS">Timor-Leste</option>
+        <option value="TGO">Togo</option>
+        <option value="TKL">Tokelau</option>
+        <option value="TON">Tonga</option>
+        <option value="TTO">Trinidad and Tobago</option>
+        <option value="TUN">Tunisia</option>
+        <option value="TUR">Turkey</option>
+        <option value="TKM">Turkmenistan</option>
+        <option value="TCA">Turks and Caicos Islands</option>
+        <option value="TUV">Tuvalu</option>
+        <option value="UGA">Uganda</option>
+        <option value="UKR">Ukraine</option>
+        <option value="ARE">United Arab Emirates</option>
+        <option value="GBR">United Kingdom</option>
+        <option value="USA">United States</option>
+        <option value="UMI">United States Minor Outlying Islands</option>
+        <option value="URY">Uruguay</option>
+        <option value="UZB">Uzbekistan</option>
+        <option value="VUT">Vanuatu</option>
+        <option value="VEN">Venezuela, Bolivarian Republic of</option>
+        <option value="VNM">Viet Nam</option>
+        <option value="VGB">Virgin Islands, British</option>
+        <option value="VIR">Virgin Islands, U.S.</option>
+        <option value="WLF">Wallis and Futuna</option>
+        <option value="ESH">Western Sahara</option>
+        <option value="YEM">Yemen</option>
+        <option value="ZMB">Zambia</option>
+        <option value="ZWE">Zimbabwe</option>

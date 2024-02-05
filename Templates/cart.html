@@ -171,10 +171,6 @@
         {% endfor %}
             <p><strong>Grand Total:</strong> <span id="grandTotal">0.00</span></p>
             <p><strong>Total Quantity in Cart:</strong> <span id="cartTotalQuantity">0</span></p>
-<!--        <p><strong >Grand Total:<span id="grandTotal">0.00</span></strong></p>-->
-<!--        &lt;!&ndash; Add this element where you want to display the total quantity &ndash;&gt;-->
-<!--        <p><strong>Total Quantity in Cart:</strong> <span id="cartTotalQuantity">{{ total_quantity }}</span></p>-->
-
         <input type="button" id="buyNowButton" onclick="checkCartAndRedirect()" value="Buy Now">
 
         <a href="{{ url_for('index', user_email=user_email) }}">Continue Shopping</a>
@@ -231,6 +227,13 @@
         function checkCartAndRedirect() {
             var cartSize = {{ user_cart|length }};
             if (cartSize > 0) {
+                // Store cart information in sessionStorage
+                var cartInfo = {
+                    grandTotal: parseFloat($('#grandTotal').text().replace('₹', '').trim()),
+                    totalQuantity: parseInt($('#cartTotalQuantity').text())
+                };
+                sessionStorage.setItem('cartInfo', JSON.stringify(cartInfo));
+
                 // Redirect to personal-details.html when the cart is not empty
                 window.location.href = "{{ url_for('personal_details', user_email=user_email) }}";
             } else {
