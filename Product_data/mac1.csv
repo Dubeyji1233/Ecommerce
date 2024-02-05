@@ -1,4 +1,4 @@
-Brand,Part No,Description,Total W/O Tax,GST,Total with Tax,MRP,image
-MacBook Air,MGN63HN/A,"13-inch MacBook Air: Apple M1 chip with 8-core CPU and 7-core GPU, 8GB RAM, 256GB - Space Grey",78405.00,18%,"92,518","99,900",https://fcracer.com/wp-content/uploads/2022/08/GFXS8815-JPEG-blog-1536x639.jpg
-MacBook Air,MGN93HN/A,"13-inch MacBook Air: Apple M1 chip with 8-core CPU and 7-core GPU, 8GB RAM, 256GB - Silver",78405.00,18%,"92,518","99,900",https://akm-img-a-in.tosshub.com/indiatoday/images/story/201812/MacBook_Air_main.jpeg?size=690:388
-MacBook Air,MGND3HN/A,"13-inch MacBook Air: Apple M1 chip with 8-core CPU and 7-core GPU, 8GB RAM, 256GB - Gold",78405.00,18%,"92,518","99,900",https://pyxis.nymag.com/v1/imgs/d25/67e/946d269e13d9ece4d66bc86a026a7c7005-09-gold-macbook.rhorizontal.w700.jpg
+Brand,Part No,Description,Total W/O Tax,GST,price,MRP,image
+MacBook Air,MGN63HN/A,"13-inch MacBook Air: Apple M1 chip with 8-core CPU and 7-core GPU, 8GB RAM, 256GB - Space Grey",78405,18%,92518.00,"99,900",https://fcracer.com/wp-content/uploads/2022/08/GFXS8815-JPEG-blog-1536x639.jpg
+MacBook Air,MGN93HN/A,"13-inch MacBook Air: Apple M1 chip with 8-core CPU and 7-core GPU, 8GB RAM, 256GB - Silver",78405,18%,92518.00,"99,900",https://akm-img-a-in.tosshub.com/indiatoday/images/story/201812/MacBook_Air_main.jpeg?size=690:388
+MacBook Air,MGND3HN/A,"13-inch MacBook Air: Apple M1 chip with 8-core CPU and 7-core GPU, 8GB RAM, 256GB - Gold",78405,18%,92518.00,"99,900",https://pyxis.nymag.com/v1/imgs/d25/67e/946d269e13d9ece4d66bc86a026a7c7005-09-gold-macbook.rhorizontal.w700.jpg

@@ -346,3 +346,258 @@
 
 <!--</body>-->
 <!--</html>-->
+
+
+
+
+<!--<!DOCTYPE html>-->
+<!--<html lang="en">-->
+<!--<head>-->
+<!--    <meta charset="UTF-8">-->
+<!--    <meta name="viewport" content="width=device-width, initial-scale=1.0">-->
+<!--    <title>Shopping Cart</title>-->
+<!--    <script src="https://code.jquery.com/jquery-3.6.4.min.js"></script>-->
+<!--   <style>-->
+<!--        body {-->
+<!--            margin: 0;-->
+<!--            font-family: Arial, sans-serif;-->
+<!--            background-color: #f2f2f2;-->
+<!--        }-->
+
+<!--        #container {-->
+<!--            margin: 20px;-->
+<!--            padding: 20px;-->
+<!--            background-color: #fff;-->
+<!--            border-radius: 8px;-->
+<!--            box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);-->
+<!--        }-->
+
+<!--        .pages {-->
+<!--            text-align: center;-->
+<!--            background-color: #f2f2f2;-->
+<!--        }-->
+
+<!--        .pages a {-->
+
+<!--            margin: 0 10px;-->
+<!--            text-decoration: none;-->
+<!--            padding: 10px;-->
+<!--            color: #333;-->
+<!--            border-radius: 4px;-->
+<!--            transition: background-color 0.3s;-->
+<!--            display: inline-block;-->
+<!--        }-->
+
+<!--        .pages a:hover {-->
+<!--            background-color: dodgerblue;-->
+<!--            color: white;-->
+<!--        }-->
+
+<!--        h2 {-->
+<!--            margin-top: 20px;-->
+<!--            color: #333;-->
+<!--        }-->
+
+<!--        ul {-->
+<!--            list-style: none;-->
+<!--            padding: 0;-->
+<!--        }-->
+
+<!--        .lii {-->
+<!--            display: flex;-->
+<!--            align-items: center;-->
+<!--            justify-content: space-between;-->
+<!--            border-bottom: 1px solid #ddd;-->
+<!--            padding: 10px 0;-->
+<!--            margin: 10px 0;-->
+<!--        }-->
+
+<!--        .images {-->
+<!--            max-width: 200px;-->
+<!--            margin-right: 20px;-->
+<!--        }-->
+
+<!--        p {-->
+<!--            margin: 0;-->
+<!--        }-->
+
+<!--        form {-->
+<!--            display: flex;-->
+<!--            align-items: center;-->
+<!--        }-->
+
+<!--        .quantity {-->
+<!--            display: flex;-->
+<!--            align-items: center;-->
+<!--        }-->
+
+<!--        .quantity input {-->
+<!--            width: 30px;-->
+<!--            text-align: center;-->
+<!--            margin: 0 5px;-->
+<!--        }-->
+
+<!--        button {-->
+<!--            background-color: #f44336;-->
+<!--            color: white;-->
+<!--            padding: 8px;-->
+<!--            border: none;-->
+<!--            border-radius: 4px;-->
+<!--            cursor: pointer;-->
+<!--        }-->
+
+<!--        button:hover {-->
+<!--            background-color: #d32f2f;-->
+<!--        }-->
+
+<!--        #buyNowButton {-->
+<!--            background-color: dodgerblue;-->
+<!--            color: white;-->
+<!--            padding: 10px;-->
+<!--            text-decoration: none;-->
+<!--            border-radius: 4px;-->
+<!--            display: inline-block;-->
+<!--            margin-top: 20px;-->
+<!--        }-->
+
+<!--        a {-->
+<!--            text-decoration: none;-->
+<!--            color: #333;-->
+<!--        }-->
+
+<!--        #cartTotalQuantity {-->
+<!--            font-weight: bold;-->
+<!--            margin-left: 5px;-->
+<!--        }-->
+<!--    </style>-->
+<!--</head>-->
+<!--<body>-->
+<!--    {% include 'header.html' %}-->
+<!--    <div id="container">-->
+<!--&lt;!&ndash;        <div class="pages">&ndash;&gt;-->
+<!--&lt;!&ndash;            <a href="{{ url_for('cart', user_email=user_email) }}">Shopping Cart</a>&ndash;&gt;-->
+<!--&lt;!&ndash;            <a href="{{ url_for('personal_details', user_email=user_email) }}">Checkout</a>&ndash;&gt;-->
+<!--&lt;!&ndash;            <a href="{{ url_for('cart', user_email=user_email) }}">Order Status</a>&ndash;&gt;-->
+<!--&lt;!&ndash;        </div>&ndash;&gt;-->
+<!--        <h2>User: {{ user_email }}</h2>-->
+
+<!--        {% for product in user_cart %}-->
+<!--            <ul>-->
+<!--                <li class="lii">-->
+<!--                    <img class="images" src="{{ product['image'] }}" alt="{{ product['name'] }}">-->
+<!--                    <div>-->
+<!--                        <p><strong>{{ product['name'] }}</strong></p>-->
+<!--                        <p>{{ product['description'] }}</p>-->
+<!--                        <p>{{ product['price'] }}</p>-->
+<!--                    </div>-->
+<!--                    <form method="post" action="{{ url_for('remove_from_cart') }}">-->
+<!--                        <input type="hidden" name="user_email" value="{{ user_email }}">-->
+<!--                        <input type="hidden" name="product_name" value="{{ product['name'] }}">-->
+<!--                        <input type="hidden" name="product_price" value="{{ product['price'] }}">-->
+<!--                        <input type="hidden" name="product_quantity" value="{{ product['quantity'] }}">-->
+<!--                         <div class="quantity">-->
+<!--                            <button type="button" onclick="updateQuantity('{{ product['name'] }}', -1)">-</button>-->
+<!--                            <input type='text' name='quantity' value="{{ product['quantity'] }}" class='qty' />-->
+<!--                            <button type="button" onclick="updateQuantity('{{ product['name'] }}', 1)">+</button>-->
+<!--                        </div>-->
+<!--                        <div class="total" data-product-index="{{ loop.index }}">-->
+<!--                            Total: ₹ {{ (product['price'] | replace("₹ ", "") | replace(",", "") | float * product['quantity']) | round(2) }}-->
+<!--                        </div>-->
+<!--                        <button type="submit">Remove</button>-->
+<!--                    </form>-->
+
+
+<!--                </li>-->
+<!--            </ul>-->
+<!--        {% endfor %}-->
+
+<!--        <p><strong>Grand Total:</strong> ₹ <span id="grandTotal">{{ grand_total }}</span></p>-->
+<!--        &lt;!&ndash; Add this element where you want to display the total quantity &ndash;&gt;-->
+<!--        <p><strong>Total Quantity in Cart:</strong> <span id="cartTotalQuantity">{{ total_quantity }}</span></p>-->
+
+<!--        <a id="buyNowButton" onclick="checkCartAndRedirect()">Buy Now</a>-->
+
+<!--        <a href="{{ url_for('index', user_email=user_email) }}">Continue Shopping</a>-->
+<!--    </div>-->
+
+<!--      {% include 'footer.html' %}-->
+
+<!--    &lt;!&ndash; Your existing JavaScript code &ndash;&gt;-->
+
+<!--   <script>-->
+<!--    function updateQuantity(productName, change) {-->
+<!--        var quantityInput = document.querySelector(`[name='quantity'][value='${productName}']`);-->
+<!--        var totalElement = document.querySelector(`.total[data-product-index='${productName}']`);-->
+
+<!--        var currentQuantity = parseInt(quantityInput.value);-->
+<!--        var productPrice = parseFloat(totalElement.innerText.replace("Total: ₹ ", "")) / currentQuantity;-->
+
+<!--        // Update quantity-->
+<!--        var newQuantity = Math.max(currentQuantity + change, 0);-->
+<!--        quantityInput.value = newQuantity;-->
+
+<!--        // Update total-->
+<!--        totalElement.innerText = 'Total: ₹ ' + (newQuantity * productPrice).toFixed(2);-->
+
+<!--        // Update cart total-->
+<!--        updateCartTotal();-->
+<!--    }-->
+
+<!--    function updateCartTotal() {-->
+<!--        let totalQuantity = 0;-->
+<!--        let grandTotal = 0;-->
+
+<!--        // Iterate through all quantity inputs and sum up the values-->
+<!--        document.querySelectorAll('.quantity .qty').forEach(function (quantityInput) {-->
+<!--            let productName = quantityInput.getAttribute('value');-->
+<!--            let totalElement = document.querySelector(`.total[data-product-index='${productName}']`);-->
+
+<!--            let price = parseFloat(totalElement.innerText.replace('Total: ₹ ', ''));-->
+<!--            let quantity = parseInt(quantityInput.value);-->
+
+<!--            totalQuantity += quantity;-->
+<!--            grandTotal += price;-->
+<!--        });-->
+
+<!--        // Display the total quantity in your cart-->
+<!--        document.getElementById('cartTotalQuantity').innerText = totalQuantity;-->
+
+<!--        // Format and display the grand total-->
+<!--        document.getElementById('grandTotal').innerText = '₹ ' + grandTotal.toFixed(2).replace(/\d(?=(\d{3})+\.)/g, '$&,');-->
+<!--    }-->
+
+<!--    function checkCartAndRedirect() {-->
+<!--        var cartSize = {{ user_cart|length }};-->
+<!--        if (cartSize > 0) {-->
+<!--            // Redirect to personal-details.html when the cart is not empty-->
+<!--            window.location.href = "{{ url_for('personal_details', user_email=user_email) }}";-->
+<!--        } else {-->
+<!--            alert('Your cart is empty. Please continue shopping.');-->
+<!--        }-->
+<!--    }-->
+
+<!--    jQuery(document).ready(($) => {-->
+<!--        $('.quantity').on('click', 'button', function (e) {-->
+<!--            let $input = $(this).siblings('input.qty');-->
+<!--            let val = parseInt($input.val());-->
+
+<!--            if ($(this).hasClass('plus')) {-->
+<!--                $input.val(val + 1).change();-->
+<!--            } else if ($(this).hasClass('minus') && val > 0) {-->
+<!--                $input.val(val - 1).change();-->
+<!--            }-->
+<!--        });-->
+
+<!--        // Change event handler for the quantity input-->
+<!--        $('.quantity').on('change', '.qty', function () {-->
+<!--            updateCartTotal();-->
+<!--        });-->
+
+<!--        // Initial update of cart total on page load-->
+<!--        updateCartTotal();-->
+<!--    });-->
+<!--</script>-->
+<!--</body>-->
+
+<!--</html>-->
+

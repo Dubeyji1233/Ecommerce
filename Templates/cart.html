@@ -11,6 +11,15 @@
             font-family: Arial, sans-serif;
             background-color: #f2f2f2;
         }
+        .cart-item{
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            border-bottom: 1px solid #ddd;
+            padding: 10px 0;
+            margin: 10px 0;
+        }
+
 
         #container {
             margin: 20px;
@@ -122,16 +131,16 @@
 <body>
     {% include 'header.html' %}
     <div id="container">
-        <div class="pages">
+<!--        <div class="pages">-->
 <!--            <a href="{{ url_for('cart', user_email=user_email) }}">Shopping Cart</a>-->
 <!--            <a href="{{ url_for('personal_details', user_email=user_email) }}">Checkout</a>-->
 <!--            <a href="{{ url_for('cart', user_email=user_email) }}">Order Status</a>-->
-        </div>
+<!--        </div>-->
         <h2>User: {{ user_email }}</h2>
 
         {% for product in user_cart %}
             <ul>
-                <li class="lii">
+                <li class="lii"  >
                     <img class="images" src="{{ product['image'] }}" alt="{{ product['name'] }}">
                     <div>
                         <p><strong>{{ product['name'] }}</strong></p>
@@ -143,30 +152,82 @@
                         <input type="hidden" name="product_name" value="{{ product['name'] }}">
                         <input type="hidden" name="product_price" value="{{ product['price'] }}">
                         <input type="hidden" name="product_quantity" value="{{ product['quantity'] }}">
-                        <div class="quantity">
-                            <input type='button' value='-' class='qtyminus minus' field='quantity' />
-                            <input type='text' name='quantity' value="{{ product['quantity'] }}" class='qty' />
-                            <input type='button' value='+' class='qtyplus plus' field='quantity' />
+                        <div class="cart-item" data-product-id="1" data-product-price="{{ product['price'] }}">
+                            <div class="quantity">
+                                <input type="button" class="qty-btn minus" value="-">
+                                <input type="text" class="qty" value="{{ product['quantity'] }}" readonly>
+                                <input type="button" class="qty-btn plus" value="+">
+
+                            </div>
                         </div>
-                        <div class="total" data-product-index="{{ loop.index }}">
-                            Total: ₹ {{ (product['price'] | replace("₹ ", "") | replace(",", "") | float * product['quantity']) | round(2) }}
-                        </div>
-                        <button type="submit">Remove</button>
+
+                    <div class="cart-summary">
+<!--                        <p>Total: </p>-->
+                    </div>
+                        <button class="remove-btn">Remove</button>
                     </form>
                 </li>
             </ul>
         {% endfor %}
+            <p><strong>Grand Total:</strong> <span id="grandTotal">0.00</span></p>
+            <p><strong>Total Quantity in Cart:</strong> <span id="cartTotalQuantity">0</span></p>
+<!--        <p><strong >Grand Total:<span id="grandTotal">0.00</span></strong></p>-->
+<!--        &lt;!&ndash; Add this element where you want to display the total quantity &ndash;&gt;-->
+<!--        <p><strong>Total Quantity in Cart:</strong> <span id="cartTotalQuantity">{{ total_quantity }}</span></p>-->
 
-        <p><strong>Grand Total:</strong> ₹ {{ grand_total }}</p>
-        <!-- Add this element where you want to display the total quantity -->
-        <p><strong>Total Quantity in Cart:</strong> <span id="cartTotalQuantity">{{ total_quantity }}</span></p>
-
-        <a id="buyNowButton" onclick="checkCartAndRedirect()">Buy Now</a>
+        <input type="button" id="buyNowButton" onclick="checkCartAndRedirect()" value="Buy Now">
 
         <a href="{{ url_for('index', user_email=user_email) }}">Continue Shopping</a>
     </div>
     {% include 'footer.html' %}
     <script>
+        $(document).ready(function() {
+            updateCartSummary();
+
+            $('.qty-btn').on('click', function() {
+                var $item = $(this).closest('.cart-item');
+                var productId = $item.data('product-id');
+                var productPrice = parseFloat($item.data('product-price').replace('₹', '').trim());
+                var quantity = parseInt($item.find('.qty').val());
+
+                if ($(this).hasClass('plus')) {
+                    quantity++;
+                } else if ($(this).hasClass('minus') && quantity > 1) {
+                    quantity--;
+                }
+
+                $item.find('.qty').val(quantity);
+                $item.find('.total-price').text('₹ ' + (productPrice * quantity).toFixed(2));
+
+                updateCartSummary();
+            });
+
+            $('.remove-btn').on('click', function() {
+                var $item = $(this).closest('.cart-item');
+                $item.remove();
+
+                updateCartSummary();
+            });
+
+            function updateCartSummary() {
+                var grandTotal = 0;
+                var totalQuantity = 0;
+
+                $('.cart-item').each(function() {
+                    var productPrice = parseFloat($(this).data('product-price').replace('₹', '').trim());
+                    var quantity = parseInt($(this).find('.qty').val());
+
+                    if (!isNaN(productPrice) && !isNaN(quantity)) {
+                        grandTotal += productPrice * quantity;
+                        totalQuantity += quantity;
+                    }
+                });
+
+                $('#grandTotal').text('₹ ' + grandTotal.toFixed(2));
+                $('#cartTotalQuantity').text(totalQuantity);
+            }
+        });
+
         function checkCartAndRedirect() {
             var cartSize = {{ user_cart|length }};
             if (cartSize > 0) {
@@ -176,58 +237,8 @@
                 alert('Your cart is empty. Please continue shopping.');
             }
         }
+</script>
 
-        jQuery(document).ready(($) => {
-            $('.quantity').on('click', '.plus', function(e) {
-                let $input = $(this).prev('input.qty');
-                let val = parseInt($input.val());
-                $input.val(val + 1).change();
-            });
-
-            $('.quantity').on('click', '.minus', function(e) {
-                let $input = $(this).next('input.qty');
-                var val = parseInt($input.val());
-                if (val > 0) {
-                    $input.val(val - 1).change();
-                }
-            });
-
-            // Change event handler for the quantity input
-            $('.quantity').on('change', '.qty', function() {
-                updateCartTotal();
-            });
-
-            // Initial update of cart total on page load
-            updateCartTotal();
-
-            function updateCartTotal() {
-                let totalQuantity = 0;
-
-                // Iterate through all quantity inputs and sum up the values
-                $('.quantity .qty').each(function() {
-                    totalQuantity += parseInt($(this).val());
-                });
-
-                // Display the total quantity in your cart
-                $('#cartTotalQuantity').text(totalQuantity);
-
-                // Calculate and display the grand total
-                let grandTotal = 0;
-                $('.lii').each(function() {
-                    let price = parseFloat($(this).find('p:eq(2)').text().replace('₹ ', '').replace(',', ''));
-                    let quantity = parseInt($(this).find('.qty').val());
-                    grandTotal += price * quantity;
-                });
-
-                // Format grand total with comma separator
-                $('#grandTotal').text("₹ " + grandTotal.toFixed(2).replace(/\d(?=(\d{3})+\.)/g, '$&,'));
-            }
-        });
-
-
-    </script>
 </body>
 
 </html>
-
-

@@ -16,7 +16,7 @@
         }
 
         .product {
-            display: flex;
+<!--            display: flex;-->
             flex-wrap: wrap;
             justify-content: space-around; /* Adjusted justify-content for spacing */
             padding: 100px; /* Adjusted padding for content */
@@ -40,7 +40,7 @@
             box-shadow: 0 4px 8px 0 rgba(0, 0, 0, 0.2);
             padding: 20px;
             margin-bottom: 30px;
-            display: flex;
+<!--            display: flex;-->
             flex-wrap: wrap;
             justify-content: space-around;
             box-sizing: border-box; /* Added box-sizing property */
@@ -153,11 +153,12 @@
         {% for product in user_products %}
         <div class="p">
             <div class="product-container">
-                    <h2>{{ product['Brand'] }} - {{ product['Part No'] }}</h2>
+<!--                    <h2>{{ product['Brand'] }} - {{ product['Part No'] }}</h2>-->
                     <img src="{{ product['image']}}" class="image">
-                    <p>Description: {{ product['Description'] if product['Description'] else 'N/A' }}</p>
-                    <p>Total Without Tax: {{ product['Total W/O Tax'] if product['Total W/O Tax'] else 'N/A' }}</p>
-                    <p>GST: {{ product['GST'] if product['GST'] else 'N/A' }}</p>
+                     <p>{{ product['Brand'] }} - {{ product['Part No'] }}</p>
+<!--                    <p>Description: {{ product['Description'] if product['Description'] else 'N/A' }}</p>-->
+<!--                    <p>Total Without Tax: {{ product['Total W/O Tax'] if product['Total W/O Tax'] else 'N/A' }}</p>-->
+<!--                    <p>GST: {{ product['GST'] if product['GST'] else 'N/A' }}</p>-->
                     <p>Total with Tax: {{ product['Total with Tax'] if product['Total with Tax'] else 'N/A' }}</p>
                     <p>MRP: {{ product['MRP'] if product['MRP'] else 'N/A' }}</p>
                     <form method="post" action="{{ url_for('add_to_cart4') }}">
@@ -166,7 +167,7 @@
                         <input type="hidden" name="product_image" value="{{ product['image'] }}">
                         <input type="hidden" name="product_description" value="{{ product['Description'] }}">
                         <input type="hidden" name="product_rating" value="{{ product['Rating'] }}">
-                        <input type="hidden" name="product_price" value="{{ product['Total with Tax'] }}">
+                        <input type="hidden" name="product_price" value="{{ product['price'] }}">
                         <div class="quantity">
                             <button type="submit" class="add-to-cart">Add to Cart</button>
                             <input type='button' value='-' class='qtyminus minus' field='quantity' />

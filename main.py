@@ -1,5 +1,5 @@
 import pandas as pd
-from flask import Flask, render_template, request, redirect, url_for, jsonify,json
+from flask import Flask, render_template, redirect, url_for,request, app
 
 import csv
 import jsonify
@@ -101,8 +101,10 @@ def cart():
     # Format grand_total with comma separator
     formatted_grand_total = "{:,.2f}".format(grand_total)
 
-    return render_template('cart.html', user_cart=user_cart, user_email=user_email,
-                           grand_total=formatted_grand_total, total_quantity=total_quantity,product=product)
+
+
+    return render_template('cart.html', user_cart=user_cart, user_email=user_email, product=product,price=price)
+
 
 
 @app.route('/add_to_cart', methods=['POST'])
@@ -134,6 +136,8 @@ def add_to_cart():
     # Render the current template with updated cart information
     return render_template('orient.html', user_email=user_email, user_cart=cart)
 
+
+
 @app.route('/add_to_cart4', methods=['POST'])
 def add_to_cart4():
     user_email = request.form.get('user_email', '')
@@ -160,8 +164,8 @@ def add_to_cart4():
         # Add the product details to the user's cart
         cart.append(product_details)
 
-    # Render the current template with updated cart information
-    return render_template('mac.html', user_email=user_email, user_cart=cart)
+    # Redirect to the product page or any other appropriate page
+    return redirect(url_for('mac', user_email=user_email, user_cart=cart))
 
 @app.route('/add_to_cart1', methods=['POST'])
 def add_to_cart1():
@@ -196,6 +200,7 @@ def add_to_cart1():
 def add_to_cart2():
     user_email = request.form.get('user_email', '')
     product_name = request.form.get('product_name', '')
+    product_price = request.form.get('product_price', '')
 
     # Retrieve the product details
     product_details = {
@@ -203,8 +208,8 @@ def add_to_cart2():
         'image': request.form.get('product_image', ''),
         'description': request.form.get('product_description', ''),
         'rating': request.form.get('product_rating', ''),
-        'price': request.form.get('product_price', ''),
-        'quantity': int(request.form.get('quantity', 0)),  # Add quantity information
+        'price': product_price,  # Use the retrieved product price
+        'quantity': int(request.form.get('quantity', 0)),
     }
 
     # Check if the product is already in the user's cart
@@ -218,8 +223,10 @@ def add_to_cart2():
         # Add the product details to the user's cart
         cart.append(product_details)
 
-    # Render the current template with updated cart information
-    return render_template('iphone.html', user_email=user_email, user_cart=cart)
+    # Redirect to the product page or any other appropriate page
+    return redirect(url_for('iphone', user_email=user_email, user_cart=cart))
+
+
 
 @app.route('/remove_from_cart', methods=['POST'])
 def remove_from_cart():
@@ -234,32 +241,7 @@ def remove_from_cart():
         carts[user_email] = updated_cart
 
     # Redirect back to the cart page
-    return redirect(url_for('cart', user_email=user_email,product_price=product_price,product_quantity=product_quantity))
-
-@app.route('/calculate_cart', methods=['POST'])
-def calculate_cart():
-    user_email = request.form.get('user_email')
-
-    cart = []
-    total_quantity = 0
-    grand_total = 0
-
-    for i in range(1, 11):  # assuming a maximum of 10 products in the cart
-        product_name = request.form.get(f'product_name{i}')
-        product_price = float(request.form.get(f'product_price{i}', 0))
-        quantity = int(request.form.get(f'quantity{i}', 0))
-
-        if product_name and quantity > 0:
-            total_quantity += quantity
-            grand_total += product_price * quantity
-
-            cart.append({
-                'name': product_name,
-                'price': product_price,
-                'quantity': quantity
-            })
-
-    return render_template('cart.html', user_email=user_email, cart=cart, total_quantity=total_quantity, grand_total=grand_total)
+    return redirect(url_for('cart', user_email=user_email))
 
 @app.route('/payment_gateway')  # Add this line
 def payment_gateway():
