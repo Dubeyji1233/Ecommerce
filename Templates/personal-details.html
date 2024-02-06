@@ -1,5 +1,9 @@
-<html>
+<!DOCTYPE html>
+<html lang="en">
 <head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <script src="https://code.jquery.com/jquery-3.6.4.min.js"></script>
     <style>
         @import url('https://fonts.googleapis.com/css?family=Roboto+Condensed:400,700');
 
@@ -7,7 +11,6 @@
           background: url('http://all4desktop.com/data_images/original/4236532-background-images.jpg');
           font-family: 'Roboto Condensed', sans-serif;
           color: #262626;
-          margin: 5% 0;
         }
         .container{
           width: 100%;
@@ -32,8 +35,12 @@
         form{
           flex: 4;
         }
-        .Yorder{
-          flex: 2;
+        .Yorder {
+            margin-top: 15px;
+            height: 120px; /* You can keep a fixed height or remove it depending on your design */
+            border: 1px solid #dadada;
+            overflow: auto; /* Add overflow property to enable scrolling if needed */
+            list-style-type: none;
         }
         .title{
           background: -webkit-gradient(linear, left top, right bottom, color-stop(0, #5195A8), color-stop(100, #70EAFF));
@@ -72,16 +79,8 @@
           color: #888;
         }
         select{
-          width: 72%;
-          height: 45px;
           padding: 5px 10px;
           margin-bottom: 10px;
-        }
-        .Yorder{
-          margin-top: 15px;
-          height: 600px;
-          padding: 20px;
-          border: 1px solid #dadada;
         }
         table{
           margin: 0;
@@ -103,12 +102,15 @@
           border-bottom: 1px solid #dadada;
           padding: 25px 25px 25px 0;
         }
+        li{
+          display: block
+        }
 
         p{
           display: block;
           color: #888;
           margin: 0;
-          padding-left: 25px;
+<!--          padding-left: 25px;-->
         }
         .Yorder>div{
           padding: 15px 0;
@@ -173,6 +175,12 @@
             border-radius: 5px;
             cursor: pointer;
         }
+      .img {
+        max-width: 100px;
+        margin-right: 20px;
+        margin-top: 30px;
+
+    }
     </style>
 </head>
 <body>
@@ -484,11 +492,20 @@
       <input type="email" name="city">
     </label>
   </form>
-  <div class="Yorder">
+  <div class="cont">
+    <h3>Your Selected Products</h3>
+    <div class="Yorder">
+
+        <ul>
+            {% for product in user_cart %}
+                <li>
+                   <p> <img class="img" src="{{ product['image'] }}" alt="{{ product['name'] }}">{{ product['name'] }}</p>
+                </li>
+            {% endfor %}
+        </ul>
+    </div>
+    <div class="additional-container">
       <table id="orderTable">
-          <tr>
-              <th colspan="2">Your order</th>
-          </tr>
           <tr>
               <td>Product Quantity</td>
               <td id="productQuantity">0</td>
@@ -497,31 +514,31 @@
               <td>Subtotal</td>
               <td id="subtotal">₹ 0.00</td>
           </tr>
-          <tr>
-              <td>Shipping</td>
-              <td id="shipping">Free shipping</td>
-          </tr>
       </table>
-      <button id="doneButton">Done</button>
+
+      <button id="doneButton">Place Order</button>
       <p class="error-message" id="errorMessage"></p>
   </div>
+  </div>
 
-        <div id="myModal" class="modal-container">
-            <div class="modal-content-terms">
-                <h2>Terms and Conditions</h2>
-                <ol>
-                    <li><strong>Product Description:</strong> Ensure that you have read and understood the product description.</li>
-                    <li><strong>Privacy Policy:</strong> We respect your privacy. Read our privacy policy to understand how we handle your data.</li>
-                </ol>
-                <div class="accept-terms">
-                    <input type="checkbox" id="acceptTerms" required>
-                    <label for="acceptTerms">I agree to the terms and conditions</label>
-                    <br>
-                    <button>OK</button>
-                    <button >Cancel</button>
-                </div>
-            </div>
-        </div>
+
+
+      <div id="myModal" class="modal-container">
+          <div class="modal-content-terms">
+              <h2>Terms and Conditions</h2>
+              <ol>
+                  <li><strong>Product Description:</strong> Ensure that you have read and understood the product description.</li>
+                  <li><strong>Privacy Policy:</strong> We respect your privacy. Read our privacy policy to understand how we handle your data.</li>
+              </ol>
+              <div class="accept-terms">
+                  <input type="checkbox" id="acceptTerms" required>
+                  <label for="acceptTerms">I agree to the terms and conditions</label>
+                  <br>
+                  <button>OK</button>
+                  <button >Cancel</button>
+              </div>
+          </div>
+      </div>
  </div>
 </div>
 {% include 'footer.html' %}
@@ -603,7 +620,8 @@
 
           // Update the table content with cart information
           document.getElementById('productQuantity').textContent = cartInfo.totalQuantity;
-          document.getElementById('subtotal').textContent = `$${cartInfo.grandTotal.toFixed(2)}`;
+          document.getElementById('subtotal').textContent = `₹ ${cartInfo.grandTotal.toLocaleString('en-IN', { maximumFractionDigits: 2 })}`;
+
       } else {
           // Handle the case when there is no cart information
           alert('Cart information not found.');

@@ -249,12 +249,17 @@ def payment_gateway():
     domain = user_email.split('@')[-1]
 
     return render_template('payment_gateway.html', domain=domain)
-@app.route('/personal-details')  # Corrected route
+@app.route('/personal-details')
 def personal_details():
     user_email = request.args.get('user_email', '')
     domain = user_email.split('@')[-1]
 
-    return render_template('personal-details.html', domain=domain,  user_email=user_email)
+    # Retrieve product details from the user's cart
+    user_cart = carts.get(user_email, [])
+
+    # Pass product details to the template
+    return render_template('personal-details.html', domain=domain, user_email=user_email, user_cart=user_cart)
+
 
 
 

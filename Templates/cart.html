@@ -168,6 +168,7 @@
                     </form>
                 </li>
             </ul>
+
         {% endfor %}
             <p><strong>Grand Total:</strong> <span id="grandTotal">0.00</span></p>
             <p><strong>Total Quantity in Cart:</strong> <span id="cartTotalQuantity">0</span></p>
@@ -219,7 +220,7 @@
                     }
                 });
 
-                $('#grandTotal').text('₹ ' + grandTotal.toFixed(2));
+                 $('#grandTotal').text('₹ ' + grandTotal.toFixed(2).toLocaleString());
                 $('#cartTotalQuantity').text(totalQuantity);
             }
         });
