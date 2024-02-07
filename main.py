@@ -1,10 +1,12 @@
 import pandas as pd
-from flask import Flask, render_template, redirect, url_for,request, app
+from flask import Flask, render_template, redirect, url_for,request
+from flask_mail import Mail, Message
 
 import csv
 import jsonify
 
 app = Flask(__name__)
+mail = Mail(app)
 
 # Mock product data for different domains
 products = {
@@ -271,7 +273,20 @@ def payment_success():
 
     return render_template('payment-success.html', user_email=user_email, domain=domain)
 
+def send_invoice_email(user_email):
+    # Your email sending logic here
+    try:
+        # Create a Message instance
+        msg = Message('Invoice for Your Order', sender='abhishekdubey@orientindia.net', recipients=[user_email])
 
+        # Set the email body (you may customize this)
+        msg.body = 'Thank you for your order. Here is your invoice:\n\n[Include invoice details here]'
+
+        # Send the email
+        mail.send(msg)
+    except Exception as e:
+        # Handle email sending failure
+        print(f"Failed to send email: {str(e)}")
 
 
 if __name__ == '__main__':

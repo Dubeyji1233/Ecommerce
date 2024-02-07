@@ -558,11 +558,10 @@
   <div class="cont">
         <h3>Your Selected Products</h3>
         <div class="Yorder">
-
             <ul>
                 {% for product in user_cart %}
                     <li>
-                       <p> <img class="img" src="{{ product['image'] }}" alt="{{ product['name'] }}">{{ product['name'] }}</p>
+                       <p> <img class="img" src="{{ product['image'] }}" alt="{{ product['name'] }}">{{ product['name'] }} x {{ product['quantity'] }}</p>
                     </li>
                 {% endfor %}
             </ul>
@@ -570,11 +569,11 @@
         <div class="additional-container">
           <table id="orderTable">
               <tr>
-                  <td>Product Quantity</td>
+                  <td>Total Quantity </td>
                   <td id="productQuantity">0</td>
               </tr>
               <tr>
-                  <td>Subtotal</td>
+                  <td>Grand Total</td>
                   <td id="subtotal">₹ 0.00</td>
               </tr>
           </table>
