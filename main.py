@@ -255,10 +255,7 @@ def personal_details():
     # Retrieve product details from the user's cart
     user_cart = carts.get(user_email, [])
 
-    # Pass product details to the template
     return render_template('personal-details.html', domain=domain, user_email=user_email, user_cart=user_cart)
-
-
 @app.route("/invoice_details", methods=["GET"])
 def invoice_details():
     user_email = request.args.get('user_email', '')
@@ -270,8 +267,6 @@ def invoice_details():
 
 @app.route("/send_invoice_mail", methods=["POST"])
 def send_invoice_mail(email):
-    # Replace 'your_email@gmail.com' and 'your_email_password' with your email credentials
-
 
     subject = 'Invoice Details'
     body = 'Your Order is Successful. Thank you for shopping with us!'
