@@ -1,0 +1,33 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Invoice Details</title>
+</head>
+<body>
+    <h2>Invoice Details</h2>
+
+    <h3>User Details:</h3>
+    <p>First Name: {user_details['fname']}</p>
+    <p>Last Name: {user_details['lname']}</p>
+    <p>Employee Code: {user_details['ecode']}</p>
+    <p>Company Name: {user_details['company']}</p>
+    <p>Phone Number: {user_details['phone']}</p>
+    <p>Email Address: {user_details['email']}</p>
+    <p>Country: {user_details['country']}</p>
+    <p>Street Address: {user_details['street']}</p>
+    <p>City/Town: {user_details['city']}</p>
+    <p>State/Country: {user_details['state']}</p>
+
+    <h3>Selected Products:</h3>
+    <ul>
+        {% for product in user_cart %}
+            <li>
+                <img src="{{ product['image'] }}" alt="{{ product['name'] }}">
+                {product['name']} x {product['quantity']}
+            </li>
+        {%endfor %}
+    </ul>
+</body>
+</html>

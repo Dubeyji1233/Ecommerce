@@ -1,9 +1,11 @@
 import pandas as pd
 from flask import Flask, render_template, redirect, url_for,request
-from flask_mail import Mail, Message
-
+from flask_mail import Mail
+from flask import Flask, render_template
+import smtplib
+from email.mime.multipart import MIMEMultipart
+from email.mime.text import MIMEText
 import csv
-import jsonify
 
 app = Flask(__name__)
 mail = Mail(app)
@@ -245,12 +247,6 @@ def remove_from_cart():
     # Redirect back to the cart page
     return redirect(url_for('cart', user_email=user_email))
 
-@app.route('/payment_gateway')  # Add this line
-def payment_gateway():
-    user_email = request.args.get('user_email', '')
-    domain = user_email.split('@')[-1]
-
-    return render_template('payment_gateway.html', domain=domain)
 @app.route('/personal-details')
 def personal_details():
     user_email = request.args.get('user_email', '')
@@ -263,30 +259,32 @@ def personal_details():
     return render_template('personal-details.html', domain=domain, user_email=user_email, user_cart=user_cart)
 
 
-
-
-
-@app.route('/payment-success')
-def payment_success():
+@app.route("/invoice_details", methods=["GET"])
+def invoice_details():
     user_email = request.args.get('user_email', '')
-    domain = user_email.split('@')[-1]
 
-    return render_template('payment-success.html', user_email=user_email, domain=domain)
+    # Call the function to send the invoice email
+    send_invoice_mail(user_email)
 
-def send_invoice_email(user_email):
-    # Your email sending logic here
+    return 'Invoice email sent!'
+
+@app.route("/send_invoice_mail", methods=["POST"])
+def send_invoice_mail(email):
+    # Replace 'your_email@gmail.com' and 'your_email_password' with your email credentials
+
+
+    subject = 'Invoice Details'
+    body = 'Your Order is Successful. Thank you for shopping with us!'
+
     try:
-        # Create a Message instance
-        msg = Message('Invoice for Your Order', sender='abhishekdubey@orientindia.net', recipients=[user_email])
+        with smtplib.SMTP('smtp.gmail.com', 587) as server:
+            server.starttls()
+            server.login(sender_email, sender_password)
 
-        # Set the email body (you may customize this)
-        msg.body = 'Thank you for your order. Here is your invoice:\n\n[Include invoice details here]'
-
-        # Send the email
-        mail.send(msg)
+            message = f'Subject: {subject}\n\n{body}'
+            server.sendmail(sender_email, email, message)
     except Exception as e:
-        # Handle email sending failure
-        print(f"Failed to send email: {str(e)}")
+        print(f"Error sending email: {e}")
 
 
 if __name__ == '__main__':

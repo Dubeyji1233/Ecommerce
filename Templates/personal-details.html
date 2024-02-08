@@ -587,16 +587,17 @@
 
       <div id="myModal" class="modal-container">
           <div class="modal-content-terms">
-              <h2>Terms and Conditions</h2>
+              <h2>Terms and Conditions</h2><br>
               <ol>
-                  <li><strong>Product Description:</strong> Ensure that you have read and understood the product description.</li>
+                  <li><strong>Product Description:</strong> Ensure that you have read and understood the product description.</li><br>
                   <li><strong>Privacy Policy:</strong> We respect your privacy. Read our privacy policy to understand how we handle your data.</li>
               </ol>
+              <br>
               <div class="accept-terms">
-                  <input type="checkbox" id="acceptTerms" required>
-                  <label for="acceptTerms">I agree to the terms and conditions</label>
-                  <br>
-                  <button>OK</button>
+                  <input type="checkbox" id="acceptTerms" required>I agree to the terms and conditions
+
+                  <br><br>
+                  <button onclick="sendInvoice('{{ user_email }}')">OK</button><br>
                   <button >Cancel</button>
               </div>
           </div>
@@ -604,7 +605,6 @@
  </div>
 </div>
 {% include 'footer.html' %}
-
 <script>
     // Function to display the modal when the "Done" button is clicked
     document.getElementById('doneButton').onclick = function () {
@@ -628,7 +628,6 @@
             }
         }
 
-        // If all required fields are filled, return true
         return true;
     }
 
@@ -697,9 +696,22 @@
               document.getElementById('myModal').style.display = 'block';
           }
       }
+        function sendInvoice(userEmail) {
+            // Make an AJAX request to Flask server
+            fetch(`/invoice_details?user_email=${userEmail}`)
+                .then(response => response.text())
+                .then(data => {
+                    console.log(data);
+                    alert('Invoice email sent!');
+                    // Optionally, you can redirect to another page or perform other actions
+                })
+                .catch(error => {
+                    console.error('Error:', error);
+                    alert('Error sending invoice email. Please try again later.');
+                });
+        }
+
 </script>
-
-
 </body>
 </html>
 
