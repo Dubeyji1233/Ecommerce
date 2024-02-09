@@ -1,12 +1,10 @@
-import pandas as pd
-from flask import Flask, render_template, redirect, url_for,request
+from flask import Flask, render_template, redirect, url_for,request,render_template_string
 from flask_mail import Mail
-from flask import Flask, render_template
-import smtplib
-from email.mime.multipart import MIMEMultipart
-from email.mime.text import MIMEText
 import csv
-
+import smtplib
+from email.mime.text import MIMEText
+from email.mime.multipart import MIMEMultipart
+import html
 app = Flask(__name__)
 mail = Mail(app)
 
@@ -52,11 +50,11 @@ def index():
 
     if domain in products:
         user_products = products[domain]
-        if domain == 'orientindia.net':
+        if domain == 'apple.in':
             return render_template('orient.html', user_products=user_products, user_email=user_email)
         elif domain == 'amazon.in':
             return render_template('amazon.html', user_products=user_products, user_email=user_email)
-        elif domain in ['apple.in', 'apple.com']:
+        elif domain in ['orientindia.net', 'apple.com']:
             return render_template('apple.html', user_products=user_products, user_email=user_email)
 
     else:
@@ -171,6 +169,7 @@ def add_to_cart4():
     # Redirect to the product page or any other appropriate page
     return redirect(url_for('mac', user_email=user_email, user_cart=cart))
 
+
 @app.route('/add_to_cart1', methods=['POST'])
 def add_to_cart1():
     user_email = request.form.get('user_email', '')
@@ -247,6 +246,44 @@ def remove_from_cart():
     # Redirect back to the cart page
     return redirect(url_for('cart', user_email=user_email))
 
+
+# Add the new route for product details
+@app.route('/product_details')
+def product_details():
+    user_email = request.args.get('user_email', '')
+    product_name = request.args.get('product_name', '')
+    product_price = request.args.get('product_price', '')
+
+    # Retrieve the product details based on the product_name (you might need to adjust this logic)
+    # For demonstration purposes, I assume you have a function to get product details by name
+    product_details = get_product_details_by_name(product_name)
+
+    return render_template('product-details.html', user_email=user_email, product_details=product_details)
+
+
+# You may need to implement a function to get product details by name
+def get_product_details_by_name(product_name):
+    file_path = r'C:\Users\abhishekdubey\PycharmProjects\E-commerce\Product_data\mac1.csv'  # Update with the actual path to your CSV file
+    product_details = None
+
+    with open(file_path, 'r') as file:
+        csv_reader = csv.DictReader(file)
+        for row in csv_reader:
+            if row['Part No'] == product_name:
+                product_details = {
+                    'name': row['Brand'],
+                    'part_no': row['Part No'],
+                    'description': row['Description'],
+                    'total_without_tax': row['Total W/O Tax'],
+                    'gst': row['GST'],
+                    'price': row['price'],
+                    'mrp': row['MRP'],
+                    'image': row['image'],
+                }
+                break
+
+    return product_details
+
 @app.route('/personal-details')
 def personal_details():
     user_email = request.args.get('user_email', '')
@@ -256,6 +293,7 @@ def personal_details():
     user_cart = carts.get(user_email, [])
 
     return render_template('personal-details.html', domain=domain, user_email=user_email, user_cart=user_cart)
+
 @app.route("/invoice_details", methods=["GET"])
 def invoice_details():
     user_email = request.args.get('user_email', '')
@@ -265,8 +303,11 @@ def invoice_details():
 
     return 'Invoice email sent!'
 
-@app.route("/send_invoice_mail", methods=["POST"])
+
 def send_invoice_mail(email):
+
+    sender_email = '' # Update with your email address
+    sender_password = ''
 
     subject = 'Invoice Details'
     body = 'Your Order is Successful. Thank you for shopping with us!'
@@ -278,9 +319,9 @@ def send_invoice_mail(email):
 
             message = f'Subject: {subject}\n\n{body}'
             server.sendmail(sender_email, email, message)
+        print("Email sent successfully!")
     except Exception as e:
         print(f"Error sending email: {e}")
-
 
 if __name__ == '__main__':
     app.run(debug=True)

@@ -24,14 +24,13 @@
         }
 
         #videoContainer {
-            width: 100%;
-<!--            height: 100vh; /* Full viewport height */-->
-            overflow: hidden;
+            height: 50%;
         }
 
-        video {
-            width: 100%;
-            height: 100%;
+        #backgroundVideo {
+            width: 100%; /* Ensures the video takes the full width of the container */
+            height: 100%; /* Ensures the video takes the full height of the container */
+            object-fit: cover; /* Ensures the video maintains its aspect ratio and covers the entire container */
         }
 
         .product-container{
@@ -39,8 +38,8 @@
             background-color: #fff;
             box-shadow: 0 4px 8px 0 rgba(0, 0, 0, 0.2);
             padding: 20px;
+            text-decoration: none;
             margin-bottom: 30px;
-<!--            display: flex;-->
             flex-wrap: wrap;
             justify-content: space-around;
             box-sizing: border-box; /* Added box-sizing property */
@@ -146,16 +145,18 @@
     <div id="videoContainer">
         <form method="post" action="{{ url_for('index') }}">
             <video autoplay muted loop id="backgroundVideo">
-                <source src="{{ url_for('static', filename='images/mac.mp4') }}" type="video/mp4">
+                <source src="{{ url_for('static', filename='images/mac1.mp4') }}" type="video/mp4">
             </video>
         </form>
-
+    </div>
         {% for product in user_products %}
         <div class="p">
             <div class="product-container">
 <!--                    <h2>{{ product['Brand'] }} - {{ product['Part No'] }}</h2>-->
+                    <a href="{{ url_for('product_details', user_email=user_email, product_name=product['Part No']) }}">
                     <img src="{{ product['image']}}" class="image">
                      <p>{{ product['Brand'] }}</p>
+<!--                    <p>{{ product['Part No'] }}</p>-->
 <!--                    <p>Description: {{ product['Description'] if product['Description'] else 'N/A' }}</p>-->
 <!--                    <p>Total Without Tax: {{ product['Total W/O Tax'] if product['Total W/O Tax'] else 'N/A' }}</p>-->
 <!--                    <p>GST: {{ product['GST'] if product['GST'] else 'N/A' }}</p>-->
@@ -174,12 +175,12 @@
                             <input type='text' name='quantity' value='1' class='qty' />
                             <input type='button' value='+' class='qtyplus plus' field='quantity' />
                         </div>
-                </form>
+                    </form>
             </div>
         </div>
         {% endfor %}
 
-    </div>
+
 
     {% include 'footer.html' %}
 

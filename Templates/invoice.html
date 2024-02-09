@@ -3,31 +3,42 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Invoice Details</title>
+        <title>Invoice</title>
+    <style>
+    </style>
 </head>
 <body>
-    <h2>Invoice Details</h2>
 
     <h3>User Details:</h3>
-    <p>First Name: {user_details['fname']}</p>
-    <p>Last Name: {user_details['lname']}</p>
-    <p>Employee Code: {user_details['ecode']}</p>
-    <p>Company Name: {user_details['company']}</p>
-    <p>Phone Number: {user_details['phone']}</p>
-    <p>Email Address: {user_details['email']}</p>
-    <p>Country: {user_details['country']}</p>
-    <p>Street Address: {user_details['street']}</p>
-    <p>City/Town: {user_details['city']}</p>
-    <p>State/Country: {user_details['state']}</p>
+    <p>Email: {{ user_email }}</p>
+    <p>First Name: {{ user_details.first_name }}</p>
+    <p>Last Name: {{ user_details.last_name }}</p>
+    <p>Employee Code: {{ user_details.employee_code }}</p>
+    <p>Company Name: {{ user_details.company_name }}</p>
+    <p>Phone Number: {{ user_details.phone_number }}</p>
+    <p>Email Address: {{ user_details.email_address }}</p>
+    <p>Country: {{ user_details.country }}</p>
+    <p>Street Address: {{ user_details.street_address }}</p>
+    <p>Apartment: {{ user_details.apartment }}</p>
+    <p>City: {{ user_details.city }}</p>
+    <p>State/Country: {{ user_details.state_country }}</p>
 
-    <h3>Selected Products:</h3>
+    <h3>Ordered Products:</h3>
     <ul>
         {% for product in user_cart %}
             <li>
                 <img src="{{ product['image'] }}" alt="{{ product['name'] }}">
-                {product['name']} x {product['quantity']}
+                <p>{{ product['name'] }} x {{ product['quantity'] }}</p>
+                <p>Price: {{ product['price'] }}</p>
             </li>
-        {%endfor %}
+        {% endfor %}
     </ul>
+
+    <h3>Total Summary:</h3>
+    <p>Total Quantity: {{ total_quantity }}</p>
+    <p>Grand Total: ₹ {{ grand_total|floatformat(2) }}</p>
+
+    <a href="{{ url_for('index', user_email=user_email) }}">Back to Main Page</a>
+
 </body>
 </html>

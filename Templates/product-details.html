@@ -1,0 +1,191 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Product Details</title>
+    <script src="https://code.jquery.com/jquery-3.6.4.min.js"></script>
+    <style>
+        body {
+            font-family: 'Arial', sans-serif;
+            margin: 0;
+            padding: 0;
+            background-color: #f8f8f8;
+        }
+
+        header {
+            background-color: #333;
+            color: #fff;
+            padding: 10px;
+            text-align: center;
+        }
+
+        h1 {
+            color: #333;
+        }
+
+        .product-container {
+            max-width: 800px;
+            margin: 20px auto;
+            padding: 20px;
+            background-color: #fff;
+            box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+            border-radius: 8px;
+        }
+
+        .images {
+            max-width: 80%;
+            border-radius: 8px;
+            height: 100%;
+            padding: 20px 20px 20px 20px;
+        }
+
+        .p {
+            margin: 10px 0;
+        }
+
+        .a1 {
+            display: block;
+            margin-top: 20px;
+            text-decoration: none;
+            color: #333;
+            font-weight: bold;
+            border: 2px solid #333;
+            padding: 10px;
+            text-align: center;
+            border-radius: 8px;
+            background-color: #fff;
+        }
+
+        .a1:hover {
+            background-color: #333;
+            color: #fff;
+        }
+        /* Style for quantity input and buttons */
+        .qty-container {
+            display: flex;
+            align-items: center;
+            margin: 10px;
+        }
+
+        .qty {
+            width: 50px;
+            text-align: center;
+            margin: 0 5px;
+            padding: 5px;
+            border: 1px solid #ccc;
+            border-radius: 4px;
+        }
+
+        .qtyminus,
+        .qtyplus,
+        .a {
+            background-color: #333;
+            color: #fff;
+            border: none;
+            padding: 10px;
+            cursor: pointer;
+            font-weight: bold;
+            border-radius: 4px;
+            outline: none;
+            margin: 5px; /* Add space between buttons */
+        }
+
+        .qtyminus:hover,
+        .qtyplus:hover,
+        .a:hover {
+            background-color: #555;
+        }
+
+        /* Style for Buy Now button */
+        #buyNowButton {
+            margin: 10px;
+            padding: 10px;
+            text-align: center;
+            background-color: #4CAF50;
+            color: #fff;
+            border: 2px solid #4CAF50;
+            border-radius: 8px;
+            cursor: pointer;
+            transition: background-color 0.3s ease;
+        }
+
+        #buyNowButton:hover {
+            background-color: #45a049;
+        }
+
+        .quantity {
+            display: flex;
+            align-items: center;
+        }
+
+    </style>
+</head>
+<body>
+    {% include 'header.html' %}
+    <div class="product-container">
+        <h1>Product Details</h1>
+        <div style="display:Flex">
+            <div>
+                <img class="images" src="{{ product_details.image }}" alt="{{ product_details['name'] }}">
+            </div>
+            <div>
+                <p class="p"><strong>Name:</strong> {{ product_details.name }}</p>
+                <p class="p"><strong>Part No:</strong> {{ product_details.part_no }}</p>
+                <p class="p"><strong>Description:</strong> {{ product_details.description }}</p>
+                <p class="p"><strong>Total W/O Tax:</strong> {{ product_details.total_without_tax }}</p>
+                <p class="p"><strong>GST:</strong> {{ product_details.gst }}</p>
+                <p class="p"><strong>Price:</strong> {{ product_details.price }}</p>
+                <p class="p"><strong>MRP:</strong> {{ product_details.mrp }}</p>
+                <div class="quantity">
+
+                    <input type='button' value='-' class='qtyminus minus' field='quantity' />
+                    <input type='text' name='quantity' value='1' class='qty' />
+                    <input type='button' value='+' class='qtyplus plus' field='quantity' />
+                    <button class="a" type="submit">Add to Cart</button>
+                </div>
+                <a class="a1" href="{{ url_for('index', user_email=user_email) }}">Back to Products</a>
+            </div>
+        </div>
+    </div>
+    {% include 'footer.html' %}
+    <script>
+    $(document).ready(function() {
+        $('.quantity').on('click', '.qtyplus', function(e) {
+            let $input = $(this).prev('input.qty');
+            let val = parseInt($input.val());
+            $input.val(val + 1).change();
+        });
+
+        $('.quantity').on('click', '.qtyminus', function(e) {
+            let $input = $(this).next('input.qty');
+            var val = parseInt($input.val());
+            if (val > 0) {
+                $input.val(val - 1).change();
+            }
+        });
+
+        // Change event handler for the quantity input
+        $('.quantity').on('change', '.qty', function() {
+            updateCartTotal();
+        });
+
+        // Initial update of cart total on page load
+        updateCartTotal();
+
+        function updateCartTotal() {
+            let totalQuantity = 0;
+
+            // Iterate through all quantity inputs and sum up the values
+            $('.quantity .qty').each(function() {
+                totalQuantity += parseInt($(this).val());
+            });
+
+            // Display the total quantity in your cart
+            $('#cartTotalQuantity').text(totalQuantity);
+        }
+    });
+</script>
+</body>
+</html>

@@ -577,8 +577,8 @@
                   <td id="subtotal">₹ 0.00</td>
               </tr>
           </table>
-
-          <button id="doneButton">Place Order</button>
+<!--            <a href="{{ url_for('personal_details', user_email=user_email) }}">OK</a><br>-->
+            <button id="doneButton">Place Order</button>
           <p class="error-message" id="errorMessage"></p>
       </div>
   </div>
@@ -597,6 +597,8 @@
                   <input type="checkbox" id="acceptTerms" required>I agree to the terms and conditions
 
                   <br><br>
+
+
                   <button onclick="sendInvoice('{{ user_email }}')">OK</button><br>
                   <button >Cancel</button>
               </div>
