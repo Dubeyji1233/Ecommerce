@@ -66,8 +66,8 @@ def mac():
     user_email = request.args.get('user_email', '')
     domain = user_email.split('@')[-1]
 
-    print(f"User Email: {user_email}")
-    print(f"Domain: {domain}")
+    # print(f"User Email: {user_email}")
+    # print(f"Domain: {domain}")
 
     file_path = r'C:\Users\abhishekdubey\PycharmProjects\E-commerce\Product_data\mac1.csv'
     products_data = read_csv(file_path)
