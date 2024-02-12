@@ -306,8 +306,7 @@ def invoice_details():
 
 def send_invoice_mail(email):
 
-    sender_email = '' # Update with your email address
-    sender_password = ''
+
 
     subject = 'Invoice Details'
     body = 'Your Order is Successful. Thank you for shopping with us!'

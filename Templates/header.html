@@ -2,7 +2,7 @@
 <html>
 <head>
 <meta name="viewport" content="width=device-width, initial-scale=1">
-  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" integrity="sha512-2d4SdYYCBiqJCt4ZBc8e+5SN9TtkssdS5Ow5HvFlG7OorxC6Md5bAa8eaI2F2j6pPeCvFdqv4ubfUzWlPtpwZg==" crossorigin="anonymous" referrerpolicy="no-referrer" />
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" integrity="sha512-2d4SdYYCBiqJCt4ZBc8e+5SN9TtkssdS5Ow5HvFlG7OorxC6Md5bAa8eaI2F2j6pPeCvFdqv4ubfUzWlPtpwZg==" crossorigin="anonymous" referrerpolicy="no-referrer" />
 
 <style>
         * {
@@ -58,6 +58,26 @@
             align-items: center;
         }
 
+        .search-container {
+            display: flex;
+            align-items: center;
+            margin-right: 10px;
+        }
+
+        .search-input {
+            padding: 10px;
+            border: none;
+            border-radius: 4px;
+        }
+
+        .search-btn {
+            padding: 10px;
+            background-color: #ddd;
+            border: none;
+            border-radius: 4px;
+            cursor: pointer;
+        }
+
         @media screen and (max-width: 500px) {
             .header {
                 flex-direction: column;
@@ -72,21 +92,28 @@
             .header-right {
                 margin-top: 10px;
             }
+
+            .search-container {
+                margin: 10px 0;
+            }
         }
-    </style>
+</style>
 </head>
 <body>
 
 <div class="header">
   <img onclick="window.location.href='{{ url_for('index', user_email=user_email) }}'" src="{{ url_for('static', filename='images/Company Logo.png')}}" class="logo">
 
-  <div class="header-right">
+<!--  <div class="search-container">-->
+<!--    <input type="text" class="search-input" placeholder="Search...">-->
+<!--    <button class="search-btn"><i class="fas fa-search"></i></button>-->
+<!--  </div>-->
 
+  <div class="header-right">
     <a href="tel:+912242928888">Contact</a>
     <a href="https://orientindia.in/">About Us</a>
-<!--    <button class="active" onclick="window.location.href='{{ url_for('cart', user_email=user_email) }}'">Cart</button>-->
     <a href="{{ url_for('cart', user_email=user_email) }}">Cart</a>
-    <a  href="{{ url_for('login', user_email=user_email) }}">Log out</a>
+    <a href="{{ url_for('login', user_email=user_email) }}">Log out</a>
   </div>
 </div>
 
