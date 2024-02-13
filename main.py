@@ -69,7 +69,7 @@ def mac():
     # print(f"User Email: {user_email}")
     # print(f"Domain: {domain}")
 
-    file_path = r'C:\Users\shubhambhoite\Desktop\E-Commerce\Product_data\mac1.csv'
+    file_path = r'C:\Users\abhishekdubey\PycharmProjects\E-commerce\Product_data\mac1.csv'
     products_data = read_csv(file_path)
 
     # Filter out rows with None values in 'Total W/O Tax' column
@@ -140,10 +140,11 @@ def add_to_cart():
 
 
 
-@app.route('/add_to_cart4', methods=['POST'])
-def add_to_cart4():
+@app.route('/add_to_cart2', methods=['POST'])
+def add_to_cart2():
     user_email = request.form.get('user_email', '')
     product_name = request.form.get('product_name', '')
+    product_price = request.form.get('product_price', '')
 
     # Retrieve the product details
     product_details = {
@@ -151,8 +152,8 @@ def add_to_cart4():
         'image': request.form.get('product_image', ''),
         'description': request.form.get('product_description', ''),
         'rating': request.form.get('product_rating', ''),
-        'price': request.form.get('product_price', ''),
-        'quantity': int(request.form.get('quantity', 0)),  # Add quantity information
+        'price': product_price,  # Use the retrieved product price
+        'quantity': int(request.form.get('quantity', 0)),
     }
 
     # Check if the product is already in the user's cart
@@ -167,7 +168,7 @@ def add_to_cart4():
         cart.append(product_details)
 
     # Redirect to the product page or any other appropriate page
-    return redirect(url_for('mac', user_email=user_email, user_cart=cart))
+    return redirect(url_for('iphone', user_email=user_email, user_cart=cart))
 
 
 @app.route('/add_to_cart1', methods=['POST'])
@@ -199,8 +200,8 @@ def add_to_cart1():
     # Render the current template with updated cart information
     return render_template('amazon.html', user_email=user_email, user_cart=cart)
 
-@app.route('/add_to_cart2', methods=['POST'])
-def add_to_cart2():
+@app.route('/add_to_cart4', methods=['POST'])
+def add_to_cart4():
     user_email = request.form.get('user_email', '')
     product_name = request.form.get('product_name', '')
     product_price = request.form.get('product_price', '')
@@ -215,7 +216,7 @@ def add_to_cart2():
         'quantity': int(request.form.get('quantity', 0)),
     }
 
-    # Check if the product is already in the user's cart
+    # Check if the product is already in the user's cart based on a unique identifier (e.g., Part No)
     cart = carts.setdefault(user_email, [])
     existing_product = next((p for p in cart if p['name'] == product_name), None)
 
@@ -227,7 +228,8 @@ def add_to_cart2():
         cart.append(product_details)
 
     # Redirect to the product page or any other appropriate page
-    return redirect(url_for('iphone', user_email=user_email, user_cart=cart))
+    return redirect(url_for('mac', user_email=user_email, user_cart=cart))
+
 
 
 
@@ -305,7 +307,8 @@ def invoice_details():
 
 
 def send_invoice_mail(email):
-
+    sender_email = 'abhishekoffical30@gmail.com'  # Update with your email address
+    sender_password = 'axtw igsh cljs wjvz'
 
     subject = 'Invoice Details'
     body = 'Your Order is Successful. Thank you for shopping with us!'
