@@ -69,7 +69,7 @@ def mac():
     # print(f"User Email: {user_email}")
     # print(f"Domain: {domain}")
 
-    file_path = r'C:\Users\abhishekdubey\PycharmProjects\E-commerce\Product_data\mac1.csv'
+    file_path = r'C:\Users\shubhambhoite\Desktop\E-Commerce\Product_data\mac1.csv'
     products_data = read_csv(file_path)
 
     # Filter out rows with None values in 'Total W/O Tax' column
@@ -263,7 +263,7 @@ def product_details():
 
 # You may need to implement a function to get product details by name
 def get_product_details_by_name(product_name):
-    file_path = r'C:\Users\abhishekdubey\PycharmProjects\E-commerce\Product_data\mac1.csv'  # Update with the actual path to your CSV file
+    file_path = r'C:\Users\shubhambhoite\Desktop\E-Commerce\Product_data\mac1.csv'  # Update with the actual path to your CSV file
     product_details = None
 
     with open(file_path, 'r') as file:
@@ -305,7 +305,6 @@ def invoice_details():
 
 
 def send_invoice_mail(email):
-
 
 
     subject = 'Invoice Details'
