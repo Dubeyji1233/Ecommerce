@@ -161,7 +161,7 @@
 <!--                    <p>Total Without Tax: {{ product['Total W/O Tax'] if product['Total W/O Tax'] else 'N/A' }}</p>-->
 <!--                    <p>GST: {{ product['GST'] if product['GST'] else 'N/A' }}</p>-->
                     <p>Total with Tax: {{ product['Total with Tax'] if product['Total with Tax'] else 'N/A' }}</p>
-                    <p>MRP: {{ product['MRP'] if product['MRP'] else 'N/A' }}</p>
+                        <p>MRP: {{ product['MRP'] if product['MRP'] else 'N/A' }}</p> </a>
                     <form method="post" action="{{ url_for('add_to_cart4') }}">
                         <input type="hidden" name="user_email" value="{{ user_email }}">
                         <input type="hidden" name="product_name" value="{{ product['Brand'] }}">
