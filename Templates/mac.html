@@ -3,172 +3,150 @@
 
 <head>
     <meta charset="UTF-8">
-    <meta http-equiv="X-UA-Compatible" content="IE=edge">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Products</title>
     <script src="https://code.jquery.com/jquery-3.6.4.min.js"></script>
-    <title>Mac</title>
+    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css">
     <style>
-        section {
-            display: flex;
-            flex-wrap: wrap;
-            padding: 100px 0; /* Adjusted padding for content */
-            position: relative;
+        body {
+            font-family: 'Arial', sans-serif;
+            margin: 0;
+            padding: 0;
+            background-color: #f8f9fa; /* Light gray background */
+            color: #333; /* Dark gray text */
         }
 
-        .product {
-            display: flex;
-            flex-wrap: wrap;
-            justify-content: space-around; /* Adjusted justify-content for spacing */
-            padding: 100px; /* Adjusted padding for content */
-            position: relative;
+        header {
+            /* Add styles for your header if necessary */
         }
 
         #videoContainer {
-            height: 50%;
+            position: relative;
+            overflow: hidden;
         }
 
         #backgroundVideo {
-            width: 100%; /* Ensures the video takes the full width of the container */
-            height: 100%; /* Ensures the video takes the full height of the container */
-            object-fit: cover; /* Ensures the video maintains its aspect ratio and covers the entire container */
+            width: 100%;
+            height: auto;
         }
 
-        .product-container{
-            width: 25%; /* Adjusted width for responsiveness */
-            background-color: #fff;
-            box-shadow: 0 4px 8px 0 rgba(0, 0, 0, 0.2);
+        .products {
             padding: 20px;
-            text-decoration: none;
-            margin-bottom: 30px;
-            flex-wrap: wrap;
-            justify-content: space-around;
-            box-sizing: border-box; /* Added box-sizing property */
+        }
 
+        .product-container {
+            border: 1px solid #ddd;
+            padding: 20px;
+            margin-bottom: 20px;
+            border-radius: 10px; /* Slightly rounded corners */
+            position: relative;
+            background-color: #fff; /* White background */
+            transition: transform 0.3s ease; /* Add a smooth transition effect */
+            text-align:center;
+        }
+        .product-container:hover {
+            transform: scale(1.05); /* Scale up on hover */
+            box-shadow: 0 8px 16px rgba(0, 0, 0, 0.2); /* Add a subtle box shadow on hover */
         }
 
         .product-container img {
             width: 100%;
-            margin-bottom: 20px;
-            box-shadow: 0 4px 8px 0 rgba(0, 0, 0, 0.2);
-        }
-
-        .product-container h3 {
-            font-size: 18px;
-            font-weight: bold;
-            margin-bottom: 10px;
+            height: 200px; /* Increase the height for better visibility */
+            object-fit: cover;
+            margin-bottom: 15px; /* Reduce margin for better spacing */
+            border-radius: 5px; /* Rounded corners for images */
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1); /* Lighter box shadow */
         }
 
         .product-container p {
-            font-size: 14px;
-            margin-bottom: 20px;
-        }
-
-        .rating {
-            display: flex;
-            align-items: center;
-            margin-bottom: 10px;
-        }
-
-        .rating span {
-            font-size: 14px;
-            color: #ffa500;
-            margin-left: 5px;
-        }
-
-        .price {
-            display: flex;
-            align-items: center;
-            margin-bottom: 20px;
-        }
-
-        .price .discount {
-            font-size: 14px;
-            color: #f00;
-            margin-right: 10px;
-        }
-
-        .price .regular {
-            font-size: 14px;
-            text-decoration: line-through;
-            color: #999;
-            margin-right: 10px;
-        }
-
-        .price .sale {
+            margin: 0;
+            padding: 8px 0; /* Adjust padding for better spacing */
             font-size: 16px;
-            font-weight: bold;
-            color: #f00;
+        }
+
+        .quantity {
+            position: absolute;
+            bottom: 20px;
+            right: 20px;
+        }
+
+        .qtyplus,
+        .qtyminus {
+            border: none;
+            background-color: #eee;
+            padding: 8px 12px;
+            cursor: pointer;
+            border-radius: 3px; /* Rounded buttons */
+        }
+
+        .qtyplus:hover,
+        .qtyminus:hover {
+            background-color: #ddd;
+        }
+
+        .qty {
+            width: 40px;
+            height: 30px;
+            text-align: center;
+            border: 1px solid #ddd;
+            padding: 5px;
+            font-size: 14px;
         }
 
         .add-to-cart {
-            background-color: dodgerblue;
+            background-color: #007bff;
             color: #fff;
-            border: none;
             padding: 10px 20px;
+            border: none;
             cursor: pointer;
-        }
-        .product-container img {
-            width: 100%;
-            height: 200px; /* Set a fixed height for the product images */
-            object-fit: cover; /* Maintain aspect ratio and cover the entire space */
-            margin-bottom: 20px;
-            box-shadow: 0 4px 8px 0 rgba(0, 0, 0, 0.2);
-        }
-        .qty{
-            width:50px;
-            text-align: center;
-        }
-        @media screen and (min-width: 600px) {
-            .product-card {
-                width: 50%; /* Adjusted width for responsiveness on larger screens */
-            }
+            margin-right: 10px;
+            border-radius: 5px; /* Rounded corners for button */
         }
 
-        @media screen and (min-width: 768px) {
-            .product-card {
-                width: 25%; /* Further adjusted width for larger screens */
-            }
-        .image{
-            height: 10%;
-            width:10%;
+        .add-to-cart:hover {
+            background-color: #0056b3;
         }
-        .p{
-            display: flex;
+        .col-md-3 {
+            -ms-flex: 0 0 25%;
+            margin: auto;
         }
+        p{
+            text-align:center
+            text-decoration: none
+        }
+
     </style>
 </head>
 
 <body>
 
     {% include 'header.html' %}
-
     <div id="videoContainer">
         <form method="post" action="{{ url_for('index') }}">
             <video autoplay muted loop id="backgroundVideo">
-                <source src="{{ url_for('static', filename='images/mac.mp4') }}" type="video/mp4">
+                <source src="{{ url_for('static', filename='images/mac1.mp4') }}" type="video/mp4">
             </video>
         </form>
     </div>
-        {% for product in user_products %}
-        <div class="p">
-            <div class="product-container">
-<!--                    <h2>{{ product['Brand'] }} - {{ product['Part No'] }}</h2>-->
+
+
+    <div class="products">
+        <div class="row">
+            {% for product in user_products %}
+                <div class="col-md-3 product-container">
                     <a href="{{ url_for('product_details', user_email=user_email, product_name=product['Part No']) }}">
-                    <img src="{{ product['image']}}" class="image">
-                     <p>{{ product['Brand'] }}</p>
-<!--                    <p>{{ product['Part No'] }}</p>-->
-<!--                    <p>Description: {{ product['Description'] if product['Description'] else 'N/A' }}</p>-->
-<!--                    <p>Total Without Tax: {{ product['Total W/O Tax'] if product['Total W/O Tax'] else 'N/A' }}</p>-->
-<!--                    <p>GST: {{ product['GST'] if product['GST'] else 'N/A' }}</p>-->
-                    <p>Total with Tax: {{ product['Total with Tax'] if product['Total with Tax'] else 'N/A' }}</p>
-                        <p>MRP: {{ product['MRP'] if product['MRP'] else 'N/A' }}</p> </a>
+                        <img src="{{ product['image'] }}" class="image">
+                        <p>{{ product['Brand'] }} - {{ product['Part No'] }}</p>
+                        <p>Total with Tax: {{ product['Total with Tax'] if product['Total with Tax'] else 'N/A' }}</p>
+                        <p>MRP: {{ product['MRP'] if product['MRP'] else 'N/A' }}</p>
+                    </a>
                     <form method="post" action="{{ url_for('add_to_cart4') }}">
                         <input type="hidden" name="user_email" value="{{ user_email }}">
                         <input type="hidden" name="product_name" value="{{ product['Brand'] }}">
                         <input type="hidden" name="product_image" value="{{ product['image'] }}">
                         <input type="hidden" name="product_description" value="{{ product['Description'] }}">
                         <input type="hidden" name="product_rating" value="{{ product['Rating'] }}">
-                        <input type="hidden" name="product_price" value="{{ product['price'] }}">
+                        <input type="hidden" name="product_price" value="{{ product['price'] }}"><br><br>
                         <div class="quantity">
                             <button type="submit" class="add-to-cart">Add to Cart</button>
                             <input type='button' value='-' class='qtyminus minus' field='quantity' />
@@ -176,11 +154,15 @@
                             <input type='button' value='+' class='qtyplus plus' field='quantity' />
                         </div>
                     </form>
-            </div>
+
+                </div>
+
+                {% if loop.index % 3 == 0 or loop.last %}
+                    <div class="clearfix"></div>
+                {% endif %}
+            {% endfor %}
         </div>
-        {% endfor %}
-
-
+    </div>
 
     {% include 'footer.html' %}
 

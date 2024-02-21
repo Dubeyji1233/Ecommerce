@@ -1,10 +1,12 @@
-from flask import Flask, render_template, redirect, url_for,request,render_template_string
+from flask import Flask, render_template, redirect, url_for,request,render_template_string,session
 from flask_mail import Mail
+import requests
 import csv
 import smtplib
 from email.mime.text import MIMEText
 from email.mime.multipart import MIMEMultipart
-import html
+from email.mime.image import MIMEImage
+import io,os
 app = Flask(__name__)
 mail = Mail(app)
 
@@ -121,6 +123,73 @@ def add_to_cart():
         'description': request.form.get('product_description', ''),
         'rating': request.form.get('product_rating', ''),
         'price': request.form.get('product_price', ''),
+        'quantity': int(request.form.get('quantity', 0)),
+    }
+
+    # Check if the product is already in the user's cart
+    cart = carts.setdefault(user_email, [])
+    existing_product = next((p for p in cart if p['name'] == product_name), None)
+
+    if existing_product:
+        # Update the quantity if the product is already in the cart
+        existing_product['quantity'] += product_details['quantity']
+    else:
+        # Add the product details to the user's cart
+        cart.append(product_details)
+
+    # Redirect to the product page or any other appropriate page
+    return redirect(url_for('index', user_email=user_email, user_cart=cart))
+
+# Update the product details route
+
+
+
+@app.route('/add_to_cart4', methods=['POST'])
+def add_to_cart4():
+    user_email = request.form.get('user_email', '')
+    product_name = request.form.get('product_name', '')
+
+    # Retrieve the product details
+    product_details = {
+        'name': request.form.get('product_name', ''),
+        'image': request.form.get('product_image', ''),
+        'description': request.form.get('product_description', ''),
+        'rating': request.form.get('product_rating', ''),
+        'price': request.form.get('product_price', ''),
+        'quantity': int(request.form.get('quantity', 0)),  # Add quantity information
+    }
+
+    # Calculate the subtotal
+    product_details['subtotal'] = float(product_details['price'].replace("₹ ", "").replace(",", "")) * product_details['quantity']
+
+    # Check if the product is already in the user's cart
+    cart = carts.setdefault(user_email, [])
+    existing_product = next((p for p in cart if p['name'] == product_name), None)
+
+    if existing_product:
+        # Update the quantity if the product is already in the cart
+        existing_product['quantity'] += product_details['quantity']
+    else:
+        # Add the product details to the user's cart
+        cart.append(product_details)
+
+    # Redirect to the product page or any other appropriate page
+    return redirect(url_for('mac', user_email=user_email, user_cart=cart))
+
+
+
+@app.route('/add_to_cart1', methods=['POST'])
+def add_to_cart1():
+    user_email = request.form.get('user_email', '')
+    product_name = request.form.get('product_name', '')
+
+    # Retrieve the product details
+    product_details = {
+        'name': request.form.get('product_name', ''),
+        'image': request.form.get('product_image', ''),
+        'description': request.form.get('product_description', ''),
+        'rating': request.form.get('product_rating', ''),
+        'price': request.form.get('product_price', ''),
         'quantity': int(request.form.get('quantity', 0)),  # Add quantity information
     }
 
@@ -136,9 +205,7 @@ def add_to_cart():
         cart.append(product_details)
 
     # Render the current template with updated cart information
-    return render_template('orient.html', user_email=user_email, user_cart=cart)
-
-
+    return render_template('amazon.html', user_email=user_email, user_cart=cart)
 
 @app.route('/add_to_cart2', methods=['POST'])
 def add_to_cart2():
@@ -171,67 +238,6 @@ def add_to_cart2():
     return redirect(url_for('iphone', user_email=user_email, user_cart=cart))
 
 
-@app.route('/add_to_cart1', methods=['POST'])
-def add_to_cart1():
-    user_email = request.form.get('user_email', '')
-    product_name = request.form.get('product_name', '')
-
-    # Retrieve the product details
-    product_details = {
-        'name': request.form.get('product_name', ''),
-        'image': request.form.get('product_image', ''),
-        'description': request.form.get('product_description', ''),
-        'rating': request.form.get('product_rating', ''),
-        'price': request.form.get('product_price', ''),
-        'quantity': int(request.form.get('quantity', 0)),  # Add quantity information
-    }
-
-    # Check if the product is already in the user's cart
-    cart = carts.setdefault(user_email, [])
-    existing_product = next((p for p in cart if p['name'] == product_name), None)
-
-    if existing_product:
-        # Update the quantity if the product is already in the cart
-        existing_product['quantity'] += product_details['quantity']
-    else:
-        # Add the product details to the user's cart
-        cart.append(product_details)
-
-    # Render the current template with updated cart information
-    return render_template('amazon.html', user_email=user_email, user_cart=cart)
-
-@app.route('/add_to_cart4', methods=['POST'])
-def add_to_cart4():
-    user_email = request.form.get('user_email', '')
-    product_name = request.form.get('product_name', '')
-    product_price = request.form.get('product_price', '')
-
-    # Retrieve the product details
-    product_details = {
-        'name': request.form.get('product_name', ''),
-        'image': request.form.get('product_image', ''),
-        'description': request.form.get('product_description', ''),
-        'rating': request.form.get('product_rating', ''),
-        'price': product_price,  # Use the retrieved product price
-        'quantity': int(request.form.get('quantity', 0)),
-    }
-
-    # Check if the product is already in the user's cart based on a unique identifier (e.g., Part No)
-    cart = carts.setdefault(user_email, [])
-    existing_product = next((p for p in cart if p['name'] == product_name), None)
-
-    if existing_product:
-        # Update the quantity if the product is already in the cart
-        existing_product['quantity'] += product_details['quantity']
-    else:
-        # Add the product details to the user's cart
-        cart.append(product_details)
-
-    # Redirect to the product page or any other appropriate page
-    return redirect(url_for('mac', user_email=user_email, user_cart=cart))
-
-
-
 
 @app.route('/remove_from_cart', methods=['POST'])
 def remove_from_cart():
@@ -254,10 +260,8 @@ def remove_from_cart():
 def product_details():
     user_email = request.args.get('user_email', '')
     product_name = request.args.get('product_name', '')
-    product_price = request.args.get('product_price', '')
 
-    # Retrieve the product details based on the product_name (you might need to adjust this logic)
-    # For demonstration purposes, I assume you have a function to get product details by name
+    # Retrieve the product details based on the product_name
     product_details = get_product_details_by_name(product_name)
 
     return render_template('product-details.html', user_email=user_email, product_details=product_details)
@@ -265,7 +269,7 @@ def product_details():
 
 # You may need to implement a function to get product details by name
 def get_product_details_by_name(product_name):
-    file_path = r'C:\Users\shubhambhoite\Desktop\E-Commerce\Product_data\mac1.csv'  # Update with the actual path to your CSV file
+    file_path = r'C:\Users\abhishekdubey\PycharmProjects\E-commerce\Product_data\mac1.csv'  # Update with the actual path to your CSV file
     product_details = None
 
     with open(file_path, 'r') as file:
@@ -300,29 +304,45 @@ def personal_details():
 def invoice_details():
     user_email = request.args.get('user_email', '')
 
-    # Call the function to send the invoice email
-    send_invoice_mail(user_email)
+    # Retrieve the user's cart
+    user_cart = carts.get(user_email, [])
+
+    # Call the function to send the invoice email with the user's cart
+    send_invoice_mail(user_email, user_cart)
 
     return 'Invoice email sent!'
 
 
-def send_invoice_mail(email):
-    sender_email = 'abhishekoffical30@gmail.com'  # Update with your email address
-    sender_password = 'axtw igsh cljs wjvz'
+def send_invoice_mail(user_email, user_cart):
+    msg = MIMEMultipart()
+    msg['From'] = 'abhishekoffical30@gmail.com'
+    msg['To'] = user_email
+    msg['Subject'] = 'Invoice Details'
 
-    subject = 'Invoice Details'
-    body = 'Your Order is Successful. Thank you for shopping with us!'
+    body = 'Dear Customer,<br><br>Thank you for shopping with us. Your order has been placed successfully.<br><br>Ordered Items:<br>'
+    grand_total = 0
 
-    try:
-        with smtplib.SMTP('smtp.gmail.com', 587) as server:
-            server.starttls()
-            server.login(sender_email, sender_password)
+    for item in user_cart:
+        body += f'<img src="{item["image"]}" alt="Product Image"> - {item["name"]} x {item["quantity"]}<br>'
+        total = float(item["subtotal"]) * float(item["quantity"])
+        grand_total += total
+        body += f'Total for {item["name"]}: {total}<br>'
 
-            message = f'Subject: {subject}\n\n{body}'
-            server.sendmail(sender_email, email, message)
-        print("Email sent successfully!")
-    except Exception as e:
-        print(f"Error sending email: {e}")
+    # body += f'<br>Grand Total: {grand_total}<br>'
+    msg.attach(MIMEText(body, 'html'))
+
+    for item in user_cart:
+        response = requests.get(item['image'])
+        product_image_io = io.BytesIO(response.content)
+        product_image = MIMEImage(product_image_io.read(), Name=os.path.basename(item['image']))
+        msg.attach(product_image)
+
+    with smtplib.SMTP('smtp.gmail.com', 587) as server:
+        server.starttls()
+        server.login('abhishekoffical30@gmail.com', 'axtw igsh cljs wjvz')
+        server.sendmail('abhishekoffical30@gmail.com', user_email, msg.as_string())
+
+
 
 if __name__ == '__main__':
     app.run(debug=True)

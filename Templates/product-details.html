@@ -5,7 +5,6 @@
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Product Details</title>
-    <script src="https://code.jquery.com/jquery-3.6.4.min.js"></script>
     <style>
         body {
             font-family: 'Arial', sans-serif;
@@ -120,6 +119,7 @@
             align-items: center;
         }
 
+
     </style>
 </head>
 <body>
@@ -145,11 +145,13 @@
                     <input type='button' value='+' class='qtyplus plus' field='quantity' />
                     <button class="a" type="submit">Add to Cart</button>
                 </div>
-                <a class="a1" href="{{ url_for('index', user_email=user_email) }}">Back to Products</a>
+                <a class="a1" href="javascript:history.back();">Back to Products</a>
+
             </div>
         </div>
     </div>
     {% include 'footer.html' %}
+    <script src="https://code.jquery.com/jquery-3.6.4.min.js"></script>
     <script>
     $(document).ready(function() {
         $('.quantity').on('click', '.qtyplus', function(e) {
