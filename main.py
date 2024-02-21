@@ -1,3 +1,4 @@
+import pandas as pd
 from flask import Flask, render_template, redirect, url_for,request,render_template_string,session
 from flask_mail import Mail
 import requests
@@ -7,6 +8,10 @@ from email.mime.text import MIMEText
 from email.mime.multipart import MIMEMultipart
 from email.mime.image import MIMEImage
 import io,os
+import chardet
+
+from pandas import read_excel
+
 app = Flask(__name__)
 mail = Mail(app)
 
@@ -72,10 +77,10 @@ def mac():
     # print(f"Domain: {domain}")
 
     file_path = r'C:\Users\abhishekdubey\PycharmProjects\E-commerce\Product_data\mac1.csv'
-    products_data = read_csv(file_path)
-
-    # Filter out rows with None values in 'Total W/O Tax' column
-    products_filtered = [product for product in products_data if product['Total W/O Tax'] is not None]
+    product_data = pd.read_csv(file_path, encoding='ISO-8859-1')
+    product_data['Offer Price'] = product_data['Offer Price'].str.replace(',', '')
+    # Iterate over DataFrame rows using iterrows()
+    products_filtered = [row for index, row in product_data.iterrows() if row['Offer Price'] is not None]
 
     return render_template('mac.html', user_products=products_filtered, domain=domain, user_email=user_email)
 
@@ -84,8 +89,13 @@ def iphone():
     user_email = request.args.get('user_email', '')
     domain = user_email.split('@')[-1]
 
-    return render_template('iphone.html', domain=domain,  user_email=user_email)
+    file_path = r'C:\Users\abhishekdubey\PycharmProjects\E-commerce\Product_data\Smart_EPP_Generic_iphone.csv'
+    product_data = pd.read_csv(file_path, encoding='ISO-8859-1')
+    product_data['Offer Price'] =  product_data['Offer Price'].str.replace(',', '')
+    # Iterate over DataFrame rows using iterrows()
+    products_filtered = [row for index, row in product_data.iterrows() if row['Offer Price'] is not None]
 
+    return render_template('iphone.html', user_products=products_filtered, domain=domain, user_email=user_email)
 
 @app.route('/cart')
 def cart():
@@ -96,8 +106,7 @@ def cart():
     product = carts.get(price, [])
 
     # Calculate grand_total in the Python code (corrected logic)
-    grand_total = sum(float(product['price'].replace("₹ ", "").replace(",", "")) * product['quantity']
-                      for product in user_cart)
+    grand_total = sum(float(product['price'].replace("₹ ", "").replace(',', '')) * product['quantity'] for product in user_cart)
 
     # Calculate total quantity in the cart
     total_quantity = sum(product['quantity'] for product in user_cart)
@@ -148,23 +157,29 @@ def add_to_cart():
 def add_to_cart4():
     user_email = request.form.get('user_email', '')
     product_name = request.form.get('product_name', '')
+    product_variant = request.form.get('product_variant', '')
+    product_colour = request.form.get('product_colour', '')
+    product_price = request.form.get('product_price', '')
+    product_Key = request.form.get('product_Key', '')
+    product_camera = request.form.get('product_camera', '')
 
     # Retrieve the product details
     product_details = {
-        'name': request.form.get('product_name', ''),
+        'name': product_name,
+        'variant': product_variant,
+        'colour': product_colour,
+        'key': product_Key,
+        'camera': product_camera,
         'image': request.form.get('product_image', ''),
         'description': request.form.get('product_description', ''),
         'rating': request.form.get('product_rating', ''),
-        'price': request.form.get('product_price', ''),
-        'quantity': int(request.form.get('quantity', 0)),  # Add quantity information
+        'price': product_price,
+        'quantity': int(request.form.get('quantity', 0)),
     }
-
-    # Calculate the subtotal
-    product_details['subtotal'] = float(product_details['price'].replace("₹ ", "").replace(",", "")) * product_details['quantity']
 
     # Check if the product is already in the user's cart
     cart = carts.setdefault(user_email, [])
-    existing_product = next((p for p in cart if p['name'] == product_name), None)
+    existing_product = next((p for p in cart if p['key'] == product_Key), None)
 
     if existing_product:
         # Update the quantity if the product is already in the cart
@@ -175,7 +190,6 @@ def add_to_cart4():
 
     # Redirect to the product page or any other appropriate page
     return redirect(url_for('mac', user_email=user_email, user_cart=cart))
-
 
 
 @app.route('/add_to_cart1', methods=['POST'])
@@ -211,21 +225,29 @@ def add_to_cart1():
 def add_to_cart2():
     user_email = request.form.get('user_email', '')
     product_name = request.form.get('product_name', '')
+    product_variant = request.form.get('product_variant', '')
+    product_colour = request.form.get('product_colour', '')
     product_price = request.form.get('product_price', '')
+    product_Key = request.form.get('product_Key', '')
+    product_camera = request.form.get('product_camera', '')
 
     # Retrieve the product details
     product_details = {
-        'name': request.form.get('product_name', ''),
+        'name': product_name,
+        'variant': product_variant,
+        'colour' : product_colour,
+        'key' : product_Key,
+        'camera': product_camera,
         'image': request.form.get('product_image', ''),
         'description': request.form.get('product_description', ''),
         'rating': request.form.get('product_rating', ''),
-        'price': product_price,  # Use the retrieved product price
+        'price': product_price,
         'quantity': int(request.form.get('quantity', 0)),
     }
 
     # Check if the product is already in the user's cart
     cart = carts.setdefault(user_email, [])
-    existing_product = next((p for p in cart if p['name'] == product_name), None)
+    existing_product = next((p for p in cart if p['key'] == product_Key), None)
 
     if existing_product:
         # Update the quantity if the product is already in the cart
@@ -238,21 +260,20 @@ def add_to_cart2():
     return redirect(url_for('iphone', user_email=user_email, user_cart=cart))
 
 
-
 @app.route('/remove_from_cart', methods=['POST'])
 def remove_from_cart():
     user_email = request.form.get('user_email', '')
-    product_name = request.form.get('product_name', '')
-    product_price = request.form.get('product_price', '')
-    product_quantity = request.form.get('product_quantity', '')
+    product_key = request.form.get('product_key', '')
 
     # Remove the product from the user's cart
     if user_email in carts:
-        updated_cart = [product for product in carts[user_email] if product['name'] != product_name]
+        updated_cart = [product for product in carts[user_email] if product['key'] != product_key]
         carts[user_email] = updated_cart
 
     # Redirect back to the cart page
     return redirect(url_for('cart', user_email=user_email))
+
+
 
 
 # Add the new route for product details
@@ -339,7 +360,7 @@ def send_invoice_mail(user_email, user_cart):
 
     with smtplib.SMTP('smtp.gmail.com', 587) as server:
         server.starttls()
-        server.login('abhishekoffical30@gmail.com', 'axtw igsh cljs wjvz')
+        server.login()
         server.sendmail('abhishekoffical30@gmail.com', user_email, msg.as_string())
 
 

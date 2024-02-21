@@ -8,34 +8,29 @@
     <script src="https://code.jquery.com/jquery-3.6.4.min.js"></script>
     <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css">
     <style>
-        body {
-            font-family: 'Arial', sans-serif;
-            margin: 0;
-            padding: 0;
-            background-color: #f8f9fa; /* Light gray background */
-            color: #333; /* Dark gray text */
-        }
-
-        header {
-            /* Add styles for your header if necessary */
-        }
-
-        #videoContainer {
-            position: relative;
+        #videoContainer {-->
+            width: 100%;
+            height: 80vh; /* Full viewport height */
             overflow: hidden;
         }
 
-        #backgroundVideo {
+        video {
             width: 100%;
-            height: auto;
+            height: 100%;
+        }
+        .product-row {
+            display: flex;
+            flex-wrap: wrap;
         }
 
-        .products {
-            padding: 20px;
+        .product-item {
+            flex: 1 0 25%;
+            padding: 10px;
+            box-sizing: border-box;
         }
-
         .product-container {
             border: 1px solid #ddd;
+            flex: 1 0 ;
             padding: 20px;
             margin-bottom: 20px;
             border-radius: 10px; /* Slightly rounded corners */
@@ -64,6 +59,11 @@
             font-size: 16px;
         }
 
+        .quantity {
+            position: absolute;
+            bottom: 20px;
+            right: 20px;
+        }
         .quantity {
             position: absolute;
             bottom: 20px;
@@ -106,13 +106,10 @@
         .add-to-cart:hover {
             background-color: #0056b3;
         }
-        .col-md-3 {
-            -ms-flex: 0 0 25%;
-            margin: auto;
-        }
-        p{
-            text-align:center
-            text-decoration: none
+        .product-row {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 80px;
         }
 
     </style>
@@ -120,89 +117,91 @@
 
 <body>
 
-    {% include 'header.html' %}
-    <div id="videoContainer">
-        <form method="post" action="{{ url_for('index') }}">
-            <video autoplay muted loop id="backgroundVideo">
-                <source src="{{ url_for('static', filename='images/mac1.mp4') }}" type="video/mp4">
-            </video>
-        </form>
-    </div>
+{% include 'header.html' %}
 
+<div id="videoContainer">
+    <form method="post" action="{{ url_for('login') }}">
+        <video autoplay muted loop id="backgroundVideo">
+            <source src="{{ url_for('static', filename='images/mac1.mp4') }}" type="video/mp4">
+        </video>
+    </form>
+</div>
 
-    <div class="products">
-        <div class="row">
-            {% for product in user_products %}
-                <div class="col-md-3 product-container">
-                    <a href="{{ url_for('product_details', user_email=user_email, product_name=product['Part No']) }}">
-                        <img src="{{ product['image'] }}" class="image">
-                        <p>{{ product['Brand'] }} - {{ product['Part No'] }}</p>
-                        <p>Total with Tax: {{ product['Total with Tax'] if product['Total with Tax'] else 'N/A' }}</p>
-                        <p>MRP: {{ product['MRP'] if product['MRP'] else 'N/A' }}</p>
-                    </a>
-                    <form method="post" action="{{ url_for('add_to_cart4') }}">
-                        <input type="hidden" name="user_email" value="{{ user_email }}">
-                        <input type="hidden" name="product_name" value="{{ product['Brand'] }}">
-                        <input type="hidden" name="product_image" value="{{ product['image'] }}">
-                        <input type="hidden" name="product_description" value="{{ product['Description'] }}">
-                        <input type="hidden" name="product_rating" value="{{ product['Rating'] }}">
-                        <input type="hidden" name="product_price" value="{{ product['price'] }}"><br><br>
-                        <div class="quantity">
-                            <button type="submit" class="add-to-cart">Add to Cart</button>
-                            <input type='button' value='-' class='qtyminus minus' field='quantity' />
-                            <input type='text' name='quantity' value='1' class='qty' />
-                            <input type='button' value='+' class='qtyplus plus' field='quantity' />
-                        </div>
-                    </form>
-
+<section>
+    <div class="product-row">
+        {% for product in user_products %}
+            {% if loop.index % 4 == 1 %}
                 </div>
-
-                {% if loop.index % 3 == 0 or loop.last %}
-                    <div class="clearfix"></div>
-                {% endif %}
-            {% endfor %}
-        </div>
+                <div class="product-row">
+            {% endif %}
+            <div class="product-container">
+                <p>
+                    <img src="{{ product['Image'] }}" class="image" alt="{{ product['Colour'] }} iPhone">
+                </p>
+                <h3>{{ product['Model'] }} - {{ product['Variant'] }}</h3>
+                <p>MRP: {{ product['MRP'] }}</p>
+                <p>Offer Price : {{ product['Offer Price'] }}</p>
+                <p>Colour: {{ product['Colour']}}</p>
+                <form method="post" action="{{ url_for('add_to_cart4') }}">
+                    <input type="hidden" name="user_email" value="{{ user_email }}">
+                    <input type="hidden" name="product_name" value="{{ product['Model'] }}">
+                    <input type="hidden" name="product_Key" value="{{ product['Key'] }}">
+                    <input type="hidden" name="product_camera" value="{{ product['Camera'] }}">
+                    <input type="hidden" name="product_image" value="{{ product['Image'] }}">
+                    <input type="hidden" name="product_variant" value="{{ product['Variant'] }}">
+                    <input type="hidden" name="product_description" value="{{ product['Display'] }}">
+                    <input type="hidden" name="product_colour" value="{{ product['Colour'] }}">
+                    <input type="hidden" name="product_price" value="{{ product['Offer Price'] }} "><br><br><br>
+                    <div class="quantity">
+                        <button type="submit" class="add-to-cart">Add to Cart</button>
+                        <input type='button' value='-' class='qtyminus minus' field='quantity' />
+                        <input type='text' name='quantity' value='1' class='qty' />
+                        <input type='button' value='+' class='qtyplus plus' field='quantity' />
+                    </div>
+                </form>
+            </div>
+        {% endfor %}
     </div>
+</section>
 
-    {% include 'footer.html' %}
+{% include 'footer.html' %}
 
-    <script>
-        $(document).ready(function() {
-            $('.quantity').on('click', '.qtyplus', function(e) {
-                let $input = $(this).prev('input.qty');
-                let val = parseInt($input.val());
-                $input.val(val + 1).change();
-            });
-
-            $('.quantity').on('click', '.qtyminus', function(e) {
-                let $input = $(this).next('input.qty');
-                var val = parseInt($input.val());
-                if (val > 0) {
-                    $input.val(val - 1).change();
-                }
-            });
-
-            // Change event handler for the quantity input
-            $('.quantity').on('change', '.qty', function() {
-                updateCartTotal();
-            });
-
-            // Initial update of cart total on page load
-            updateCartTotal();
-
-            function updateCartTotal() {
-                let totalQuantity = 0;
-
-                // Iterate through all quantity inputs and sum up the values
-                $('.quantity .qty').each(function() {
-                    totalQuantity += parseInt($(this).val());
-                });
-
-                // Display the total quantity in your cart
-                $('#cartTotalQuantity').text(totalQuantity);
+<script>
+    jQuery(document).ready(($) => {
+        $('.quantity').on('click', '.plus', function(e) {
+            let $input = $(this).prev('input.qty');
+            let val = parseInt($input.val());
+            $input.val(val + 1).change();
+        })
+        $('.quantity').on('click', '.minus', function(e) {
+            let $input = $(this).next('input.qty');
+            var val = parseInt($input.val());
+            if (val > 0) {
+                $input.val(val - 1).change();
             }
         });
-    </script>
+
+        // Change event handler for the quantity input
+        $('.quantity').on('change', '.qty', function() {
+            updateCartTotal();
+        });
+
+        // Initial update of cart total on page load
+        updateCartTotal();
+
+        function updateCartTotal() {
+            let totalQuantity = 0;
+
+            // Iterate through all quantity inputs and sum up the values
+            $('.quantity .qty').each(function() {
+                totalQuantity += parseInt($(this).val());
+            });
+
+            // Display the total quantity in your cart
+            $('#cartTotalQuantity').text(totalQuantity);
+        }
+    });
+</script>
 </body>
 
 </html>
