@@ -12,7 +12,7 @@ import chardet
 
 from pandas import read_excel
 
-app = Flask(__name__)
+app = Flask(__name__, template_folder='templates')
 mail = Mail(app)
 
 # Mock product data for different domains
@@ -162,6 +162,9 @@ def add_to_cart4():
     product_price = request.form.get('product_price', '')
     product_Key = request.form.get('product_Key', '')
     product_camera = request.form.get('product_camera', '')
+    product_image = request.form.get('product_image', '')
+    product_chipset = request.form.get('product_chipset', '')
+    product_display = request.form.get('product_display', '')
 
     # Retrieve the product details
     product_details = {
@@ -170,10 +173,10 @@ def add_to_cart4():
         'colour': product_colour,
         'key': product_Key,
         'camera': product_camera,
-        'image': request.form.get('product_image', ''),
-        'description': request.form.get('product_description', ''),
-        'rating': request.form.get('product_rating', ''),
+        'image': product_image,
         'price': product_price,
+        'display': product_display,
+        'chipset': product_chipset,
         'quantity': int(request.form.get('quantity', 0)),
     }
 
@@ -230,6 +233,9 @@ def add_to_cart2():
     product_price = request.form.get('product_price', '')
     product_Key = request.form.get('product_Key', '')
     product_camera = request.form.get('product_camera', '')
+    product_image= request.form.get('product_image', '')
+    product_chipset = request.form.get('product_chipset', '')
+    product_display =request.form.get('product_display', '')
 
     # Retrieve the product details
     product_details = {
@@ -238,10 +244,10 @@ def add_to_cart2():
         'colour' : product_colour,
         'key' : product_Key,
         'camera': product_camera,
-        'image': request.form.get('product_image', ''),
-        'description': request.form.get('product_description', ''),
-        'rating': request.form.get('product_rating', ''),
+        'image': product_image,
         'price': product_price,
+        'display': product_display,
+        'chipset' : product_chipset,
         'quantity': int(request.form.get('quantity', 0)),
     }
 
@@ -281,35 +287,50 @@ def remove_from_cart():
 def product_details():
     user_email = request.args.get('user_email', '')
     product_name = request.args.get('product_name', '')
+    product_type = request.args.get('product_type', '')  # Added product_type
 
-    # Retrieve the product details based on the product_name
-    product_details = get_product_details_by_name(product_name)
+    product_details = get_product_details_by_key(product_name, product_type)
+
 
     return render_template('product-details.html', user_email=user_email, product_details=product_details)
 
+def get_product_details_by_key(product_key, product_type):
+    file_paths = {
+        'mac': r'C:\Users\abhishekdubey\PycharmProjects\E-commerce\Product_data\mac1.csv',
+        'iphone': r'C:\Users\abhishekdubey\PycharmProjects\E-commerce\Product_data\Smart_EPP_Generic_iphone.csv'
+        # Add other product types as needed
+    }
 
-# You may need to implement a function to get product details by name
-def get_product_details_by_name(product_name):
-    file_path = r'C:\Users\abhishekdubey\PycharmProjects\E-commerce\Product_data\mac1.csv'  # Update with the actual path to your CSV file
-    product_details = None
+    # Check if the provided product type is in the mapping
+    if product_type in file_paths:
+        file_path = file_paths[product_type]
+        product_details = None
 
-    with open(file_path, 'r') as file:
-        csv_reader = csv.DictReader(file)
-        for row in csv_reader:
-            if row['Part No'] == product_name:
-                product_details = {
-                    'name': row['Brand'],
-                    'part_no': row['Part No'],
-                    'description': row['Description'],
-                    'total_without_tax': row['Total W/O Tax'],
-                    'gst': row['GST'],
-                    'price': row['price'],
-                    'mrp': row['MRP'],
-                    'image': row['image'],
-                }
-                break
+        with open(file_path, 'r', encoding='ISO-8859-1') as file:
+            csv_reader = csv.DictReader(file)
+            for row in csv_reader:
+                if row['Key'] == product_key:
+                    product_details = {
+                        'name': row['Model'],
+                        'variant': row['Variant'],
+                        'mrp': row['MRP'],
+                        'price': row['Offer Price'],
+                        'camera': row['Camera'],
+                        'chipset': row['Chipset'],
+                        'display': row['Display'],
+                        'colour': row['Colour'],
+                        'image': row['Image']
+                    }
 
-    return product_details
+                    # Add debug prints
+                    # print("Product Details:", product_details)
+
+                    break
+
+        return product_details
+    else:
+        # Handle the case where the provided product type is not in the mapping
+        return None
 
 @app.route('/personal-details')
 def personal_details():
@@ -344,7 +365,7 @@ def send_invoice_mail(user_email, user_cart):
     grand_total = 0
 
     for item in user_cart:
-        body += f'<img src="{item["image"]}" alt="Product Image"> - {item["name"]} x {item["quantity"]}<br>'
+        body += f'{item["name"]} x {item["quantity"]}<br>'
         total = float(item["subtotal"]) * float(item["quantity"])
         grand_total += total
         body += f'Total for {item["name"]}: {total}<br>'
@@ -352,15 +373,15 @@ def send_invoice_mail(user_email, user_cart):
     # body += f'<br>Grand Total: {grand_total}<br>'
     msg.attach(MIMEText(body, 'html'))
 
-    for item in user_cart:
-        response = requests.get(item['image'])
-        product_image_io = io.BytesIO(response.content)
-        product_image = MIMEImage(product_image_io.read(), Name=os.path.basename(item['image']))
-        msg.attach(product_image)
+    # for item in user_cart:
+    #     response = requests.get(item['image'])
+    #     product_image_io = io.BytesIO(response.content)
+    #     product_image = MIMEImage(product_image_io.read(), Name=os.path.basename(item['image']))
+    #     msg.attach(product_image)
 
     with smtplib.SMTP('smtp.gmail.com', 587) as server:
         server.starttls()
-        server.login()
+        server.login('abhishekoffical30@gmail.com', 'axtw igsh cljs wjvz')
         server.sendmail('abhishekoffical30@gmail.com', user_email, msg.as_string())
 
 

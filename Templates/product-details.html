@@ -132,22 +132,20 @@
             </div>
             <div>
                 <p class="p"><strong>Name:</strong> {{ product_details.name }}</p>
-                <p class="p"><strong>Part No:</strong> {{ product_details.part_no }}</p>
-                <p class="p"><strong>Description:</strong> {{ product_details.description }}</p>
-                <p class="p"><strong>Total W/O Tax:</strong> {{ product_details.total_without_tax }}</p>
-                <p class="p"><strong>GST:</strong> {{ product_details.gst }}</p>
+                <p class="p"><strong>Storage:</strong> {{ product_details.variant }}</p>
+                <p class="p"><strong>Description:</strong> {{ product_details.colour }}, {{ product_details.camera }}
+                    {{ product_details.chipset }} {{ product_details.display }}</p>
                 <p class="p"><strong>Price:</strong> {{ product_details.price }}</p>
                 <p class="p"><strong>MRP:</strong> {{ product_details.mrp }}</p>
                 <div class="quantity">
-
                     <input type='button' value='-' class='qtyminus minus' field='quantity' />
                     <input type='text' name='quantity' value='1' class='qty' />
                     <input type='button' value='+' class='qtyplus plus' field='quantity' />
                     <button class="a" type="submit">Add to Cart</button>
                 </div>
                 <a class="a1" href="javascript:history.back();">Back to Products</a>
-
             </div>
+
         </div>
     </div>
     {% include 'footer.html' %}

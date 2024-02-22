@@ -140,14 +140,16 @@
                 <div class="product-row">
             {% endif %}
             <div class="product-container">
-                <p>
-                    <img src="{{ product['Image'] }}" class="image" alt="{{ product['Colour'] }} iPhone">
-                </p>
-                <h3>{{ product['Model'] }} - {{ product['Variant'] }}</h3>
-                <p>MRP: {{ product['MRP'] }}</p>
-                <p>Offer Price : {{ product['Offer Price'] }}</p>
-                <p>Colour: {{ product['Colour']}}</p>
-<!--                <p>Key : {{ product['Key']}}</p>-->
+                <a href="{{ url_for('product_details', user_email=user_email, product_name=product['Key'], product_type='iphone') }}">
+                    <p>
+                        <img src="{{ product['Image'] }}" class="image" alt="{{ product['Colour'] }} iPhone">
+                    </p>
+                    <h3>{{ product['Model'] }} - {{ product['Variant'] }}</h3>
+                    <p>MRP: {{ product['MRP'] }}</p>
+                    <p>Offer Price : {{ product['Offer Price'] }}</p>
+                    <p>Colour: {{ product['Colour']}}</p>
+    <!--                <p>Key : {{ product['Key']}}</p>-->
+                </a>
                 <form method="post" action="{{ url_for('add_to_cart2') }}">
                     <input type="hidden" name="user_email" value="{{ user_email }}">
                     <input type="hidden" name="product_name" value="{{ product['Model'] }}">

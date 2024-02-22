@@ -135,7 +135,7 @@
                 <div class="product-row">
             {% endif %}
             <div class="product-container">
-                <a href="{{ url_for('product_details', user_email=user_email, product_name=product['Key']) }}">
+                <a href="{{ url_for('product_details', user_email=user_email, product_name= product['Key'], product_type='mac') }}">
                     <p>
                         <img src="{{ product['Image'] }}" class="image" alt="{{ product['Colour'] }} iPhone">
                     </p>
@@ -151,7 +151,8 @@
                     <input type="hidden" name="product_camera" value="{{ product['Camera'] }}">
                     <input type="hidden" name="product_image" value="{{ product['Image'] }}">
                     <input type="hidden" name="product_variant" value="{{ product['Variant'] }}">
-                    <input type="hidden" name="product_description" value="{{ product['Display'] }}">
+                    <input type="hidden" name="product_chipset" value="{{ product['Chipset'] }}">
+                    <input type="hidden" name="product_display" value="{{ product['Display'] }}">
                     <input type="hidden" name="product_colour" value="{{ product['Colour'] }}">
                     <input type="hidden" name="product_price" value="{{ product['Offer Price'] }} "><br><br><br>
                     <div class="quantity">
@@ -210,211 +211,211 @@
 
 
 
-<!DOCTYPE html>
-<html lang="en">
+<!--<!DOCTYPE html>-->
+<!--<html lang="en">-->
 
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Products</title>
-    <script src="https://code.jquery.com/jquery-3.6.4.min.js"></script>
-    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css">
-    <style>
-        body {
-            font-family: 'Arial', sans-serif;
-            margin: 0;
-            padding: 0;
-            background-color: #f8f9fa; /* Light gray background */
-            color: #333; /* Dark gray text */
-        }
+<!--<head>-->
+<!--    <meta charset="UTF-8">-->
+<!--    <meta name="viewport" content="width=device-width, initial-scale=1.0">-->
+<!--    <title>Products</title>-->
+<!--    <script src="https://code.jquery.com/jquery-3.6.4.min.js"></script>-->
+<!--    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css">-->
+<!--    <style>-->
+<!--        body {-->
+<!--            font-family: 'Arial', sans-serif;-->
+<!--            margin: 0;-->
+<!--            padding: 0;-->
+<!--            background-color: #f8f9fa; /* Light gray background */-->
+<!--            color: #333; /* Dark gray text */-->
+<!--        }-->
 
-        header {
-            /* Add styles for your header if necessary */
-        }
+<!--        header {-->
+<!--            /* Add styles for your header if necessary */-->
+<!--        }-->
 
-        #videoContainer {
-            position: relative;
-            overflow: hidden;
-        }
+<!--        #videoContainer {-->
+<!--            position: relative;-->
+<!--            overflow: hidden;-->
+<!--        }-->
 
-        #backgroundVideo {
-            width: 100%;
-            height: auto;
-        }
+<!--        #backgroundVideo {-->
+<!--            width: 100%;-->
+<!--            height: auto;-->
+<!--        }-->
 
-        .products {
-            padding: 20px;
-        }
+<!--        .products {-->
+<!--            padding: 20px;-->
+<!--        }-->
 
-        .product-container {
-            border: 1px solid #ddd;
-            padding: 20px;
-            margin-bottom: 20px;
-            border-radius: 10px; /* Slightly rounded corners */
-            position: relative;
-            background-color: #fff; /* White background */
-            transition: transform 0.3s ease; /* Add a smooth transition effect */
-            text-align:center;
-        }
-        .product-container:hover {
-            transform: scale(1.05); /* Scale up on hover */
-            box-shadow: 0 8px 16px rgba(0, 0, 0, 0.2); /* Add a subtle box shadow on hover */
-        }
+<!--        .product-container {-->
+<!--            border: 1px solid #ddd;-->
+<!--            padding: 20px;-->
+<!--            margin-bottom: 20px;-->
+<!--            border-radius: 10px; /* Slightly rounded corners */-->
+<!--            position: relative;-->
+<!--            background-color: #fff; /* White background */-->
+<!--            transition: transform 0.3s ease; /* Add a smooth transition effect */-->
+<!--            text-align:center;-->
+<!--        }-->
+<!--        .product-container:hover {-->
+<!--            transform: scale(1.05); /* Scale up on hover */-->
+<!--            box-shadow: 0 8px 16px rgba(0, 0, 0, 0.2); /* Add a subtle box shadow on hover */-->
+<!--        }-->
 
-        .product-container img {
-            width: 100%;
-            height: 200px; /* Increase the height for better visibility */
-            object-fit: cover;
-            margin-bottom: 15px; /* Reduce margin for better spacing */
-            border-radius: 5px; /* Rounded corners for images */
-            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1); /* Lighter box shadow */
-        }
+<!--        .product-container img {-->
+<!--            width: 100%;-->
+<!--            height: 200px; /* Increase the height for better visibility */-->
+<!--            object-fit: cover;-->
+<!--            margin-bottom: 15px; /* Reduce margin for better spacing */-->
+<!--            border-radius: 5px; /* Rounded corners for images */-->
+<!--            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1); /* Lighter box shadow */-->
+<!--        }-->
 
-        .product-container p {
-            margin: 0;
-            padding: 8px 0; /* Adjust padding for better spacing */
-            font-size: 16px;
-        }
+<!--        .product-container p {-->
+<!--            margin: 0;-->
+<!--            padding: 8px 0; /* Adjust padding for better spacing */-->
+<!--            font-size: 16px;-->
+<!--        }-->
 
-        .quantity {
-            position: absolute;
-            bottom: 20px;
-            right: 20px;
-        }
+<!--        .quantity {-->
+<!--            position: absolute;-->
+<!--            bottom: 20px;-->
+<!--            right: 20px;-->
+<!--        }-->
 
-        .qtyplus,
-        .qtyminus {
-            border: none;
-            background-color: #eee;
-            padding: 8px 12px;
-            cursor: pointer;
-            border-radius: 3px; /* Rounded buttons */
-        }
+<!--        .qtyplus,-->
+<!--        .qtyminus {-->
+<!--            border: none;-->
+<!--            background-color: #eee;-->
+<!--            padding: 8px 12px;-->
+<!--            cursor: pointer;-->
+<!--            border-radius: 3px; /* Rounded buttons */-->
+<!--        }-->
 
-        .qtyplus:hover,
-        .qtyminus:hover {
-            background-color: #ddd;
-        }
+<!--        .qtyplus:hover,-->
+<!--        .qtyminus:hover {-->
+<!--            background-color: #ddd;-->
+<!--        }-->
 
-        .qty {
-            width: 40px;
-            height: 30px;
-            text-align: center;
-            border: 1px solid #ddd;
-            padding: 5px;
-            font-size: 14px;
-        }
+<!--        .qty {-->
+<!--            width: 40px;-->
+<!--            height: 30px;-->
+<!--            text-align: center;-->
+<!--            border: 1px solid #ddd;-->
+<!--            padding: 5px;-->
+<!--            font-size: 14px;-->
+<!--        }-->
 
-        .add-to-cart {
-            background-color: #007bff;
-            color: #fff;
-            padding: 10px 20px;
-            border: none;
-            cursor: pointer;
-            margin-right: 10px;
-            border-radius: 5px; /* Rounded corners for button */
-        }
+<!--        .add-to-cart {-->
+<!--            background-color: #007bff;-->
+<!--            color: #fff;-->
+<!--            padding: 10px 20px;-->
+<!--            border: none;-->
+<!--            cursor: pointer;-->
+<!--            margin-right: 10px;-->
+<!--            border-radius: 5px; /* Rounded corners for button */-->
+<!--        }-->
 
-        .add-to-cart:hover {
-            background-color: #0056b3;
-        }
-        .col-md-3 {
-            -ms-flex: 0 0 25%;
-            margin: auto;
-        }
-        p{
-            text-align:center
-            text-decoration: none
-        }
+<!--        .add-to-cart:hover {-->
+<!--            background-color: #0056b3;-->
+<!--        }-->
+<!--        .col-md-3 {-->
+<!--            -ms-flex: 0 0 25%;-->
+<!--            margin: auto;-->
+<!--        }-->
+<!--        p{-->
+<!--            text-align:center-->
+<!--            text-decoration: none-->
+<!--        }-->
 
-    </style>
-</head>
+<!--    </style>-->
+<!--</head>-->
 
-<body>
+<!--<body>-->
 
-    {% include 'header.html' %}
-    <div id="videoContainer">
-        <form method="post" action="{{ url_for('index') }}">
-            <video autoplay muted loop id="backgroundVideo">
-                <source src="{{ url_for('static', filename='images/mac1.mp4') }}" type="video/mp4">
-            </video>
-        </form>
-    </div>
+<!--    {% include 'header.html' %}-->
+<!--    <div id="videoContainer">-->
+<!--        <form method="post" action="{{ url_for('index') }}">-->
+<!--            <video autoplay muted loop id="backgroundVideo">-->
+<!--                <source src="{{ url_for('static', filename='images/mac1.mp4') }}" type="video/mp4">-->
+<!--            </video>-->
+<!--        </form>-->
+<!--    </div>-->
 
 
-    <div class="products">
-        <div class="row">
-            {% for product in user_products %}
-                <div class="col-md-3 product-container">
-                    <a href="{{ url_for('product_details', user_email=user_email, product_name=product['Part No']) }}">
-                        <img src="{{ product['image'] }}" class="image">
-                        <p>{{ product['Brand'] }} - {{ product['Part No'] }}</p>
-                        <p>Total with Tax: {{ product['Total with Tax'] if product['Total with Tax'] else 'N/A' }}</p>
-                        <p>MRP: {{ product['MRP'] if product['MRP'] else 'N/A' }}</p>
-                    </a>
-                    <form method="post" action="{{ url_for('add_to_cart4') }}">
-                        <input type="hidden" name="user_email" value="{{ user_email }}">
-                        <input type="hidden" name="product_name" value="{{ product['Brand'] }}">
-                        <input type="hidden" name="product_image" value="{{ product['image'] }}">
-                        <input type="hidden" name="product_description" value="{{ product['Description'] }}">
-                        <input type="hidden" name="product_rating" value="{{ product['Rating'] }}">
-                        <input type="hidden" name="product_price" value="{{ product['price'] }}"><br><br>
-                        <div class="quantity">
-                            <button type="submit" class="add-to-cart">Add to Cart</button>
-                            <input type='button' value='-' class='qtyminus minus' field='quantity' />
-                            <input type='text' name='quantity' value='1' class='qty' />
-                            <input type='button' value='+' class='qtyplus plus' field='quantity' />
-                        </div>
-                    </form>
+<!--    <div class="products">-->
+<!--        <div class="row">-->
+<!--            {% for product in user_products %}-->
+<!--                <div class="col-md-3 product-container">-->
+<!--                    <a href="{{ url_for('product_details', user_email=user_email, product_name=product['Part No']) }}">-->
+<!--                        <img src="{{ product['image'] }}" class="image">-->
+<!--                        <p>{{ product['Brand'] }} - {{ product['Part No'] }}</p>-->
+<!--                        <p>Total with Tax: {{ product['Total with Tax'] if product['Total with Tax'] else 'N/A' }}</p>-->
+<!--                        <p>MRP: {{ product['MRP'] if product['MRP'] else 'N/A' }}</p>-->
+<!--                    </a>-->
+<!--                    <form method="post" action="{{ url_for('add_to_cart4') }}">-->
+<!--                        <input type="hidden" name="user_email" value="{{ user_email }}">-->
+<!--                        <input type="hidden" name="product_name" value="{{ product['Brand'] }}">-->
+<!--                        <input type="hidden" name="product_image" value="{{ product['image'] }}">-->
+<!--                        <input type="hidden" name="product_description" value="{{ product['Description'] }}">-->
+<!--                        <input type="hidden" name="product_rating" value="{{ product['Rating'] }}">-->
+<!--                        <input type="hidden" name="product_price" value="{{ product['price'] }}"><br><br>-->
+<!--                        <div class="quantity">-->
+<!--                            <button type="submit" class="add-to-cart">Add to Cart</button>-->
+<!--                            <input type='button' value='-' class='qtyminus minus' field='quantity' />-->
+<!--                            <input type='text' name='quantity' value='1' class='qty' />-->
+<!--                            <input type='button' value='+' class='qtyplus plus' field='quantity' />-->
+<!--                        </div>-->
+<!--                    </form>-->
 
-                </div>
+<!--                </div>-->
 
-                {% if loop.index % 3 == 0 or loop.last %}
-                    <div class="clearfix"></div>
-                {% endif %}
-            {% endfor %}
-        </div>
-    </div>
+<!--                {% if loop.index % 3 == 0 or loop.last %}-->
+<!--                    <div class="clearfix"></div>-->
+<!--                {% endif %}-->
+<!--            {% endfor %}-->
+<!--        </div>-->
+<!--    </div>-->
 
-    {% include 'footer.html' %}
+<!--    {% include 'footer.html' %}-->
 
-    <script>
-        $(document).ready(function() {
-            $('.quantity').on('click', '.qtyplus', function(e) {
-                let $input = $(this).prev('input.qty');
-                let val = parseInt($input.val());
-                $input.val(val + 1).change();
-            });
+<!--    <script>-->
+<!--        $(document).ready(function() {-->
+<!--            $('.quantity').on('click', '.qtyplus', function(e) {-->
+<!--                let $input = $(this).prev('input.qty');-->
+<!--                let val = parseInt($input.val());-->
+<!--                $input.val(val + 1).change();-->
+<!--            });-->
 
-            $('.quantity').on('click', '.qtyminus', function(e) {
-                let $input = $(this).next('input.qty');
-                var val = parseInt($input.val());
-                if (val > 0) {
-                    $input.val(val - 1).change();
-                }
-            });
+<!--            $('.quantity').on('click', '.qtyminus', function(e) {-->
+<!--                let $input = $(this).next('input.qty');-->
+<!--                var val = parseInt($input.val());-->
+<!--                if (val > 0) {-->
+<!--                    $input.val(val - 1).change();-->
+<!--                }-->
+<!--            });-->
 
-            // Change event handler for the quantity input
-            $('.quantity').on('change', '.qty', function() {
-                updateCartTotal();
-            });
+<!--            // Change event handler for the quantity input-->
+<!--            $('.quantity').on('change', '.qty', function() {-->
+<!--                updateCartTotal();-->
+<!--            });-->
 
-            // Initial update of cart total on page load
-            updateCartTotal();
+<!--            // Initial update of cart total on page load-->
+<!--            updateCartTotal();-->
 
-            function updateCartTotal() {
-                let totalQuantity = 0;
+<!--            function updateCartTotal() {-->
+<!--                let totalQuantity = 0;-->
 
-                // Iterate through all quantity inputs and sum up the values
-                $('.quantity .qty').each(function() {
-                    totalQuantity += parseInt($(this).val());
-                });
+<!--                // Iterate through all quantity inputs and sum up the values-->
+<!--                $('.quantity .qty').each(function() {-->
+<!--                    totalQuantity += parseInt($(this).val());-->
+<!--                });-->
 
-                // Display the total quantity in your cart
-                $('#cartTotalQuantity').text(totalQuantity);
-            }
-        });
-    </script>
-</body>
+<!--                // Display the total quantity in your cart-->
+<!--                $('#cartTotalQuantity').text(totalQuantity);-->
+<!--            }-->
+<!--        });-->
+<!--    </script>-->
+<!--</body>-->
 
-</html>
+<!--</html>-->
