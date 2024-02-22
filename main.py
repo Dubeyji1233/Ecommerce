@@ -114,11 +114,7 @@ def cart():
     # Format grand_total with comma separator
     formatted_grand_total = "{:,.2f}".format(grand_total)
 
-
-
     return render_template('cart.html', user_cart=user_cart, user_email=user_email, product=product,price=price)
-
-
 
 @app.route('/add_to_cart', methods=['POST'])
 def add_to_cart():
@@ -148,10 +144,6 @@ def add_to_cart():
 
     # Redirect to the product page or any other appropriate page
     return redirect(url_for('index', user_email=user_email, user_cart=cart))
-
-# Update the product details route
-
-
 
 @app.route('/add_to_cart4', methods=['POST'])
 def add_to_cart4():
@@ -279,15 +271,11 @@ def remove_from_cart():
     # Redirect back to the cart page
     return redirect(url_for('cart', user_email=user_email))
 
-
-
-
-# Add the new route for product details
 @app.route('/product_details')
 def product_details():
     user_email = request.args.get('user_email', '')
     product_name = request.args.get('product_name', '')
-    product_type = request.args.get('product_type', '')  # Added product_type
+    product_type = request.args.get('product_type', '')
 
     product_details = get_product_details_by_key(product_name, product_type)
 

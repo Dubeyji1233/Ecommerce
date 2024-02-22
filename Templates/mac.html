@@ -127,45 +127,43 @@
     </form>
 </div>
 
-<section>
-    <div class="product-row">
-        {% for product in user_products %}
-            {% if loop.index % 4 == 1 %}
-                </div>
-                <div class="product-row">
-            {% endif %}
-            <div class="product-container">
-                <a href="{{ url_for('product_details', user_email=user_email, product_name= product['Key'], product_type='mac') }}">
-                    <p>
-                        <img src="{{ product['Image'] }}" class="image" alt="{{ product['Colour'] }} iPhone">
-                    </p>
-                    <h3>{{ product['Model'] }} - {{ product['Variant'] }}</h3>
-                    <p>MRP: {{ product['MRP'] }}</p>
-                    <p>Offer Price : {{ product['Offer Price'] }}</p>
-                    <p>Colour: {{ product['Colour']}}</p>
-                </a>
-                <form method="post" action="{{ url_for('add_to_cart4') }}">
-                    <input type="hidden" name="user_email" value="{{ user_email }}">
-                    <input type="hidden" name="product_name" value="{{ product['Model'] }}">
-                    <input type="hidden" name="product_Key" value="{{ product['Key'] }}">
-                    <input type="hidden" name="product_camera" value="{{ product['Camera'] }}">
-                    <input type="hidden" name="product_image" value="{{ product['Image'] }}">
-                    <input type="hidden" name="product_variant" value="{{ product['Variant'] }}">
-                    <input type="hidden" name="product_chipset" value="{{ product['Chipset'] }}">
-                    <input type="hidden" name="product_display" value="{{ product['Display'] }}">
-                    <input type="hidden" name="product_colour" value="{{ product['Colour'] }}">
-                    <input type="hidden" name="product_price" value="{{ product['Offer Price'] }} "><br><br><br>
-                    <div class="quantity">
-                        <button type="submit" class="add-to-cart">Add to Cart</button>
-                        <input type='button' value='-' class='qtyminus minus' field='quantity' />
-                        <input type='text' name='quantity' value='1' class='qty' />
-                        <input type='button' value='+' class='qtyplus plus' field='quantity' />
-                    </div>
-                </form>
+<br><br><br>
+<!--    <div class="product-row">-->
+{% for product in user_products %}
+{% if loop.index % 4 == 1 %}
+<div class="product-row">
+    {% endif %}
+    <div class="product-container">
+        <a href="{{ url_for('product_details', user_email=user_email, product_name= product['Key'], product_type='mac') }}">
+            <p>
+                <img src="{{ product['Image'] }}" class="image" alt="{{ product['Colour'] }} iPhone">
+            </p>
+            <h3>{{ product['Model'] }} - {{ product['Variant'] }}</h3>
+            <p>MRP: {{ product['MRP'] }}</p>
+            <p>Offer Price : {{ product['Offer Price'] }}</p>
+            <p>Colour: {{ product['Colour']}}</p>
+        </a>
+        <form method="post" action="{{ url_for('add_to_cart4') }}">
+            <input type="hidden" name="user_email" value="{{ user_email }}">
+            <input type="hidden" name="product_name" value="{{ product['Model'] }}">
+            <input type="hidden" name="product_Key" value="{{ product['Key'] }}">
+            <input type="hidden" name="product_camera" value="{{ product['Camera'] }}">
+            <input type="hidden" name="product_image" value="{{ product['Image'] }}">
+            <input type="hidden" name="product_variant" value="{{ product['Variant'] }}">
+            <input type="hidden" name="product_chipset" value="{{ product['Chipset'] }}">
+            <input type="hidden" name="product_display" value="{{ product['Display'] }}">
+            <input type="hidden" name="product_colour" value="{{ product['Colour'] }}">
+            <input type="hidden" name="product_price" value="{{ product['Offer Price'] }} "><br><br><br>
+            <div class="quantity">
+                <button type="submit" class="add-to-cart">Add to Cart</button>
+                <input type='button' value='-' class='qtyminus minus' field='quantity' />
+                <input type='text' name='quantity' value='1' class='qty' />
+                <input type='button' value='+' class='qtyplus plus' field='quantity' />
             </div>
-        {% endfor %}
+        </form>
     </div>
-</section>
+{% endfor %}
+</div>
 
 {% include 'footer.html' %}
 
@@ -333,7 +331,7 @@
 
 <!--<body>-->
 
-<!--    {% include 'header.html' %}-->
+
 <!--    <div id="videoContainer">-->
 <!--        <form method="post" action="{{ url_for('index') }}">-->
 <!--            <video autoplay muted loop id="backgroundVideo">-->
@@ -377,7 +375,6 @@
 <!--        </div>-->
 <!--    </div>-->
 
-<!--    {% include 'footer.html' %}-->
 
 <!--    <script>-->
 <!--        $(document).ready(function() {-->
