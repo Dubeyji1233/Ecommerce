@@ -10,7 +10,7 @@
     <style>
         #videoContainer {-->
             width: 100%;
-            height: 80vh; /* Full viewport height */
+            height: 90vh; /* Full viewport height */
             overflow: hidden;
         }
 
@@ -122,13 +122,12 @@
 <div id="videoContainer">
     <form method="post" action="{{ url_for('login') }}">
         <video autoplay muted loop id="backgroundVideo">
-            <source src="{{ url_for('static', filename='images/mac1.mp4') }}" type="video/mp4">
+            <source src="{{ url_for('static', filename='images/videoplayback.mp4') }}" type="video/mp4">
         </video>
     </form>
 </div>
 
 <br><br><br>
-<!--    <div class="product-row">-->
 {% for product in user_products %}
 {% if loop.index % 4 == 1 %}
 <div class="product-row">

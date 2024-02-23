@@ -249,7 +249,8 @@
           <h2>Product Order Form</h2>
     </div>
     <div class="d-flex">
-        <form action="" method="">
+        <form action="{{ url_for('invoice_details', user_email=user_email) }}" method="get">
+            <input type="hidden" name="user_email" value="{{ user_email }}">
             <div>
                 <div style="display: flex; flex-wrap: wrap;">
                     <div style="flex: 1; margin-right: 10px;">
@@ -268,17 +269,17 @@
                     </div>
                     <div style="flex: 1;">
                         <span class="ecode">Company Name <span class="required">*</span></span>
-                        <input type="text" name="ecode">
+                        <input type="text" name="cname">
                     </div>
                 </div>
                 <div style="display: flex; flex-wrap: wrap;">
                     <div style="flex: 1; margin-right: 10px;">
                         <span class="ecode">Phone Number <span class="required">*</span></span>
-                        <input type="tel" name="city">
+                        <input type="tel" name="nnumber">
                     </div>
                     <div style="flex: 1;">
                         <span class="ecode">Email Address <span class="required">* &nbsp&nbsp&nbsp&nbsp</span></span>
-                        <input type="email" name="city">
+                        <input type="email" name="mail">
                     </div>
                 </div>
                 <div>
@@ -550,7 +551,7 @@
                     </div>
                     <div style="flex: 1; ">
                         <span class="ecode">State / Country<span class="required">* &nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp</span></span>
-                        <input type="text" name="city">
+                        <input type="text" name="state">
                     </div>
 <!--                    <span class="ecode">Postcode <span class="required">*</span></span>-->
 <!--                    <label>-->
@@ -559,6 +560,7 @@
                 </div>
             </div>
         </div>
+            <button id="doneButton">Place Order</button>
     </form>
   <div class="cont">
         <h3>Your Selected Products</h3>
@@ -584,7 +586,7 @@
               </tr>
           </table>
 <!--<br>-->
-            <button id="doneButton">Place Order</button>
+
           <p class="error-message" id="errorMessage"></p>
       </div>
   </div>
@@ -696,28 +698,28 @@
           alert('Cart information not found.');
       }
 
-      // Function to display the modal when the "Done" button is clicked
-      document.getElementById('doneButton').onclick = function () {
-          // Check if all required fields are filled
-          if (validateForm()) {
-              // Show the modal
-              document.getElementById('myModal').style.display = 'block';
-          }
-      }
-        function sendInvoice(userEmail) {
-            // Make an AJAX request to Flask server
-            fetch(`/invoice_details?user_email=${userEmail}`)
-                .then(response => response.text())
-                .then(data => {
-                    console.log(data);
-                    alert('Invoice email sent!');
-                    // Optionally, you can redirect to another page or perform other actions
-                })
-                .catch(error => {
-                    console.error('Error:', error);
-                    alert('Error sending invoice email. Please try again later.');
-                });
-        }
+<!--      // Function to display the modal when the "Done" button is clicked-->
+<!--      document.getElementById('doneButton').onclick = function () {-->
+<!--          // Check if all required fields are filled-->
+<!--          if (validateForm()) {-->
+<!--              // Show the modal-->
+<!--              document.getElementById('myModal').style.display = 'block';-->
+<!--          }-->
+<!--      }-->
+<!--        function sendInvoice(userEmail) {-->
+<!--            // Make an AJAX request to Flask server-->
+<!--            fetch(`/invoice_details?user_email=${userEmail}`)-->
+<!--                .then(response => response.text())-->
+<!--                .then(data => {-->
+<!--                    console.log(data);-->
+<!--                    alert('Invoice email sent!');-->
+<!--                    // Optionally, you can redirect to another page or perform other actions-->
+<!--                })-->
+<!--                .catch(error => {-->
+<!--                    console.error('Error:', error);-->
+<!--                    alert('Error sending invoice email. Please try again later.');-->
+<!--                });-->
+<!--        }-->
 
 </script>
 </body>

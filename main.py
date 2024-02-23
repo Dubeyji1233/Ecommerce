@@ -84,6 +84,37 @@ def mac():
 
     return render_template('mac.html', user_products=products_filtered, domain=domain, user_email=user_email)
 
+@app.route('/watch')
+def watch():
+    user_email = request.args.get('user_email', '')
+    domain = user_email.split('@')[-1]
+
+    # print(f"User Email: {user_email}")
+    # print(f"Domain: {domain}")
+
+    file_path = r'C:\Users\abhishekdubey\PycharmProjects\E-commerce\Product_data\mac1.csv'
+    product_data = pd.read_csv(file_path, encoding='ISO-8859-1')
+    product_data['Offer Price'] = product_data['Offer Price'].str.replace(',', '')
+    # Iterate over DataFrame rows using iterrows()
+    products_filtered = [row for index, row in product_data.iterrows() if row['Offer Price'] is not None]
+
+    return render_template('watch.html', user_products=products_filtered, domain=domain, user_email=user_email)
+
+@app.route('/ipad')
+def ipad():
+    user_email = request.args.get('user_email', '')
+    domain = user_email.split('@')[-1]
+
+    # print(f"User Email: {user_email}")
+    # print(f"Domain: {domain}")
+
+    file_path = r'C:\Users\abhishekdubey\PycharmProjects\E-commerce\Product_data\mac1.csv'
+    product_data = pd.read_csv(file_path, encoding='ISO-8859-1')
+    product_data['Offer Price'] = product_data['Offer Price'].str.replace(',', '')
+    # Iterate over DataFrame rows using iterrows()
+    products_filtered = [row for index, row in product_data.iterrows() if row['Offer Price'] is not None]
+
+    return render_template('ipad.html', user_products=products_filtered, domain=domain, user_email=user_email)
 @app.route('/iphone')
 def iphone():
     user_email = request.args.get('user_email', '')
@@ -309,10 +340,6 @@ def get_product_details_by_key(product_key, product_type):
                         'colour': row['Colour'],
                         'image': row['Image']
                     }
-
-                    # Add debug prints
-                    # print("Product Details:", product_details)
-
                     break
 
         return product_details
@@ -333,46 +360,79 @@ def personal_details():
 @app.route("/invoice_details", methods=["GET"])
 def invoice_details():
     user_email = request.args.get('user_email', '')
+    print(user_email)
+    first_name = request.args.get('fname', '')
+    print(first_name)
+    last_name = request.args.get('lname', '')
+    print(last_name)
+    employee_code = request.args.get('ecode', '')
+    print(employee_code)
+    company_name = request.args.get('cname', '')
+    print(company_name)
+    phone_number = request.args.get('nnumber', '')  # Assuming the input type is 'tel'
+    print(phone_number)
+    email_address = request.args.get('mail', '')  # Assuming the input type is 'email'
+    print(email_address)
+    country = request.args.get('selection', '')
+    print(country)
+    house_address = request.args.get('houseadd', '')
+    print(first_name)
+    apartment = request.args.get('apartment', '')
+    print(apartment)
+    city = request.args.get('city', '')
+    print(city)
+    state = request.args.get('state', '')
+    print(state)
 
-    # Retrieve the user's cart
     user_cart = carts.get(user_email, [])
 
-    # Call the function to send the invoice email with the user's cart
-    send_invoice_mail(user_email, user_cart)
+    return send_invoice_mail(user_email=user_email, user_cart=user_cart, first_name=first_name, last_name=last_name,
+                             employee_code=employee_code, company_name=company_name, phone_number=phone_number,
+                             email_address=email_address, country=country, house_address=house_address,
+                             apartment=apartment, city=city, state=state)
 
-    return 'Invoice email sent!'
 
+@app.route("/send_invoice_mail", methods=["GET"])
+def send_invoice_mail(user_email, user_cart, first_name, last_name, employee_code, company_name, phone_number,
+                      email_address, country, house_address, apartment, city, state):
+    if not user_email:
+        return 'Invalid recipient email address'
 
-def send_invoice_mail(user_email, user_cart):
     msg = MIMEMultipart()
     msg['From'] = 'abhishekoffical30@gmail.com'
     msg['To'] = user_email
     msg['Subject'] = 'Invoice Details'
 
-    body = 'Dear Customer,<br><br>Thank you for shopping with us. Your order has been placed successfully.<br><br>Ordered Items:<br>'
+    body = f'Dear {first_name} {last_name},<br><br>'
+    body += 'Thank you for shopping with us. Your order has been placed successfully.<br><br>'
+    body += 'Ordered Items:<br>'
+
     grand_total = 0
 
     for item in user_cart:
-        body += f'{item["name"]} x {item["quantity"]}<br>'
-        total = float(item["subtotal"]) * float(item["quantity"])
+        body += f'<img src="{item["image"]}" alt="{item["name"]}" style="max-width: 100px; max-height: 100px;"> ' \
+                f'x {item["name"]} x {item["quantity"]}<br>'
+        total = float(item["price"].replace("₹ ", "").replace(',', '')) * item['quantity']
         grand_total += total
         body += f'Total for {item["name"]}: {total}<br>'
 
-    # body += f'<br>Grand Total: {grand_total}<br>'
-    msg.attach(MIMEText(body, 'html'))
+    body += '<br>Order Details:<br>'
+    body += f'Employee Code: {employee_code}<br>'
+    body += f'Company Name: {company_name}<br>'
+    body += f'Phone Number: {phone_number}<br>'
+    body += f'Email Address: {email_address}<br>'
+    body += f'Country: {country}<br>'
+    body += f'Street Address: {house_address}, {apartment}<br>'
+    body += f'City: {city}<br>'
+    body += f'State: {state}<br>'
 
-    # for item in user_cart:
-    #     response = requests.get(item['image'])
-    #     product_image_io = io.BytesIO(response.content)
-    #     product_image = MIMEImage(product_image_io.read(), Name=os.path.basename(item['image']))
-    #     msg.attach(product_image)
+    msg.attach(MIMEText(body.encode('utf-8'), 'html', 'ISO-8859-1'))
 
     with smtplib.SMTP('smtp.gmail.com', 587) as server:
         server.starttls()
-        server.login('abhishekoffical30@gmail.com', 'axtw igsh cljs wjvz')
+        server.login()
         server.sendmail('abhishekoffical30@gmail.com', user_email, msg.as_string())
 
 
-
-if __name__ == '__main__':
+if __name__ == "__main__":
     app.run(debug=True)
