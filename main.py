@@ -194,7 +194,7 @@ def add_to_cart4():
         'name': product_name,
         'variant': product_variant,
         'colour': product_colour,
-        'key': product_Key,
+        'key': f'{product_Key}_{product_name}',  # Include product type in the key
         'camera': product_camera,
         'image': product_image,
         'price': product_price,
@@ -264,13 +264,13 @@ def add_to_cart2():
     product_details = {
         'name': product_name,
         'variant': product_variant,
-        'colour' : product_colour,
-        'key' : product_Key,
+        'colour': product_colour,
+        'key': f'{product_Key}_{product_name}',  # Include product type in the key
         'camera': product_camera,
         'image': product_image,
         'price': product_price,
         'display': product_display,
-        'chipset' : product_chipset,
+        'chipset': product_chipset,
         'quantity': int(request.form.get('quantity', 0)),
     }
 
@@ -376,7 +376,7 @@ def invoice_details():
     country = request.args.get('selection', '')
     print(country)
     house_address = request.args.get('houseadd', '')
-    print(first_name)
+    print(house_address)
     apartment = request.args.get('apartment', '')
     print(apartment)
     city = request.args.get('city', '')
@@ -408,15 +408,23 @@ def send_invoice_mail(user_email, user_cart, first_name, last_name, employee_cod
     body += 'Ordered Items:<br>'
 
     grand_total = 0
+    total_quantity = 0
 
     for item in user_cart:
         body += f'<img src="{item["image"]}" alt="{item["name"]}" style="max-width: 100px; max-height: 100px;"> ' \
                 f'x {item["name"]} x {item["quantity"]}<br>'
+
         total = float(item["price"].replace("₹ ", "").replace(',', '')) * item['quantity']
         grand_total += total
-        body += f'Total for {item["name"]}: {total}<br>'
+        total_quantity += item['quantity']
 
-    body += '<br>Order Details:<br>'
+        body += f'Total for {item["name"]}: {total}<br><br>'
+
+    # Display Total Quantity and Grand Total
+    body += f'Total Quantity: {total_quantity}<br>'
+    body += f'Grand Total: {grand_total}<br><br>'
+
+    body += '<br>Order Details<br><br>'
     body += f'Employee Code: {employee_code}<br>'
     body += f'Company Name: {company_name}<br>'
     body += f'Phone Number: {phone_number}<br>'
@@ -428,10 +436,7 @@ def send_invoice_mail(user_email, user_cart, first_name, last_name, employee_cod
 
     msg.attach(MIMEText(body.encode('utf-8'), 'html', 'ISO-8859-1'))
 
-    with smtplib.SMTP('smtp.gmail.com', 587) as server:
-        server.starttls()
-        server.login()
-        server.sendmail('abhishekoffical30@gmail.com', user_email, msg.as_string())
+
 
 
 if __name__ == "__main__":

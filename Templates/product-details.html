@@ -34,12 +34,17 @@
         }
 
         .images {
-            max-width: 80%;
+            max-width: 60%;
             border-radius: 8px;
             height: 100%;
             padding: 20px 20px 20px 20px;
         }
-
+        .images1 {
+            max-width: 100%;
+            border-radius: 8px;
+            height: 100%;
+            padding: 20px 20px 20px 20px;
+        }
         .p {
             margin: 10px 0;
         }
@@ -127,14 +132,27 @@
     <div class="product-container">
         <h1>Product Details</h1>
         <div style="display:Flex">
-            <div>
-                <img class="images" src="{{ product_details.image }}" alt="{{ product_details['name'] }}">
+            <div class="images" >
+                <img class="images1" src="{{ product_details.image }}" alt="{{ product_details['name'] }}">
             </div>
             <div>
                 <p class="p"><strong>Name:</strong> {{ product_details.name }}</p>
-                <p class="p"><strong>Storage:</strong> {{ product_details.variant }}</p>
+                <div>
+                    <label for="color">Color:</label>
+                    <select id="color" name="color">
+                            <option value="{{ product_details.colour }}">{{ product_details.colour }}</option>
+                    </select>
+                </div>
+
+                <div>
+                    <label for="storage">Storage:</label>
+                    <select id="storage" name="storage">
+                            <option value="{{ product_details.variant }}">{{ product_details.variant }}</option>
+                    </select>
+                </div>
+
                 <p class="p"><strong>Description:</strong> {{ product_details.colour }}, {{ product_details.camera }}
-                    {{ product_details.chipset }} {{ product_details.display }}</p>
+                    {{ product_details.chipset }} ,{{ product_details.display }}, {{ product_details.variant }} </p>
                 <p class="p"><strong>Price:</strong> {{ product_details.price }}</p>
                 <p class="p"><strong>MRP:</strong> {{ product_details.mrp }}</p>
                 <div class="quantity">
@@ -184,6 +202,31 @@
 
             // Display the total quantity in your cart
             $('#cartTotalQuantity').text(totalQuantity);
+        }
+    });
+        $(document).ready(function () {
+        // Change event handler for color dropdown
+        $('#color').on('change', function () {
+            updateProductDetails();
+        });
+
+        // Change event handler for storage dropdown
+        $('#storage').on('change', function () {
+            updateProductDetails();
+        });
+
+        // Initial update of product details on page load
+        updateProductDetails();
+
+        function updateProductDetails() {
+            let selectedColor = $('#color').val();
+            let selectedStorage = $('#storage').val();
+
+            // Send selectedColor and selectedStorage to the server (you might need AJAX for this)
+            // Update product_details based on the selected options
+
+            // Update the product details description
+            $('.p strong:contains("Description")').next().text(`${selectedColor}, ${selectedStorage}, ${product_details.camera} ${product_details.chipset} ${product_details.display}`);
         }
     });
 </script>
