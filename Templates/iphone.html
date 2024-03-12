@@ -4,6 +4,7 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <script src="https://code.jquery.com/jquery-3.6.4.min.js"></script>
+    <script src="https://code.jquery.com/jquery-3.6.4.min.js"></script>
     <title>iphone</title>
     <link rel="icon" type="image/png" sizes="32x32" href="/static/images/Company_Logo.png">
 
@@ -110,15 +111,51 @@
             display: flex;
             flex-wrap: wrap;
             gap: 80px;
+<!--            padding : 15px;-->
+        }
+        #filterContainer {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            margin-bottom: 20px;
         }
 
-<!--        .product-container {-->
-<!--            flex: 1 0 25%;-->
-<!--            padding: 10px;-->
-<!--            box-sizing: border-box;-->
-<!--            border: 1px solid #ccc; /* Optional: Add a border around each product container */-->
-<!--        }-->
-<!--        -->
+        #filterContainer label {
+            margin-right: 10px;
+        }
+
+        #searchBar,
+        #modelFilter,
+        #variantFilter,
+        #colorFilter {
+            padding: 8px;
+            margin-right: 10px;
+        }
+
+        #searchBar {
+            flex-grow: 1;
+        }
+
+        /* Style the dropdown arrow */
+        select {
+<!--            appearance: none;-->
+            -webkit-appearance: none;
+            -moz-appearance: none;
+            background: url('path-to-arrow-icon.png') no-repeat right center;
+            padding-right: 25px; /* Adjust based on your arrow icon width */
+        }
+
+        /* Style the input placeholder text */
+        ::placeholder {
+            color: #999;
+        }
+
+        /* Style the search input on focus */
+        #searchBar:focus {
+            border: 1px solid #007BFF; /* Change color as needed */
+            outline: none;
+        }
+
     </style>
 </head>
 <body>
@@ -132,44 +169,117 @@
         </video>
     </form>
 </div>
+<div id="filterContainer">
+    <label for="searchBar">Search:</label>
+    <input type="text" id="searchBar" placeholder="Search products...">
+    <label for="modelFilter">Select Model:</label>
+    <select id="modelFilter">
+        <option value="all">All Models</option>
+        {% for model in user_models %}
+            <option value="{{ model }}">{{ model }}</option>
+        {% endfor %}
+    </select>
 
+    <label for="variantFilter">Select Variant:</label>
+    <select id="variantFilter">
+        <option value="all">All Variants</option>
+        {% for variant in user_variants %}
+            <option value="{{ variant }}">{{ variant }}</option>
+        {% endfor %}
+    </select>
+
+    <label for="colorFilter">Select Color:</label>
+    <select id="colorFilter">
+        <option value="all">All Colors</option>
+        {% for colour in user_colours %}
+            <option value="{{ colour }}">{{ colour }}</option>
+        {% endfor %}
+    </select>
+
+</div>
+
+<br><br>
 <section>
 {% for product in user_products %}
 {% if loop.index % 4 == 1 %}
 <div class="product-row">
     {% endif %}
-    <div class="product-container">
-        <a href="{{ url_for('product_details', user_email=user_email, product_name=product['Key'], product_type='iphone') }}">
-            <p>
-                <img src="{{ product['Image'] }}" class="image" alt="{{ product['Colour'] }} iPhone">
-            </p>
-            <h3>{{ product['Model'] }} - {{ product['Variant'] }}</h3>
-            <p>MRP: {{ product['MRP'] }}</p>
-            <p>Offer Price : {{ product['Offer Price'] }}</p>
-            <p>Colour: {{ product['Colour']}}</p>
-<!--                <p>Key : {{ product['Key']}}</p>-->
-        </a>
-        <form method="post" action="{{ url_for('add_to_cart2') }}">
-            <input type="hidden" name="user_email" value="{{ user_email }}">
-            <input type="hidden" name="product_name" value="{{ product['Model'] }}">
-            <input type="hidden" name="product_Key" value="{{ product['Key'] }}">
-            <input type="hidden" name="product_camera" value="{{ product['Camera'] }}">
-            <input type="hidden" name="product_image" value="{{ product['Image'] }}">
-            <input type="hidden" name="product_variant" value="{{ product['Variant'] }}">
-            <input type="hidden" name="product_description" value="{{ product['Display'] }}">
-            <input type="hidden" name="product_colour" value="{{ product['Colour'] }}">
-            <input type="hidden" name="product_price" value="{{ product['Offer Price'] }} "><br><br><br>
-            <div class="quantity">
-                <button type="submit" class="add-to-cart">Add to Cart</button>
-                <input type='button' value='-' class='qtyminus minus' field='quantity' />
-                <input type='text' name='quantity' value='1' class='qty' />
-                <input type='button' value='+' class='qtyplus plus' field='quantity' />
-            </div>
-        </form>
+
+        <div class="product-container filter-item"
+             data-model="{{ product['Model'] }}"
+             data-variant="{{ product['Variant'] }}"
+             data-color="{{ product['Colour'] }}">
+            <a href="{{ url_for('product_details', user_email=user_email, product_name=product['Key'], product_type='iphone') }}">
+                <p>
+                    <img src="{{ product['Image'] }}" class="image" alt="{{ product['Colour'] }} iPhone">
+                </p>
+                <h3>{{ product['Model'] }} - {{ product['Variant'] }}</h3>
+                <p>MRP: {{ product['MRP'] }}</p>
+                <p>Offer Price : {{ product['Offer Price'] }}</p>
+                <p>Colour: {{ product['Colour'] }}</p>
+            </a>
+            <form method="post" action="{{ url_for('add_to_cart2') }}">
+                <input type="hidden" name="user_email" value="{{ user_email }}">
+                <input type="hidden" name="product_name" value="{{ product['Model'] }}">
+                <input type="hidden" name="product_Key" value="{{ product['Key'] }}">
+                <input type="hidden" name="product_camera" value="{{ product['Camera'] }}">
+                <input type="hidden" name="product_image" value="{{ product['Image'] }}">
+                <input type="hidden" name="product_variant" value="{{ product['Variant'] }}">
+                <input type="hidden" name="product_description" value="{{ product['Display'] }}">
+                <input type="hidden" name="product_colour" value="{{ product['Colour'] }}">
+                <input type="hidden" name="product_price" value="{{ product['Offer Price'] }} "><br><br><br>
+                <br><br><br>
+                <div class="quantity">
+                    <button type="submit" class="add-to-cart">Add to Cart</button>
+                    <input type='button' value='-' class='qtyminus minus' field='quantity' />
+                    <input type='text' name='quantity' value='1' class='qty' />
+                    <input type='button' value='+' class='qtyplus plus' field='quantity' />
+                </div>
+            </form>
+        </div>
+    {% endfor %}
     </div>
-{% endfor %}
-</div>
 </section>
+
+
+
+<!--<section>-->
+<!--{% for product in user_products %}-->
+<!--{% if loop.index % 4 == 1 %}-->
+<!--<div class="product-row">-->
+<!--    {% endif %}-->
+<!--    <div class="product-container">-->
+<!--        <a href="{{ url_for('product_details', user_email=user_email, product_name=product['Key'], product_type='iphone') }}">-->
+<!--            <p>-->
+<!--                <img src="{{ product['Image'] }}" class="image" alt="{{ product['Colour'] }} iPhone">-->
+<!--            </p>-->
+<!--            <h3>{{ product['Model'] }} - {{ product['Variant'] }}</h3>-->
+<!--            <p>MRP: {{ product['MRP'] }}</p>-->
+<!--            <p>Offer Price : {{ product['Offer Price'] }}</p>-->
+<!--            <p>Colour: {{ product['Colour']}}</p>-->
+<!--&lt;!&ndash;                <p>Key : {{ product['Key']}}</p>&ndash;&gt;-->
+<!--        </a>-->
+<!--        <form method="post" action="{{ url_for('add_to_cart2') }}">-->
+<!--            <input type="hidden" name="user_email" value="{{ user_email }}">-->
+<!--            <input type="hidden" name="product_name" value="{{ product['Model'] }}">-->
+<!--            <input type="hidden" name="product_Key" value="{{ product['Key'] }}">-->
+<!--            <input type="hidden" name="product_camera" value="{{ product['Camera'] }}">-->
+<!--            <input type="hidden" name="product_image" value="{{ product['Image'] }}">-->
+<!--            <input type="hidden" name="product_variant" value="{{ product['Variant'] }}">-->
+<!--            <input type="hidden" name="product_description" value="{{ product['Display'] }}">-->
+<!--            <input type="hidden" name="product_colour" value="{{ product['Colour'] }}">-->
+<!--            <input type="hidden" name="product_price" value="{{ product['Offer Price'] }} "><br><br><br>-->
+<!--            <div class="quantity">-->
+<!--                <button type="submit" class="add-to-cart">Add to Cart</button>-->
+<!--                <input type='button' value='-' class='qtyminus minus' field='quantity' />-->
+<!--                <input type='text' name='quantity' value='1' class='qty' />-->
+<!--                <input type='button' value='+' class='qtyplus plus' field='quantity' />-->
+<!--            </div>-->
+<!--        </form>-->
+<!--    </div>-->
+<!--{% endfor %}-->
+<!--</div>-->
+<!--</section>-->
 
 <script>
     jQuery(document).ready(($) => {
@@ -205,6 +315,49 @@
             // Display the total quantity in your cart
             $('#cartTotalQuantity').text(totalQuantity);
         }
+    });
+    $(document).ready(function () {
+        // Initial setup
+        updateProductDisplay();
+
+        // Change event handler for the filters
+        $('#modelFilter, #variantFilter, #colorFilter').change(function () {
+            updateProductDisplay();
+        });
+
+        function updateProductDisplay() {
+            let selectedModel = $('#modelFilter').val();
+            let selectedVariant = $('#variantFilter').val();
+            let selectedColor = $('#colorFilter').val();
+
+            // Show all products initially
+            $('.filter-item').show();
+
+            // Filter based on selected values
+            if (selectedModel !== 'all') {
+                $('.filter-item').filter('[data-model!="' + selectedModel + '"]').hide();
+            }
+            if (selectedVariant !== 'all') {
+                $('.filter-item').filter('[data-variant!="' + selectedVariant + '"]').hide();
+            }
+            if (selectedColor !== 'all') {
+                $('.filter-item').filter('[data-color!="' + selectedColor + '"]').hide();
+            }
+        }
+    });
+    $(document).ready(function() {
+        // Your existing filter logic goes here...
+
+        // Search bar functionality
+        $('#searchBar').on('input', function() {
+            let searchTerm = $(this).val().toLowerCase();
+
+            // Hide all products
+            $('.filter-item').hide();
+
+            // Show only products that match the search term
+            $('.filter-item:contains(' + searchTerm + ')').show();
+        });
     });
 </script>
 

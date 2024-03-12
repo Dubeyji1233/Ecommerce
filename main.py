@@ -1,9 +1,9 @@
 import pandas as pd
 from flask import Flask, render_template, redirect, url_for,request,render_template_string,session
 from flask_mail import Mail
-import requests
 import csv
 import smtplib
+from urllib.parse import quote
 from email.mime.text import MIMEText
 from email.mime.multipart import MIMEMultipart
 from email.mime.image import MIMEImage
@@ -115,6 +115,28 @@ def ipad():
     products_filtered = [row for index, row in product_data.iterrows() if row['Offer Price'] is not None]
 
     return render_template('ipad.html', user_products=products_filtered, domain=domain, user_email=user_email)
+
+
+# @app.route('/iphone')
+# def iphone():
+#     user_email = request.args.get('user_email', '')
+#     domain = user_email.split('@')[-1]
+#
+#     file_path = r'C:\Users\abhishekdubey\PycharmProjects\E-commerce\Product_data\Smart_EPP_Generic_iphone.csv'
+#     product_data = pd.read_csv(file_path, encoding='ISO-8859-1')
+#     product_data['Offer Price'] = product_data['Offer Price'].str.replace(',', '')
+#
+#     # Iterate over DataFrame rows using iterrows()
+#     products_filtered = [row for index, row in product_data.iterrows() if row['Offer Price'] is not None]
+#     # Get unique values from the "Variant" column
+#     unique_variants = product_data['Variant'].unique()
+#     unique_models = product_data['Model'].unique()
+#     unique_colours = product_data['Colour'].unique()
+#
+#     # Assuming you have unique_models, unique_variants, and unique_colours lists
+#     return render_template('iphone.html', user_products=products_filtered, user_models=unique_models, user_variants=unique_variants,
+#                            user_colours=unique_colours)
+
 @app.route('/iphone')
 def iphone():
     user_email = request.args.get('user_email', '')
@@ -127,7 +149,6 @@ def iphone():
     products_filtered = [row for index, row in product_data.iterrows() if row['Offer Price'] is not None]
 
     return render_template('iphone.html', user_products=products_filtered, domain=domain, user_email=user_email)
-
 @app.route('/cart')
 def cart():
     user_email = request.args.get('user_email', '')
@@ -278,6 +299,7 @@ def add_to_cart2():
     cart = carts.setdefault(user_email, [])
     existing_product = next((p for p in cart if p['key'] == product_Key), None)
 
+
     if existing_product:
         # Update the quantity if the product is already in the cart
         existing_product['quantity'] += product_details['quantity']
@@ -391,10 +413,84 @@ def invoice_details():
                              email_address=email_address, country=country, house_address=house_address,
                              apartment=apartment, city=city, state=state)
 
-
 @app.route("/send_invoice_mail", methods=["GET"])
 def send_invoice_mail(user_email, user_cart, first_name, last_name, employee_code, company_name, phone_number,
                       email_address, country, house_address, apartment, city, state):
+    if not user_email:
+        return 'Invalid recipient email address'
+
+    msg = MIMEMultipart()
+    msg['From'] = 'abhishekoffical30@gmail.com'
+    msg['To'] = 'shubhambhoite@orientindia.net'
+    msg['Subject'] = 'Invoice Details'
+
+    body = f'Dear Shubham,<br><br>'
+    body += f'{first_name} {last_name} order has been placed successfully Please Give Approvel.<br><br>'
+    body += 'Ordered Items:<br>'
+
+    grand_total = 0
+    total_quantity = 0
+
+    for item in user_cart:
+        body += f'<img src="{item["image"]}" alt="{item["name"]}" style="max-width: 100px; max-height: 100px;"> ' \
+                f'x {item["name"]} x {item["quantity"]}<br>'
+
+        total = float(item["price"].replace("₹ ", "").replace(',', '')) * item['quantity']
+        grand_total += total
+        total_quantity += item['quantity']
+
+        body += f'Total for {item["name"]}: {total}<br><br>'
+
+    # Display Total Quantity and Grand Total
+    body += f'Total Quantity: {total_quantity}<br>'
+    body += f'Grand Total: {grand_total}<br><br>'
+    body += '<br>Order Details<br><br>'
+    body += f'Employee Code: {employee_code}<br>'
+    body += f'Company Name: {company_name}<br>'
+    body += f'Phone Number: {phone_number}<br>'
+    body += f'Email Address: {email_address}<br>'
+    body += f'Country: {country}<br>'
+    body += f'Street Address: {house_address}, {apartment}<br>'
+    body += f'City: {city}<br>'
+    body += f'State: {state}<br><br><br><br>'
+
+    # approval_link = f'http://127.0.0.1:5000/Approve_invoice_mail?user_email={user_email}&fname={first_name}&lname={last_name}&ecode={employee_code}&cname={company_name}&nnumber={phone_number}&country={country}&address={house_address}&city={city}&state={state}'
+    # cancellation_link = f'http://127.0.0.1:5000/cancel_invoice/{quote(user_email)}/{quote(first_name)}/{quote(last_name)}/{grand_total}/{employee_code}/{quote(phone_number)}/{quote(email_address)}/{quote(country)}/{quote(house_address)}'
+    # approval_link = f'http://127.0.0.1:5000/approve_invoice/{quote(user_email)}/{quote(first_name)}/{quote(last_name)}/{grand_total}/{employee_code}/{quote(phone_number)}/{quote(email_address)}/{quote(country)}/{quote(house_address)}'
+    body += f'''
+            <p>Please approve or cancel the request:</p>
+            <a href="http://127.0.0.1:5000/Approve_invoice_mail?user_email={user_email}&fname={first_name}&lname={last_name}&ecode={employee_code}&cname={company_name}&nnumber={phone_number}&country={country}&address={house_address}&city={city}&state={state}" style="padding: 10px; background-color: #4CAF50; color: white; text-decoration: none;">Approve</a>
+            <br>
+            <br>
+            <br>
+            <a href="http://127.0.0.1:5000/cancel_invoice_mail?user_email={user_email}&fname={first_name}&lname={last_name}&ecode={employee_code}&cname={company_name}&nnumber={phone_number}&country={country}&address={house_address}&city={city}&state={state}" style="padding: 10px; background-color: #FF0000; color: white; text-decoration: none;">Cancel</a>
+        '''
+
+
+    msg.attach(MIMEText(body.encode('utf-8'), 'html', 'ISO-8859-1'))
+
+    with smtplib.SMTP('smtp.gmail.com', 587) as server:
+        server.starttls()
+        server.login('abhishekoffical30@gmail.com', '')
+        server.sendmail('abhishekoffical30@gmail.com', 'shubhambhoite@orientindia.net', msg.as_string())
+    print('Mail Send to Manager')
+
+@app.route("/Approve_invoice_mail", methods=["GET"])
+def Approve_invoice_mail():
+    user_email = request.args.get('user_email', '')
+    print(user_email)
+    first_name = request.args.get('fname', '')
+    last_name = request.args.get('lname', '')
+    employee_code = request.args.get('ecode', '')
+    company_name = request.args.get('cname', '')
+    phone_number = request.args.get('nnumber', '')
+    email_address = request.args.get('mail', '')
+    country = request.args.get('country', '')
+    house_address = request.args.get('address', '')
+    city = request.args.get('city', '')
+    state = request.args.get('state', '')
+
+    user_cart = carts.get(user_email, [])
     if not user_email:
         return 'Invalid recipient email address'
 
@@ -423,21 +519,298 @@ def send_invoice_mail(user_email, user_cart, first_name, last_name, employee_cod
     # Display Total Quantity and Grand Total
     body += f'Total Quantity: {total_quantity}<br>'
     body += f'Grand Total: {grand_total}<br><br>'
-
     body += '<br>Order Details<br><br>'
     body += f'Employee Code: {employee_code}<br>'
-    body += f'Company Name: {company_name}<br>'
     body += f'Phone Number: {phone_number}<br>'
     body += f'Email Address: {email_address}<br>'
     body += f'Country: {country}<br>'
-    body += f'Street Address: {house_address}, {apartment}<br>'
-    body += f'City: {city}<br>'
-    body += f'State: {state}<br>'
+    body += f'Street Address: {house_address}<br>'
 
     msg.attach(MIMEText(body.encode('utf-8'), 'html', 'ISO-8859-1'))
 
+    with smtplib.SMTP('smtp.gmail.com', 587) as server:
+        server.starttls()
+        server.login('abhishekoffical30@gmail.com', '')
+        server.sendmail('abhishekoffical30@gmail.com', user_email, msg.as_string())
 
+    print('Order has been approved by the Manager')
+    return render_template('login.html',user_email=user_email, action='approved')
+
+
+@app.route("/cancel_invoice_mail", methods=["GET"])
+def cancel_invoice_mail():
+    user_email = request.args.get('user_email', '')
+    first_name = request.args.get('fname', '')
+    last_name = request.args.get('lname', '')
+
+    user_cart = carts.get(user_email, [])
+
+    if not user_email:
+        return 'Invalid recipient email address'
+
+    msg = MIMEMultipart()
+    msg['From'] = 'abhishekoffical30@gmail.com'
+    msg['To'] = user_email
+    msg['Subject'] = 'Order Cancellation Confirmation'
+
+    body = f'Dear {first_name} {last_name},<br><br>'
+    body += 'We regret to inform you that your order has been cancelled.<br><br>'
+    grand_total = 0
+    total_quantity = 0
+
+    for item in user_cart:
+        body += f'<img src="{item["image"]}" alt="{item["name"]}" style="max-width: 100px; max-height: 100px;"> ' \
+                f'x {item["name"]} x {item["quantity"]}<br>'
+
+        total = float(item["price"].replace("₹ ", "").replace(',', '')) * item['quantity']
+        grand_total += total
+        total_quantity += item['quantity']
+
+        body += f'Total for {item["name"]}: {total}<br><br>'
+
+    # Display Total Quantity and Grand Total
+    body += f'Total Quantity: {total_quantity}<br>'
+    body += f'Grand Total: {grand_total}<br><br>'
+
+    body += 'If you have any questions or concerns, please contact our customer support team.<br><br>'
+
+    msg.attach(MIMEText(body.encode('utf-8'), 'html', 'ISO-8859-1'))
+
+    with smtplib.SMTP('smtp.gmail.com', 587) as server:
+        server.starttls()
+        server.login('abhishekoffical30@gmail.com', '')
+        server.sendmail('abhishekoffical30@gmail.com', user_email, msg.as_string())
+    print('Order has been cancel by the Manager')
+    return render_template('login.html', user_email=user_email, action='canceled')
 
 
 if __name__ == "__main__":
     app.run(debug=True)
+
+
+
+
+# @app.route("/approve_Order", methods=["GET"])
+# def approve_Order(user_email, user_cart, first_name, last_name, employee_code, company_name, phone_number,
+#                       email_address, country, house_address, apartment, city, state):
+#
+#
+#     if not user_email:
+#         return 'Invalid recipient email address'
+#
+#     msg = MIMEMultipart()
+#     msg['From'] = 'abhishekoffical30@gmail.com'
+#     msg['To'] = 'abhishekoffical30@gmail.com'
+#     msg['Subject'] = 'Invoice Details'
+#
+#     body = f'Dear Shubham,<br><br>'
+#     body += f'{first_name} {last_name} order has been placed successfully Please Give Approvel.<br><br>'
+#     body += 'Ordered Items:<br>'
+#
+#     grand_total = 0
+#     total_quantity = 0
+#
+#     for item in user_cart:
+#         body += f'<img src="{item["image"]}" alt="{item["name"]}" style="max-width: 100px; max-height: 100px;"> ' \
+#                 f'x {item["name"]} x {item["quantity"]}<br>'
+#
+#         total = float(item["price"].replace("₹ ", "").replace(',', '')) * item['quantity']
+#         grand_total += total
+#         total_quantity += item['quantity']
+#
+#         body += f'Total for {item["name"]}: {total}<br><br>'
+#
+#     # Display Total Quantity and Grand Total
+#     body += f'Total Quantity: {total_quantity}<br>'
+#     body += f'Grand Total: {grand_total}<br><br>'
+#     body += '<br>Order Details<br><br>'
+#     body += f'Employee Code: {employee_code}<br>'
+#     body += f'Company Name: {company_name}<br>'
+#     body += f'Phone Number: {phone_number}<br>'
+#     body += f'Email Address: {email_address}<br>'
+#     body += f'Country: {country}<br>'
+#     body += f'Street Address: {house_address}, {apartment}<br>'
+#     body += f'City: {city}<br>'
+#     body += f'State: {state}<br><br><br><br>'
+# body += f'''
+#                 <p>Please approve or cancel the request:</p>
+#                 <a href="http://127.0.0.1:5000/Approve_invoice_mail?user_email={user_email}&fname={first_name}&lname={last_name}&ecode={employee_code}&cname={company_name}&nnumber={phone_number}&country={country}&address={house_address}&city={city}&state={state}" style="padding: 10px; background-color: #4CAF50; color: white; text-decoration: none;">Approve</a>
+#                 <br>
+#                 <br>
+#                 <br>
+#                 <a href="http://127.0.0.1:5000/cancel_invoice_mail?user_email={user_email}&fname={first_name}&lname={last_name}&ecode={employee_code}&cname={company_name}&nnumber={phone_number}&country={country}&address={house_address}&city={city}&state={state}" style="padding: 10px; background-color: #FF0000; color: white; text-decoration: none;">Cancel</a>
+#             '''
+#
+#
+#     msg.attach(MIMEText(body.encode('utf-8'), 'html', 'ISO-8859-1'))
+#
+#     with smtplib.SMTP_SSL('smtp.gmail.com', 465) as server:
+#         server.login('abhishekoffical30@gmail.com', '')
+#         server.sendmail('abhishekoffical30@gmail.com', 'abhishekoffical30@gmail.com', msg.as_string())
+#
+#     print('Mail Send to Manager')
+#
+#
+# @app.route("/Approve_invoice_mail", methods=["GET"])
+# def Approve_invoice_mail():
+#     user_email = request.args.get('user_email', '')
+#     print(user_email)
+#     first_name = request.args.get('fname', '')
+#     last_name = request.args.get('lname', '')
+#     employee_code = request.args.get('ecode', '')
+#     company_name = request.args.get('cname', '')
+#     phone_number = request.args.get('nnumber', '')
+#     email_address = request.args.get('mail', '')
+#     country = request.args.get('selection', '')
+#     house_address = request.args.get('houseadd', '')
+#     apartment = request.args.get('apartment', '')
+#     city = request.args.get('city', '')
+#     state = request.args.get('state', '')
+#
+#     user_cart = carts.get(user_email, [])
+#
+#     if not user_email:
+#         return 'Invalid recipient email address'
+#
+#     msg = MIMEMultipart()
+#     msg['From'] = 'abhishekoffical30@gmail.com'
+#     msg['To'] = user_email
+#     msg['Subject'] = 'Invoice Details'
+#
+#     body = f'Dear {first_name} {last_name},<br><br>'
+#     body += 'Thank you for shopping with us. Your order has been placed successfully.<br><br>'
+#     body += 'Ordered Items:<br>'
+#
+#     grand_total = 0
+#     total_quantity = 0
+#
+#     for item in user_cart:
+#         body += f'<img src="{item["image"]}" alt="{item["name"]}" style="max-width: 100px; max-height: 100px;"> ' \
+#                 f'x {item["name"]} x {item["quantity"]}<br>'
+#
+#         total = float(item["price"].replace("₹ ", "").replace(',', '')) * item['quantity']
+#         grand_total += total
+#         total_quantity += item['quantity']
+#
+#         body += f'Total for {item["name"]}: {total}<br><br>'
+#
+#     # Display Total Quantity and Grand Total
+#     body += f'Total Quantity: {total_quantity}<br>'
+#     body += f'Grand Total: {grand_total}<br><br>'
+#
+#     body += '<br>Order Details<br><br>'
+#     body += f'Employee Code: {employee_code}<br>'
+#     body += f'Company Name: {company_name}<br>'
+#     body += f'Phone Number: {phone_number}<br>'
+#     body += f'Email Address: {email_address}<br>'
+#     body += f'Country: {country}<br>'
+#     body += f'Street Address: {house_address}, {apartment}<br>'
+#     body += f'City: {city}<br>'
+#     body += f'State: {state}<br>'
+#
+#     msg.attach(MIMEText(body.encode('utf-8'), 'html', 'ISO-8859-1'))
+#
+#     with smtplib.SMTP('smtp.gmail.com', 587) as server:
+#         server.starttls()
+#         server.login('abhishekoffical30@gmail.com', '')
+#         server.sendmail('abhishekoffical30@gmail.com', user_email, msg.as_string())
+#
+#     print('Order has been approved by the Manager')
+#     return render_template('login.html',user_email=user_email, action='approved')
+#
+#
+# @app.route("/cancel_invoice_mail", methods=["GET"])
+# def cancel_invoice_mail():
+#     user_email = request.args.get('user_email', '')
+#     first_name = request.args.get('fname', '')
+#     last_name = request.args.get('lname', '')
+#
+#     user_cart = carts.get(user_email, [])
+#     if not user_email:
+#         return 'Invalid recipient email address'
+#
+#     msg = MIMEMultipart()
+#     msg['From'] = 'abhishekoffical30@gmail.com'
+#     msg['To'] = user_email
+#     msg['Subject'] = 'Order Cancellation Confirmation'
+#
+#     body = f'Dear {first_name} {last_name},<br><br>'
+#     body += 'We regret to inform you that your order has been cancelled.<br><br>'
+#     grand_total = 0
+#     total_quantity = 0
+#
+#     for item in user_cart:
+#         body += f'<img src="{item["image"]}" alt="{item["name"]}" style="max-width: 100px; max-height: 100px;"> ' \
+#                 f'x {item["name"]} x {item["quantity"]}<br>'
+#
+#         total = float(item["price"].replace("₹ ", "").replace(',', '')) * item['quantity']
+#         grand_total += total
+#         total_quantity += item['quantity']
+#
+#         body += f'Total for {item["name"]}: {total}<br><br>'
+#
+#     # Display Total Quantity and Grand Total
+#     body += f'Total Quantity: {total_quantity}<br>'
+#     body += f'Grand Total: {grand_total}<br><br>'
+#
+#     body += 'If you have any questions or concerns, please contact our customer support team.<br><br>'
+#
+#     msg.attach(MIMEText(body.encode('utf-8'), 'html', 'ISO-8859-1'))
+#
+#     with smtplib.SMTP('smtp.gmail.com', 587) as server:
+#         server.starttls()
+#         server.login('abhishekoffical30@gmail.com', '')
+#         server.sendmail('abhishekoffical30@gmail.com', user_email, msg.as_string())
+#     print('Order has been cancel by the Manager')
+#     return render_template('login.html', user_email=user_email, action='canceled')
+
+
+
+# @app.route("/approve_Order", methods=["GET"])
+# def approve_Order(user_email, user_cart, first_name, last_name, employee_code, company_name, phone_number,
+#                       email_address, country, house_address, apartment, city, state):
+#     if not user_email:
+#         return 'Invalid recipient email address'
+#
+#     msg = MIMEMultipart()
+#     msg['From'] = 'abhishekoffical30@gmail.com'
+#     msg['To'] = user_email
+#     msg['Subject'] = 'Invoice Details'
+#
+#     body = f'Dear Shubham,<br><br>'
+#     body += f'{first_name} {last_name} order has been placed successfully Please Give Approvel.<br><br>'
+#     body += 'Ordered Items:<br>'
+#
+#     grand_total = 0
+#     total_quantity = 0
+#
+#     for item in user_cart:
+#         body += f'<img src="{item["image"]}" alt="{item["name"]}" style="max-width: 100px; max-height: 100px;"> ' \
+#                 f'x {item["name"]} x {item["quantity"]}<br>'
+#
+#         total = float(item["price"].replace("₹ ", "").replace(',', '')) * item['quantity']
+#         grand_total += total
+#         total_quantity += item['quantity']
+#
+#         body += f'Total for {item["name"]}: {total}<br><br>'
+#
+#     # Display Total Quantity and Grand Total
+#     body += f'Total Quantity: {total_quantity}<br>'
+#     body += f'Grand Total: {grand_total}<br><br>'
+#
+#     body += '<br>Order Details<br><br>'
+#     body += f'Employee Code: {employee_code}<br>'
+#     body += f'Company Name: {company_name}<br>'
+#     body += f'Phone Number: {phone_number}<br>'
+#     body += f'Email Address: {email_address}<br>'
+#     body += f'Country: {country}<br>'
+#     body += f'Street Address: {house_address}, {apartment}<br>'
+#     body += f'City: {city}<br>'
+#     body += f'State: {state}<br><br><br><br>'
+#
+#     msg.attach(MIMEText(body.encode('utf-8'), 'html', 'ISO-8859-1'))
+#
+#     with smtplib.SMTP('smtp.gmail.com', 587) as server:
+#         server.starttls()
+#         server.login('abhishekoffical30@gmail.com', '')
+#         server.sendmail('abhishekoffical30@gmail.com', user_email, msg.as_string())

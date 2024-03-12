@@ -33,6 +33,14 @@
             border-radius: 8px;
         }
 
+
+        .product-container select {
+            font-size: 14px;
+            padding: 8px;
+            margin-bottom: 15px;
+        }
+
+
         .images {
             max-width: 60%;
             border-radius: 8px;
@@ -140,14 +148,21 @@
                 <div>
                     <label for="color">Color:</label>
                     <select id="color" name="color">
-                            <option value="{{ product_details.colour }}">{{ product_details.colour }}</option>
+                        <option value="Blue">Blue</option>
+                        <option value="Pink">Pink</option>
+                        <option value="Midnight">Midnight</option>
+                        <option value="Starlight">Starlight</option>
+                        <option value="Green">Green</option>
+                        <option value="Red">Red</option>
                     </select>
                 </div>
 
                 <div>
                     <label for="storage">Storage:</label>
                     <select id="storage" name="storage">
-                            <option value="{{ product_details.variant }}">{{ product_details.variant }}</option>
+                            <option value="128">128</option>
+                        <option value="264">264</option>
+                        <option value="512">512</option>
                     </select>
                 </div>
 
@@ -229,6 +244,33 @@
             $('.p strong:contains("Description")').next().text(`${selectedColor}, ${selectedStorage}, ${product_details.camera} ${product_details.chipset} ${product_details.display}`);
         }
     });
+     $('#color, #storage').on('change', function () {
+        updateProductDetails();
+    });
+        function updateProductDetails() {
+        let selectedColor = $('#color').val();
+        let selectedStorage = $('#storage').val();
+
+        // Send selectedColor and selectedStorage to the server using AJAX
+        $.ajax({
+            type: 'POST',
+            url: '/update_product_details',  // Create a route in your Flask app to handle this request
+            data: {
+                color: selectedColor,
+                storage: selectedStorage
+            },
+            success: function (response) {
+                // Update the product details on success
+                $('.images1').attr('src', response.image);
+                $('.p strong:contains("Description")').next().text(response.description);
+                $('.p strong:contains("Price")').next().text(response.price);
+            },
+            error: function (error) {
+                console.error('Error updating product details:', error);
+            }
+        });
+    }
+
 </script>
 </body>
 </html>
